@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <math.h>
 
 using std::vector;
 using std::string;
@@ -18,12 +19,18 @@ using std::istringstream;
 enum phase {scan, execute};
 enum status {dead, alive};
 
+struct neighbors{
+	int neighborName;
+	int distance;
+};
+
 struct vertexStruct{
-	int vertex;
+	int vertexName;
 	int xCoord;
 	int yCoord;
-	vector <int> neighborDistance;
+	vector <neighbors *> neighborDistance;
 };
+
 
 class graph
 {
@@ -37,7 +44,10 @@ public:
 	// reads in a text file and converts it to a graph
 	void createGraph(string inputFile);
 
-	// calculates the distances to all the neighbors
+	// calculates the distances to all the neighbors.
+	void calculateDistances();
+
+	// get
 	int getSize();
 
 	};

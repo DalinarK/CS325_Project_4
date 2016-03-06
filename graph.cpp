@@ -11,6 +11,7 @@ graph::graph()
 void graph::createGraph(string inputFile)
 {
 	cout << "opening " << inputFile << endl;
+
 	string readLine;
 
 	ifstream inputStream;
@@ -43,14 +44,44 @@ void graph::createGraph(string inputFile)
     		sConverted = stoi(s);
     		temporaryStore.push_back(sConverted);
     	}
-    	newStruct->vertex = temporaryStore[0];
+    	newStruct->vertexName = temporaryStore[0];
     	newStruct->xCoord = temporaryStore[1];
     	newStruct->yCoord = temporaryStore[2];	
 
     	// cout << "Pushing " <<  newStruct->vertex << " " << newStruct->xCoord << " " << newStruct->yCoord << endl;
-    	vertexGraph.push_back(newStruct);
-    	
+    	vertexGraph.push_back(newStruct);	
     }
+}
+
+//calculates the distances from each vertex to all its neighbors *NOT INCLUDING ITSELF*
+void graph::calculateDistances()
+{
+	neighbors *neighborPTR;
+
+	int graphSize = vertexGraph.size();
+	cout << "graph size is" << graphSize << endl;
+	// For each vertex, this function will iterate through all the other vertexes
+	for (int g = 0; g < graphSize; g++)
+	{
+		for (int i = 0; i < graphSize; i++)
+		{
+			neighborPTR = new neighbors;
+			int neighborName = i;
+			// Prevents the calculation of the vertexes distance from itself - which would be 0
+
+				int xDiff = vertexGraph[g]->xCoord - vertexGraph[i]->xCoord;
+				// cout << "xDiff is " << xDiff << endl;
+				int yDiff = vertexGraph[g]->yCoord - vertexGraph[i]->yCoord;
+				// cout<< "yDiff is " << yDiff << endl;
+				int distance = round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+				// printf("Distance is %d \n", distance);
+
+				neighborPTR->neighborName = neighborName;
+				neighborPTR->distance = distance;
+				vertexGraph[g]->neighborDistance.push_back(neighborPTR);
+				cout << "distance from " << vertexGraph[g]->vertexName << " to " << vertexGraph[g]->neighborDistance[i]->neighborName << ": " << vertexGraph[g]->neighborDistance.back()->distance << endl;		
+		}
+	}
 
 }
 
