@@ -7,9 +7,11 @@
 #include <fstream>
 #include <sstream>
 #include <math.h>
+#include <list>
+#include <numeric>
+#include <random>
 
-#include "structs.h"
-#include "quicksort.h"
+#include "mergesort.h"
 
 using std::vector;
 using std::string;
@@ -29,6 +31,7 @@ private:
 	vector <vertexStruct*> vertexGraph;
 
 public:
+	void test();
 
 	graph();
 
@@ -39,10 +42,13 @@ public:
 	void calculateDistances();
 
 	// Sorts the neighbors by distance
-	void quickSortDistances();
+	void mergeSortDistances();
 
 	// get
 	int getSize();
+
+	vector<int> merge(vector<int> &vec,const vector<int>& left, const vector<int>& right);
+	vector<int> merge_sort(vector<int>& vec);
 
 	};
 

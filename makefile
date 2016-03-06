@@ -6,13 +6,13 @@ CXXFLAGS += -g
 #CXXFLAGS += -O3
 #LDFLAGS = -lboost_date_time
 
-OBJS = main.o graph.o quicksort.o
+OBJS = main.o graph.o 
 # fileIO.o vertexClass.o
 
-SRCS = main.cpp graph.cpp quicksort.cpp
+SRCS = main.cpp graph.cpp 
 # fileIO.cpp vertexClass.cpp
 
-HEADERS = graph.h structs.h quicksort.h
+HEADERS = graph.h structs.h 
 # fileIO.h vertexClass.h
 
 #target: dependencies

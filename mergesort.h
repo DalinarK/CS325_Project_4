@@ -1,9 +1,12 @@
-#ifndef quicksort_h
-#define quicksort_h
+#ifndef mergesort_h
+#define mergesort_h
 
 #include <stdio.h>
 #include <vector>
 #include <iostream>
+#include <list>
+#include <numeric>
+#include <random>
 
 #include "structs.h"
 using std::vector; 
