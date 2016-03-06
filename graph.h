@@ -34,8 +34,10 @@ public:
 
 	graph();
 
+	// reads in a text file and converts it to a graph
 	void createGraph(string inputFile);
 
+	// calculates the distances to all the neighbors
 	int getSize();
 
 	};

@@ -6,13 +6,13 @@ CXXFLAGS += -g
 #CXXFLAGS += -O3
 #LDFLAGS = -lboost_date_time
 
-OBJS = main.o Cell.o
+OBJS = main.o graph.o
 # fileIO.o vertexClass.o
 
-SRCS = main.cpp Cell.cpp
+SRCS = main.cpp graph.cpp
 # fileIO.cpp vertexClass.cpp
 
-HEADERS = Cell.h
+HEADERS = graph.h
 # fileIO.h vertexClass.h
 
 #target: dependencies
