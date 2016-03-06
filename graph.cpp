@@ -79,9 +79,9 @@ void graph::calculateDistances()
 				neighborPTR->neighborName = neighborName;
 				neighborPTR->distance = distance;
 				vertexGraph[g]->neighborDistance.push_back(neighborPTR);
-				cout << "distance from " << vertexGraph[g]->vertexName << " to " << vertexGraph[g]->neighborDistance[i]->neighborName << ": " << vertexGraph[g]->neighborDistance.back()->distance << endl;		
+				// cout << "distance from " << vertexGraph[g]->vertexName << " to " << vertexGraph[g]->neighborDistance[i]->neighborName << ": " << vertexGraph[g]->neighborDistance.back()->distance << endl;		
 		}
-	}
+	} 
 
 }
 
@@ -89,4 +89,9 @@ int graph::getSize()
 {
 
 	return vertexGraph.size();
+}
+
+void graph::quickSortDistances()
+{
+
 }

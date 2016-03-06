@@ -8,6 +8,9 @@
 #include <sstream>
 #include <math.h>
 
+#include "structs.h"
+#include "quicksort.h"
+
 using std::vector;
 using std::string;
 using std::cout;
@@ -18,18 +21,6 @@ using std::istringstream;
 
 enum phase {scan, execute};
 enum status {dead, alive};
-
-struct neighbors{
-	int neighborName;
-	int distance;
-};
-
-struct vertexStruct{
-	int vertexName;
-	int xCoord;
-	int yCoord;
-	vector <neighbors *> neighborDistance;
-};
 
 
 class graph
@@ -46,6 +37,9 @@ public:
 
 	// calculates the distances to all the neighbors.
 	void calculateDistances();
+
+	// Sorts the neighbors by distance
+	void quickSortDistances();
 
 	// get
 	int getSize();
