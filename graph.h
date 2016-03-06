@@ -47,7 +47,9 @@ public:
 	// get
 	int getSize();
 
-	void merge(vector <neighbors *> neighborvector, int start, int end);
+	void mergesort(vector <neighbors *>& neighborvector, int start, int end);
+	void merge(vector <neighbors *>& neighborvector, int start, int mid, int end);
+
 
 	};
 

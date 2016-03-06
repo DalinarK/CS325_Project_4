@@ -91,9 +91,72 @@ int graph::getSize()
 	return vertexGraph.size();
 }
 
-void graph::merge(vector <neighbors *> neighborvector, int start, int end)
+// Sorts the neighbors by distance
+void graph::mergeSortDistances()
 {
-	
+	cout << "inside mergeSOrtDistances()" << endl;
+
+	int end = vertexGraph[0]->neighborDistance.size() -1;
+
+	mergesort(vertexGraph[0]->neighborDistance, 0, end);
+	cout << "sorted distance: " << endl;
+
+	for (int i = 0; i < vertexGraph[0]->neighborDistance.size(); i++)
+	{
+		cout << "name: " << vertexGraph[0]->neighborDistance[i]->neighborName << " value: " << vertexGraph[0]->neighborDistance[i]->distance << endl;
+	}
+}
+
+void graph::mergesort(vector <neighbors *>& neighborvector, int start, int end)
+{
+	// cout << "inside with size " << neighborvector.size() << endl;
+	int mid = 0;
+	if(start < end)
+	{
+		mid = (start + end)/2;
+		mergesort(neighborvector, start, mid);
+		mergesort(neighborvector, mid+1, end);
+		merge(neighborvector, start, mid, end);
+	}
+
+}
+
+void graph::merge(vector <neighbors *>& neighborvector, int start, int mid, int end) 
+{
+        neighbors *tempNeighborPTR = new neighbors;
+        vector <neighbors *> tempVector;
+        tempVector.resize(vertexGraph[0]->neighborDistance.size());
+
+        int l=start;
+        int r=end;
+        int m=mid+1;
+        int k=l;
+
+        while(l<=mid && m<=r)
+        {
+            if(neighborvector[l]->distance <= neighborvector[m]->distance)
+            {
+            	// cout << "neighbor distance" << neighborvector[l]->distance << " vs" << neighborvector[r]->distance << endl;
+                tempVector[k++] = neighborvector[l++];
+            }
+            else
+            {
+                tempVector[k++] = neighborvector[m++];    
+            }  
+        }
+
+       	while(l<=mid){
+       		 tempVector[k++]=neighborvector[l++];
+       	}        
+        while(m<=r){
+            tempVector[k++]=neighborvector[m++];         
+        }
+
+        for(int i1=start;i1<=end;i1++){
+            neighborvector[i1]=tempVector[i1];
+            // cout << neighborvector[i1]->distance << " ";
+        }
+    
 }
 
 void graph::test()

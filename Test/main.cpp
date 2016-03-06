@@ -87,19 +87,24 @@ vector<int> merge_sort(vector<int>& vec)
 
 int main()
 {
-    vector <int> unsorted = {5,4,6,1,3};
-    for (int i = 0; i < unsorted.size(); i++)
-    {
-        cout << unsorted[i] << " ";
-    }
-    cout << "in main" << endl;
+    // vector <int> unsorted = {5,4,6,1,3};
+    // for (int i = 0; i < unsorted.size(); i++)
+    // {
+    //     cout << unsorted[i] << " ";
+    // }
+    // cout << "in main" << endl;
 
-    vector <int> sorted = merge_sort(unsorted);
+    // vector <int> sorted = merge_sort(unsorted);
 
-    for (int i = 0; i < sorted.size(); i++)
-    {
-        cout << sorted[i] << " ";
-    }
+    // for (int i = 0; i < sorted.size(); i++)
+    // {
+    //     cout << sorted[i] << " ";
+    // }
 
+    vector <int> test;
+    test.resize(25);
+    test[20] = 5;
+
+    cout << test[20] << endl;
     return 0;
 }
