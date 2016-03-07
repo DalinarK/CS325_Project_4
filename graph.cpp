@@ -106,45 +106,25 @@ void graph::mergeSortDistances()
 
 	
 	cout << "sorted distance: " << endl;
+int g = 0;
+	cout << "coord for: " << vertexGraph[g]->vertexName << " " << vertexGraph[g]->xCoord << ", " << vertexGraph[g]->yCoord << endl;
+	for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
+	{
+		cout << "distance from " << vertexGraph[g]->vertexName << " to " << vertexGraph[g]->neighborDistance[i]->neighborName << ": " << vertexGraph[g]->neighborDistance[i]->distance << endl;		
 
-	// cout << "coord for: " << vertexGraph[g]->vertexName << " " << vertexGraph[g]->xCoord << ", " << vertexGraph[g]->yCoord << endl;
-	// for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
-	// {
-	// 	cout << "distance from " << vertexGraph[g]->vertexName << " to " << vertexGraph[g]->neighborDistance[i]->neighborName << ": " << vertexGraph[g]->neighborDistance[i]->distance << endl;		
-
-	// }
+	}
 
 	// for every vertex, sort the neighbors list by distance
 	// for (int g = 0; g < vertexGraph.size(); g++)
-	int g = 0;
+	
 	// {
 		int end = vertexGraph[g]->neighborDistance.size() -1;
 		mergesort(vertexGraph[g]->neighborDistance, 0, end);
-
-		// for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
-		// {
-		// 	cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
-		// }
-	// }
-
-	// int g = 40;
-	// for (int g = 0; g < vertexGraph.size(); g++)
-	// {
-	// 	cout << "base vertex" << vertexGraph[g]->vertexName << endl;
+		cout << "unsorted" << endl;
 		for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
 		{
 			cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
 		}
-	// }
-
-	// for (int g = 0; g < vertexGraph.size(); g++)
-	// {
-		MergeSortHelper(vertexGraph[g]->neighborDistance);
-
-		// for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
-		// {
-		// 	cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
-		// }
 	// }
 
 	// for (int g = 0; g < vertexGraph.size(); g++)
@@ -156,11 +136,30 @@ void graph::mergeSortDistances()
 	// 	}
 	// }
 
+	// for (int g = 0; g < vertexGraph.size(); g++)
+	// {
+		MergeSortHelper(vertexGraph[g]->neighborDistance);
+
+		// for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
+		// {
+		// // 	cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+		// }
+	// }
+
+	// for (int g = 0; g < vertexGraph.size(); g++)
+	// {
+		cout << "base vertex" << vertexGraph[g]->vertexName << endl;
+		for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
+		{
+			cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+		}
+	// }
+
 }
 // got from 
 
 
-
+// Recursive implementation - crashes with large numbers
 // got from https://www.hackerrank.com/ by searching for "mergesort c++"
 void graph::mergesort(vector <neighbors *>& neighborvector, int start, int end)
 {
@@ -174,7 +173,7 @@ void graph::mergesort(vector <neighbors *>& neighborvector, int start, int end)
 	}
 
 }
-
+// got from https://www.hackerrank.com/ by searching for "mergesort c++"
 void graph::merge(vector <neighbors *>& neighborvector, int start, int mid, int end) 
 {
         vector <neighbors *> tempVector;
@@ -219,7 +218,11 @@ void graph::DoMerge(vector <neighbors *>& neighborvector, int left, int mid, int
  
     left_end = (mid - 1);
     tmp_pos = left;
+
+    cout << "left " << left << " mid " << mid << " right " << right << endl;
     num_elements = (right - left + 1);
+
+    cout << "number of elements is " << num_elements << endl;
  
     while ((left <= left_end) && (mid <= right))
     {
@@ -235,8 +238,12 @@ void graph::DoMerge(vector <neighbors *>& neighborvector, int left, int mid, int
     while (mid <= right)
         tempVector[tmp_pos++] = neighborvector[mid++];
  
-    // for (i=0; i < num_elements; i++)
-    //     neighborvector[right--] = tempVector[right];
+    for (i=0; i < num_elements; i++)
+    {
+    	cout << "name: " << neighborvector[right--]->neighborName << "distance" <<  neighborvector[right--]->distance << endl;
+    	//     neighborvector[right--] = tempVector[right];
+    }
+    
 }
 
 
@@ -254,11 +261,13 @@ void graph::Merge_Sort_Iterative(vector <neighbors *>& neighborvector, int left,
 
     while(1)
     {
+    	cout << "left is " << left << "right is " << right << endl;
         if(list.size() == 0)
             break;
  
         left = list.back().first;
         right = list.back().second;
+
         list.pop_back();
         mid = (right + left) / 2;
  
@@ -276,7 +285,8 @@ void graph::Merge_Sort_Iterative(vector <neighbors *>& neighborvector, int left,
 
     for(int i = mlist.size() - 1; i >= 0; i--)
     {
-        DoMerge(neighborvector, mlist[i].left, mlist[i].mid, mlist[i].right);
+    	// cout << "left is " << mlist[i].left << " mid is " << mlist[i].mid << " right is " << mlist[i].right << endl;
+        merge(neighborvector, mlist[i].left, mlist[i].mid, mlist[i].right);
     }
 
 }
