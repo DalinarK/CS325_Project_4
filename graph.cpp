@@ -100,6 +100,36 @@ int graph::getSize()
 	return vertexGraph.size();
 }
 
+// Sorts the neighbor by using stl
+void graph::sort()
+{
+	int g = 0;
+	cout << "sorting" << endl;
+
+	vector<Person> people(5);
+
+   for (vector<Person>::size_type i = 0; i != numberOfPeople; ++i)
+    {
+        people[i].name = i + 10;
+    }
+
+	// int i = sortByDistance(vertexGraph[g]->neighborDistance[0], vertexGraph[g]->neighborDistance[3]);
+	// cout << "bool value " << i << endl;
+	// sort(vertexGraph[g]->neighborDistance.begin(), vertexGraph[g]->neighborDistance.end(), sortByDistance);
+}
+
+bool graph::sortTest(int &i, int &j)
+{
+	return i < j;
+}
+
+// Returns true if lhs distance is < rhs distance.
+bool graph::sortByDistance(const neighbors *lhs, const neighbors *rhs)
+{
+	cout << lhs->distance << " vs " << rhs->distance << endl;
+	return lhs->distance < rhs->distance;
+}
+
 // Sorts the neighbors by distance
 void graph::mergeSortDistances()
 {

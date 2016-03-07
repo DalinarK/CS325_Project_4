@@ -15,3 +15,9 @@ struct vertexStruct{
 	bool visted;
 	vector <neighbors *> neighborDistance;
 };
+
+struct Person
+{
+    // Left out making a constructor for simplicity's sake.
+    int name;
+};

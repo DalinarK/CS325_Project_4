@@ -27,7 +27,7 @@ int main (int argc, const char * argv[1])
 	
 	fileIO.createGraph(argv[1]);
 	fileIO.calculateDistances();   
-	fileIO.mergeSortDistances();
+	fileIO.sort();
 
 	return 0;
 }

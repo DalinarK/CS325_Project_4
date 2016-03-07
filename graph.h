@@ -10,6 +10,7 @@
 #include <list>
 #include <numeric>
 #include <random>
+#include <algorithm>
 
 #include "mergesort.h"
 
@@ -50,6 +51,9 @@ public:
 	void mergesort(vector <neighbors *>& neighborvector, int start, int end);
 	void merge(vector <neighbors *>& neighborvector, int start, int mid, int end);
 
+	void sort();
+	bool sortByDistance(const neighbors *lhs, const neighbors *rhs);
+	bool sortTest(int &i, int &j);
 
 	};
 
