@@ -13,21 +13,7 @@ struct test {
 int main (int argc, const char * argv[1])
 {
 
-	test *wargPTR;
-
-	wargPTR = new test;
-
-	wargPTR->a = 1;
-
-	cout << wargPTR->a << endl;
-
-	vector <test*> testVector;
-
-	testVector.push_back(wargPTR);
-
-	cout << testVector.back()->a << endl;
-
-
+	printf("In main\n");
 
 	graph fileIO;
 	/* The first argument (argc) is the number of elements in the array so we should have two elements the program name and file name 
@@ -38,10 +24,6 @@ int main (int argc, const char * argv[1])
         std::cout << "Please enter an input filename." << std::endl << std::endl;
         exit(1);
     }
-
-    printf("In main\n");
-
-
 	
 	fileIO.createGraph(argv[1]);
 	fileIO.calculateDistances();   
