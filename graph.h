@@ -11,7 +11,8 @@
 #include <numeric>
 #include <random>
 
-#include "mergesort.h"
+//#include "mergesort.h"
+#include "structs.h"
 
 using std::vector;
 using std::string;
