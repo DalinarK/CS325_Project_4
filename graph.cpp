@@ -66,7 +66,6 @@ void graph::calculateDistances()
 		for (int i = 0; i < graphSize; i++)
 		{
 			neighborPTR = new neighbors;
-			int neighborName = i;
 			// Prevents the calculation of the vertexes distance from itself - which would be 0
 
 				int xDiff = vertexGraph[g]->xCoord - vertexGraph[i]->xCoord;
@@ -76,8 +75,10 @@ void graph::calculateDistances()
 				int distance = round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
 				// printf("Distance is %d \n", distance);
 
-				neighborPTR->neighborName = neighborName;
+				neighborPTR->neighborName = vertexGraph[i]->vertexName;
 				neighborPTR->distance = distance;
+				neighborPTR->neighborAddress = vertexGraph[i];
+				// cout << "neighbor name is " << neighborPTR->neighborAddress->vertexName << endl;
 				vertexGraph[g]->neighborDistance.push_back(neighborPTR);
 				// cout << "distance from " << vertexGraph[g]->vertexName << " to " << vertexGraph[g]->neighborDistance[i]->neighborName << ": " << vertexGraph[g]->neighborDistance.back()->distance << endl;		
 		}
@@ -121,14 +122,14 @@ void graph::mergeSortDistances()
 		mergesort(vertexGraph[g]->neighborDistance, 0, end);
 	}
 
-	// int g = 40;
+	int g = 0;
 	// for (int g = 0; g < vertexGraph.size(); g++)
 	// {
 	// 	cout << "base vertex" << vertexGraph[g]->vertexName << endl;
-	// 	for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
-	// 	{
-	// 		cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
-	// 	}
+		for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
+		{
+			cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+		}
 	// }
 
 }
