@@ -11,8 +11,6 @@
 #include <numeric>
 #include <random>
 
-#include "mergesort.h"
-
 using std::vector;
 using std::string;
 using std::cout;
