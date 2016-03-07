@@ -24,7 +24,7 @@ using std::istringstream;
 
 enum phase {scan, execute};
 enum status {dead, alive};
-
+static bool sortByDistance(const neighbors *lhs, const neighbors *rhs);
 
 class graph
 {
@@ -48,14 +48,13 @@ public:
 	// get
 	int getSize();
 
+	// uses custom implementation of mergesort to order the distances between a vertex and all it's neighbors
 	void mergesort(vector <neighbors *>& neighborvector, int start, int end);
 	void merge(vector <neighbors *>& neighborvector, int start, int mid, int end);
 
-	void sort();
-	bool sortByDistance(const neighbors *lhs, const neighbors *rhs);
-	bool sortTest(int &i, int &j);
-
-	};
+	// uses stl sort to order the distances between a vertex and all it's neighbors
+	void sortDistances();
+};
 
 
 #endif
