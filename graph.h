@@ -47,6 +47,9 @@ public:
 	// get
 	int getSize();
 
+	//added rounding method in standard C++ library.
+	int graph::round(double d);
+
 	void mergesort(vector <neighbors *>& neighborvector, int start, int end);
 	void merge(vector <neighbors *>& neighborvector, int start, int mid, int end);
 

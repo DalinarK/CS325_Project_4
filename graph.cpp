@@ -40,8 +40,9 @@ void graph::createGraph(string inputFile)
     		string s;
     		int sConverted;
     		if (!getline( ss, s, ' ' )) 
-    			break;
-    		sConverted = stoi(s);
+    			break;			
+			istringstream fStream(s);			
+    		fStream >> sConverted;
     		temporaryStore.push_back(sConverted);
     	}
     	newStruct->vertexName = temporaryStore[0];
@@ -92,6 +93,17 @@ void graph::calculateDistances()
 
 	// }
 
+}
+
+
+//will round to the nearest integer
+int graph::round(double d)
+{
+	if(d > 0){
+		return floor(d + 0.5);
+	}else{
+		return ceil(d - 0.5);
+	}
 }
 
 int graph::getSize()
