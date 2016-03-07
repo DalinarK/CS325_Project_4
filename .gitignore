@@ -1,3 +1,6 @@
 Codeproject Sample/
 traveling-salesman-master.zip
 traveling-salesman-master/
+Debug/vc110.idb
+*.tlog
+Debug/main.obj

@@ -10,8 +10,8 @@
 #include <list>
 #include <numeric>
 #include <random>
-#include <algorithm>
 
+//#include "mergesort.h"
 #include "structs.h"
 
 using std::vector;
@@ -24,7 +24,7 @@ using std::istringstream;
 
 enum phase {scan, execute};
 enum status {dead, alive};
-static bool sortByDistance(const neighbors *lhs, const neighbors *rhs);
+
 
 class graph
 {
@@ -48,18 +48,20 @@ public:
 	// get
 	int getSize();
 
+<<<<<<< HEAD
 
 	//added rounding method in standard C++ library.
 	int round(double d);
 
 	// uses custom implementation of mergesort to order the distances between a vertex and all it's neighbors
 
+=======
+>>>>>>> BensBranch
 	void mergesort(vector <neighbors *>& neighborvector, int start, int end);
 	void merge(vector <neighbors *>& neighborvector, int start, int mid, int end);
 
-	// uses stl sort to order the distances between a vertex and all it's neighbors
-	void sortDistances();
-};
+
+	};
 
 
 #endif
