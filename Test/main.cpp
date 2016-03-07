@@ -3,108 +3,46 @@
 //! \return The sorted resultant vector after merge sort is
 //! complete.
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <string>
 
-using std::vector;
 using std::cout;
 using std::endl;
-// got from https://en.wikibooks.org/wiki/Algorithm_Implementation/Sorting/Merge_sort
-//! \brief Merges two sorted vectors into one sorted vector
-//! \param left A sorted vector of integers
-//! \param right A sorted vector of integers
-//! \return A sorted vector that is the result of merging two sorted
-//! vectors.
-vector<int> merge(vector<int> &vec,const vector<int>& left, const vector<int>& right)
+using std::vector;
+using std::string;
+
+struct Person
 {
-    // Fill the resultant vector with sorted results from both vectors
-    vector<int> result;
-    unsigned left_it = 0, right_it = 0;
+    // Left out making a constructor for simplicity's sake.
+    int name;
+};
 
-    while(left_it < left.size() && right_it < right.size())
-    {
-        // If the left value is smaller than the right it goes next
-        // into the resultant vector
-        if(left[left_it] < right[right_it])
-        {
-            result.push_back(left[left_it]);
-            left_it++;
-        }
-        else
-        {
-            result.push_back(right[right_it]);
-            right_it++;
-        }
-    }
-
-    // Push the remaining data from both vectors onto the resultant
-    while(left_it < left.size())
-    {
-        result.push_back(left[left_it]);
-        left_it++;
-    }
-
-    while(right_it < right.size())
-    {
-        result.push_back(right[right_it]);
-        right_it++;
-    }
-    // //show merge process..
-    //   int i;
-    //   for(i=0;i<result.size();i++)
-    //      {                                
-    //      cout<<result[i]<<" ";
-    //      }
-    // // break each line for display purposes..
-    //     cout<<"***********"<<endl; 
-
-    //take a source vector and parse the result to it. then return it.  
-    vec = result;               
-    return vec;
-}
-
-vector<int> merge_sort(vector<int>& vec)
-{
-    // Termination condition: List is completely sorted if it
-    // only contains a single element.
-    if(vec.size() == 1)
-    {
-        return vec;
-    }
-
-    // Determine the location of the middle element in the vector
-    std::vector<int>::iterator middle = vec.begin() + (vec.size() / 2);
-
-    vector<int> left(vec.begin(), middle);
-    vector<int> right(middle, vec.end());
-
-    // Perform a merge sort on the two smaller vectors
-    left = merge_sort(left);
-    right = merge_sort(right);
-
-    return merge(vec,left, right);
-}
-
+// Sort Container by name function
+bool sortByName(const Person &lhs, const Person &rhs) { return lhs.name < rhs.name; }
+// A global const variable to hold how many people to ask for input for.
+const unsigned numberOfPeople = 5;
 
 int main()
 {
-    // vector <int> unsorted = {5,4,6,1,3};
-    // for (int i = 0; i < unsorted.size(); i++)
-    // {
-    //     cout << unsorted[i] << " ";
-    // }
-    // cout << "in main" << endl;
+    // Make a vector that holds 5 blank Person Objects
+    vector<Person> people(numberOfPeople);
 
-    // vector <int> sorted = merge_sort(unsorted);
+    string input;
+    // This will ask for user input to populate the container
+    // with 5 different indivuals.
+    for (vector<Person>::size_type i = 0; i != numberOfPeople; ++i)
+    {
+        people[i].name = i + 10;
+    }
 
-    // for (int i = 0; i < sorted.size(); i++)
-    // {
-    //     cout << sorted[i] << " ";
-    // }
+    cout << "\n\n";
 
-    vector <int> test;
-    test.resize(25);
-    test[20] = 5;
+    // Sort by name
+    sort(people.begin(), people.end(), sortByName);
+    for (int i = 0; i < 5; i++)
+        cout << people[i].name << " ";
 
-    cout << test[20] << endl;
+    cout << endl;
     return 0;
 }
