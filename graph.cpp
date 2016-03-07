@@ -83,6 +83,14 @@ void graph::calculateDistances()
 		}
 	} 
 
+	// int graphElement = 40;
+	// cout << "coord for: " << vertexGraph[graphElement]->vertexName << " " << vertexGraph[graphElement]->xCoord << ", " << vertexGraph[graphElement]->yCoord << endl;
+	// for (int i = 0; i < vertexGraph[graphElement]->neighborDistance.size(); i++)
+	// {
+	// 	cout << "distance from " << vertexGraph[graphElement]->vertexName << " to " << vertexGraph[graphElement]->neighborDistance[i]->neighborName << ": " << vertexGraph[graphElement]->neighborDistance[i]->distance << endl;		
+
+	// }
+
 }
 
 int graph::getSize()
@@ -96,20 +104,37 @@ void graph::mergeSortDistances()
 {
 	cout << "inside mergeSOrtDistances()" << endl;
 
-	int end = vertexGraph[0]->neighborDistance.size() -1;
-
-	mergesort(vertexGraph[0]->neighborDistance, 0, end);
+	
 	cout << "sorted distance: " << endl;
 
-	for (int i = 0; i < vertexGraph[0]->neighborDistance.size(); i++)
-	{
-		cout << "name: " << vertexGraph[0]->neighborDistance[i]->neighborName << " value: " << vertexGraph[0]->neighborDistance[i]->distance << endl;
-	}
-}
+	// cout << "coord for: " << vertexGraph[g]->vertexName << " " << vertexGraph[g]->xCoord << ", " << vertexGraph[g]->yCoord << endl;
+	// for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
+	// {
+	// 	cout << "distance from " << vertexGraph[g]->vertexName << " to " << vertexGraph[g]->neighborDistance[i]->neighborName << ": " << vertexGraph[g]->neighborDistance[i]->distance << endl;		
 
+	// }
+
+	// for every vertex, sort the neighbors list by distance
+	for (int g = 0; g < vertexGraph.size(); g++)
+	{
+		int end = vertexGraph[g]->neighborDistance.size() -1;
+		mergesort(vertexGraph[g]->neighborDistance, 0, end);
+	}
+
+	// int g = 40;
+	// for (int g = 0; g < vertexGraph.size(); g++)
+	// {
+	// 	cout << "base vertex" << vertexGraph[g]->vertexName << endl;
+	// 	for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
+	// 	{
+	// 		cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+	// 	}
+	// }
+
+}
+// got from https://www.hackerrank.com/ by searching for "mergesort c++"
 void graph::mergesort(vector <neighbors *>& neighborvector, int start, int end)
 {
-	// cout << "inside with size " << neighborvector.size() << endl;
 	int mid = 0;
 	if(start < end)
 	{
@@ -123,7 +148,6 @@ void graph::mergesort(vector <neighbors *>& neighborvector, int start, int end)
 
 void graph::merge(vector <neighbors *>& neighborvector, int start, int mid, int end) 
 {
-        neighbors *tempNeighborPTR = new neighbors;
         vector <neighbors *> tempVector;
         tempVector.resize(vertexGraph[0]->neighborDistance.size());
 
@@ -136,7 +160,6 @@ void graph::merge(vector <neighbors *>& neighborvector, int start, int mid, int 
         {
             if(neighborvector[l]->distance <= neighborvector[m]->distance)
             {
-            	// cout << "neighbor distance" << neighborvector[l]->distance << " vs" << neighborvector[r]->distance << endl;
                 tempVector[k++] = neighborvector[l++];
             }
             else
