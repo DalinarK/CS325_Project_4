@@ -6,6 +6,18 @@ graph::graph()
 	vector <vertexStruct*> vertexGraph;
 }
 
+graph::~graph()
+{
+	for (int g = 0; g < vertexGraph.size(); g++){		
+		for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++){
+			if (vertexGraph[g]->neighborDistance[i] != NULL) {
+				delete vertexGraph[g]->neighborDistance[i];
+			}
+		}
+		delete vertexGraph[g];
+	}
+}
+
 // Returns true if lhs distance is < rhs distance.
 static bool sortByDistance(const neighbors *lhs, const neighbors *rhs)
 {return lhs->distance < rhs->distance; }
