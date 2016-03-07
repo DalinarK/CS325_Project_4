@@ -6,6 +6,10 @@ graph::graph()
 	vector <vertexStruct*> vertexGraph;
 }
 
+// Returns true if lhs distance is < rhs distance.
+static bool sortByDistance(const neighbors *lhs, const neighbors *rhs)
+{return lhs->distance < rhs->distance; }
+
 // This function takes in the name of a file to open and then reads the files and creates a graph out of the
 // coordinates in the file.
 void graph::createGraph(string inputFile)
@@ -40,8 +44,9 @@ void graph::createGraph(string inputFile)
     		string s;
     		int sConverted;
     		if (!getline( ss, s, ' ' )) 
-    			break;
-    		sConverted = stoi(s);
+    			break;			
+			istringstream fStream(s);			
+    		fStream >> sConverted;
     		temporaryStore.push_back(sConverted);
     	}
     	newStruct->vertexName = temporaryStore[0];
@@ -94,18 +99,43 @@ void graph::calculateDistances()
 
 }
 
+
+//will round to the nearest integer
+int graph::round(double d)
+{
+	if(d > 0){
+		return floor(d + 0.5);
+	}else{
+		return ceil(d - 0.5);
+	}
+}
+
 int graph::getSize()
 {
 
 	return vertexGraph.size();
 }
 
+// Sorts the neighbor by using stl
+void graph::sortDistances()
+{
+	int g = 0;
+
+	for (int g = 0; g < vertexGraph.size(); g++)
+	{
+		// cout << "Vertex:" << vertexGraph[g]->vertexName << "sorted" << endl;
+		sort(vertexGraph[g]->neighborDistance.begin(), vertexGraph[g]->neighborDistance.end(), sortByDistance);
+		
+		for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++){
+		// cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+		}	
+	}
+}
+
+
 // Sorts the neighbors by distance
 void graph::mergeSortDistances()
 {
-	cout << "inside mergeSOrtDistances()" << endl;
-
-	
 	cout << "sorted distance: " << endl;
 
 	// cout << "coord for: " << vertexGraph[g]->vertexName << " " << vertexGraph[g]->xCoord << ", " << vertexGraph[g]->yCoord << endl;
