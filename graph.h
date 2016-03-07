@@ -11,6 +11,8 @@
 #include <numeric>
 #include <random>
 
+#include "structs.h"
+
 using std::vector;
 using std::string;
 using std::cout;
