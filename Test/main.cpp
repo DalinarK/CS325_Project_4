@@ -1,110 +1,110 @@
-//! \brief Performs a recursive merge sort on the given vector
-//! \param vec The vector to be sorted using the merge sort
-//! \return The sorted resultant vector after merge sort is
-//! complete.
 #include <iostream>
+#include <queue>
 #include <vector>
-
-using std::vector;
-using std::cout;
-using std::endl;
-// got from https://en.wikibooks.org/wiki/Algorithm_Implementation/Sorting/Merge_sort
-//! \brief Merges two sorted vectors into one sorted vector
-//! \param left A sorted vector of integers
-//! \param right A sorted vector of integers
-//! \return A sorted vector that is the result of merging two sorted
-//! vectors.
-vector<int> merge(vector<int> &vec,const vector<int>& left, const vector<int>& right)
+ // used http://www.softwareandfinance.com/Visual_CPP/Merge_Sort_Iterative.html and adapted
+void DoMerge(int numbers[], int left, int mid, int right)
 {
-    // Fill the resultant vector with sorted results from both vectors
-    vector<int> result;
-    unsigned left_it = 0, right_it = 0;
-
-    while(left_it < left.size() && right_it < right.size())
+    int temp[25];
+    int i, left_end, num_elements, tmp_pos;
+ 
+    left_end = (mid - 1);
+    tmp_pos = left;
+    num_elements = (right - left + 1);
+ 
+    while ((left <= left_end) && (mid <= right))
     {
-        // If the left value is smaller than the right it goes next
-        // into the resultant vector
-        if(left[left_it] < right[right_it])
-        {
-            result.push_back(left[left_it]);
-            left_it++;
-        }
+        if (numbers[left] <= numbers[mid])
+            temp[tmp_pos++] = numbers[left++];
         else
+            temp[tmp_pos++] = numbers[mid++];
+    }
+ 
+    while (left <= left_end)
+        temp[tmp_pos++] = numbers[left++];
+ 
+    while (mid <= right)
+        temp[tmp_pos++] = numbers[mid++];
+ 
+    for (i=0; i < num_elements; i++)
+        numbers[right--] = temp[right];
+}
+ 
+void Merge_Sort_Recursive(int numbers[], int left, int right)
+{
+  int mid;
+ 
+  if (right > left)
+  {
+    mid = (right + left) / 2;
+    Merge_Sort_Recursive(numbers, left, mid);
+    Merge_Sort_Recursive(numbers, (mid+1), right);
+ 
+    DoMerge(numbers, left, (mid+1), right);
+  }
+}
+ 
+struct MergePosInfo
+{
+    int left;
+    int mid;
+    int right;
+};
+ 
+void Merge_Sort_Iterative(int numbers[], int left, int right)
+{
+    int mid;
+    if (right <= left)
+        return;
+ 
+    std::vector<std::pair<int, int> > list;
+    std::vector<MergePosInfo> mlist;
+    list.push_back(std::pair<int, int>(left, right));
+ 
+    MergePosInfo info;
+    while(1)
+    {
+        if(list.size() == 0)
+            break;
+ 
+        left = list.back().first;
+        right = list.back().second;
+        list.pop_back();
+        mid = (right + left) / 2;
+ 
+        if(left < right)
         {
-            result.push_back(right[right_it]);
-            right_it++;
+            info.left = left;
+            info.right = right;
+            info.mid = mid + 1;
+ 
+            mlist.push_back(info);
+            list.push_back(std::pair<int, int>(left, mid));
+            list.push_back(std::pair<int, int>((mid+1), right));
         }
     }
-
-    // Push the remaining data from both vectors onto the resultant
-    while(left_it < left.size())
+ 
+    for(int i = mlist.size() - 1; i >= 0; i--)
     {
-        result.push_back(left[left_it]);
-        left_it++;
+        DoMerge(numbers, mlist[i].left, mlist[i].mid, mlist[i].right);
     }
-
-    while(right_it < right.size())
-    {
-        result.push_back(right[right_it]);
-        right_it++;
-    }
-    // //show merge process..
-    //   int i;
-    //   for(i=0;i<result.size();i++)
-    //      {                                
-    //      cout<<result[i]<<" ";
-    //      }
-    // // break each line for display purposes..
-    //     cout<<"***********"<<endl; 
-
-    //take a source vector and parse the result to it. then return it.  
-    vec = result;               
-    return vec;
 }
-
-vector<int> merge_sort(vector<int>& vec)
+ 
+void MergeSortHelper(int numbers[], int array_size)
 {
-    // Termination condition: List is completely sorted if it
-    // only contains a single element.
-    if(vec.size() == 1)
-    {
-        return vec;
-    }
-
-    // Determine the location of the middle element in the vector
-    std::vector<int>::iterator middle = vec.begin() + (vec.size() / 2);
-
-    vector<int> left(vec.begin(), middle);
-    vector<int> right(middle, vec.end());
-
-    // Perform a merge sort on the two smaller vectors
-    left = merge_sort(left);
-    right = merge_sort(right);
-
-    return merge(vec,left, right);
+    //Merge_Sort_Recursive(numbers, 0, array_size - 1);
+    Merge_Sort_Iterative(numbers, 0, array_size - 1);
 }
-
-
+ 
+ 
 int main()
 {
-    // vector <int> unsorted = {5,4,6,1,3};
-    // for (int i = 0; i < unsorted.size(); i++)
-    // {
-    //     cout << unsorted[i] << " ";
-    // }
-    // cout << "in main" << endl;
-
-    // vector <int> sorted = merge_sort(unsorted);
-
-    // for (int i = 0; i < sorted.size(); i++)
-    // {
-    //     cout << sorted[i] << " ";
-    // }
-
-    vector <int> test;
-    test.resize(25);
-    test[20] = 5;
-
-    cout << test[20] << endl;
-    return 0;
-}
+    int arr[] = { 3, 8, 7, 5, 2, 1, 9, 6, 4 };
+    int len = sizeof(arr) / sizeof(arr[0]);
+ 
+    MergeSortHelper(arr, len);
+ 
+    for(int i = 0; i < len; i++)
+        std::cout << arr[i] << " ";
+ 
+      return 0;
+  }

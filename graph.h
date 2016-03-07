@@ -10,6 +10,7 @@
 #include <list>
 #include <numeric>
 #include <random>
+#include <queue>
 
 #include "mergesort.h"
 
@@ -50,8 +51,13 @@ public:
 	void mergesort(vector <neighbors *>& neighborvector, int start, int end);
 	void merge(vector <neighbors *>& neighborvector, int start, int mid, int end);
 
-
+ 	// used http://www.softwareandfinance.com/Visual_CPP/Merge_Sort_Iterative.html and adapted
+	void MergeSortHelper(vector <neighbors *>& neighborvector);
+	void Merge_Sort_Iterative(vector <neighbors *>& neighborvector, int left, int right);
+	void DoMerge(vector <neighbors *>& neighborvector, int left, int mid, int right);
 	};
 
 
 #endif
+
+// need way to mark visited and not visited, need to go to location of vertex. 

@@ -115,13 +115,38 @@ void graph::mergeSortDistances()
 	// }
 
 	// for every vertex, sort the neighbors list by distance
-	for (int g = 0; g < vertexGraph.size(); g++)
-	{
+	// for (int g = 0; g < vertexGraph.size(); g++)
+	int g = 0;
+	// {
 		int end = vertexGraph[g]->neighborDistance.size() -1;
 		mergesort(vertexGraph[g]->neighborDistance, 0, end);
-	}
+
+		// for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
+		// {
+		// 	cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+		// }
+	// }
 
 	// int g = 40;
+	// for (int g = 0; g < vertexGraph.size(); g++)
+	// {
+	// 	cout << "base vertex" << vertexGraph[g]->vertexName << endl;
+		for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
+		{
+			cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+		}
+	// }
+
+	// for (int g = 0; g < vertexGraph.size(); g++)
+	// {
+		MergeSortHelper(vertexGraph[g]->neighborDistance);
+
+		// for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
+		// {
+		// 	cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+		// }
+	// }
+
 	// for (int g = 0; g < vertexGraph.size(); g++)
 	// {
 	// 	cout << "base vertex" << vertexGraph[g]->vertexName << endl;
@@ -132,6 +157,10 @@ void graph::mergeSortDistances()
 	// }
 
 }
+// got from 
+
+
+
 // got from https://www.hackerrank.com/ by searching for "mergesort c++"
 void graph::mergesort(vector <neighbors *>& neighborvector, int start, int end)
 {
@@ -180,6 +209,84 @@ void graph::merge(vector <neighbors *>& neighborvector, int start, int mid, int 
             // cout << neighborvector[i1]->distance << " ";
         }
     
+}
+
+void graph::DoMerge(vector <neighbors *>& neighborvector, int left, int mid, int right)
+{
+    vector <neighbors *> tempVector;
+    tempVector.resize(vertexGraph[0]->neighborDistance.size());
+    int i, left_end, num_elements, tmp_pos;
+ 
+    left_end = (mid - 1);
+    tmp_pos = left;
+    num_elements = (right - left + 1);
+ 
+    while ((left <= left_end) && (mid <= right))
+    {
+        if (neighborvector[left]->distance <= neighborvector[mid]->distance)
+            tempVector[tmp_pos++] = neighborvector[left++];
+        else
+            tempVector[tmp_pos++] = neighborvector[mid++];
+    }
+ 
+    while (left <= left_end)
+        tempVector[tmp_pos++] = neighborvector[left++];
+ 
+    while (mid <= right)
+        tempVector[tmp_pos++] = neighborvector[mid++];
+ 
+    // for (i=0; i < num_elements; i++)
+    //     neighborvector[right--] = tempVector[right];
+}
+
+
+void graph::Merge_Sort_Iterative(vector <neighbors *>& neighborvector, int left, int right)
+{
+	int mid;
+    if (right <= left)
+        return;
+ 
+    std::vector<std::pair<int, int> > list;
+    std::vector<MergePosInfo> mlist;
+    list.push_back(std::pair<int, int>(left, right));
+
+    MergePosInfo info;
+
+    while(1)
+    {
+        if(list.size() == 0)
+            break;
+ 
+        left = list.back().first;
+        right = list.back().second;
+        list.pop_back();
+        mid = (right + left) / 2;
+ 
+        if(neighborvector[left]->distance < neighborvector[right]->distance)
+        {
+            info.left = left;
+            info.right = right;
+            info.mid = mid + 1;
+ 
+            mlist.push_back(info);
+            list.push_back(std::pair<int, int>(left, mid));
+            list.push_back(std::pair<int, int>((mid+1), right));
+        }     
+    }
+
+    for(int i = mlist.size() - 1; i >= 0; i--)
+    {
+        DoMerge(neighborvector, mlist[i].left, mlist[i].mid, mlist[i].right);
+    }
+
+}
+
+ // used http://www.softwareandfinance.com/Visual_CPP/Merge_Sort_Iterative.html and adapted
+void graph::MergeSortHelper(vector <neighbors *>& neighborvector)
+{
+
+    //Merge_Sort_Recursive(numbers, 0, array_size - 1);
+    Merge_Sort_Iterative(neighborvector, 0, neighborvector.size() - 1);
 }
 
 void graph::test()
