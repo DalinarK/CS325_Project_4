@@ -79,13 +79,16 @@ void graph::calculateDistances()
 				// cout<< "yDiff is " << yDiff << endl;
 				int distance = round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
 				// printf("Distance is %d \n", distance);
-
-				neighborPTR->neighborName = vertexGraph[i]->vertexName;
-				neighborPTR->distance = distance;
-				neighborPTR->neighborAddress = vertexGraph[i];
-				// cout << "neighbor name is " << neighborPTR->neighborAddress->vertexName << endl;
-				vertexGraph[g]->neighborDistance.push_back(neighborPTR);
-				// cout << "distance from " << vertexGraph[g]->vertexName << " to " << vertexGraph[g]->neighborDistance[i]->neighborName << ": " << vertexGraph[g]->neighborDistance.back()->distance << endl;		
+				if (distance != 0)
+				{
+					neighborPTR->neighborName = vertexGraph[i]->vertexName;
+					neighborPTR->distance = distance;
+					neighborPTR->neighborAddress = vertexGraph[i];
+					// cout << "neighbor name is " << neighborPTR->neighborAddress->vertexName << endl;
+					vertexGraph[g]->neighborDistance.push_back(neighborPTR);
+					// cout << "distance from " << vertexGraph[g]->vertexName << " to " << vertexGraph[g]->neighborDistance[i]->neighborName << ": " << vertexGraph[g]->neighborDistance.back()->distance << endl;		
+				}
+				
 		}
 	} 
 
@@ -123,11 +126,11 @@ void graph::sortDistances()
 
 	for (int g = 0; g < vertexGraph.size(); g++)
 	{
-		// cout << "Vertex:" << vertexGraph[g]->vertexName << "sorted" << endl;
+		cout << "Vertex:" << vertexGraph[g]->vertexName << " is now sorted" << endl;
 		sort(vertexGraph[g]->neighborDistance.begin(), vertexGraph[g]->neighborDistance.end(), sortByDistance);
 		
 		for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++){
-		// cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+		cout << "Neighbor name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " distance: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
 		}	
 	}
 }
