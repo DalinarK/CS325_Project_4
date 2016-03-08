@@ -129,9 +129,9 @@ void graph::sortDistances()
 		cout << "Vertex:" << vertexGraph[g]->vertexName << " is now sorted" << endl;
 		sort(vertexGraph[g]->neighborDistance.begin(), vertexGraph[g]->neighborDistance.end(), sortByDistance);
 		
-		for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++){
-		cout << "Neighbor name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " distance: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
-		}	
+		//for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++){
+		//	cout << "Neighbor name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " distance: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+		//}	
 	}
 }
 
@@ -233,6 +233,7 @@ vertexStruct* graph::getVertex(int index){
 /**********************************************************************
  *Method will calculate and return a list of vertices representing
  *the minimum spanning tree.
+ *Postconditions: Need to deallocate the memory returned in the min spanning tree
  **********************************************************************/
 vector<MinSpanEdge*> graph::getMinSpanningTree(vertexStruct *start)
 {
@@ -266,24 +267,28 @@ vector<MinSpanEdge*> graph::getMinSpanningTree(vertexStruct *start)
 
 	//walk through all vertices and add them to the tree according to Prims
 	//algorithms	
-	while(unmarkedVertices > 0){		
-		cur = temp = pq.top();
-		pq.pop();
-		cur->visted = true;		
-		//add edge to min spanning tree
-		minSpanningTree.push_back(new MinSpanEdge(cur->parent,cur));
-		--unmarkedVertices;	
+	while(unmarkedVertices > 0){	
+		if(!pq.top()->visted){
+			cur = temp = pq.top();
+			pq.pop();
+			cur->visted = true;		
+			//add edge to min spanning tree
+			minSpanningTree.push_back(new MinSpanEdge(cur->parent,cur));
+			--unmarkedVertices;	
 
-			//need to look at curs neighbours and update the priority queue
-			//if distance from temp to neighbour is smaller than current primComp then found a closer neighbour
-			//so update primComp and parent and then push onto priority queue
-			for(int i = 0; i < cur->neighborDistance.size() && !cur->neighborDistance.at(i)->neighborAddress->visted; ++i){	
-				temp = cur->neighborDistance.at(i)->neighborAddress;
-				if(cur->neighborDistance.at(i)->distance < temp->primComp){
-					temp->primComp = cur->neighborDistance.at(i)->distance;			
-					temp->parent = cur;
-					pq.push(temp);
+				//need to look at curs neighbours and update the priority queue
+				//if distance from temp to neighbour is smaller than current primComp then found a closer neighbour
+				//so update primComp and parent and then push onto priority queue
+				for(int i = 0; i < cur->neighborDistance.size() && !cur->neighborDistance.at(i)->neighborAddress->visted; ++i){	
+					temp = cur->neighborDistance.at(i)->neighborAddress;
+					if(cur->neighborDistance.at(i)->distance < temp->primComp){
+						temp->primComp = cur->neighborDistance.at(i)->distance;			
+						temp->parent = cur;
+						pq.push(temp);
+				}
 			}
+		}else{
+			pq.pop();
 		}
 	}
 
