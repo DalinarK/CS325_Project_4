@@ -31,9 +31,11 @@ int main (int argc, const char * argv[1])
 
 	vector <MinSpanEdge*> minSpanningTree = fileIO.getMinSpanningTree(fileIO.getVertex(0));
 
-	cout << "Min Spanning tree order: " << endl;
-	for(int i = 0; i < minSpanningTree.size(); ++i){
+	cout << "Min Spanning tree order: " << endl;	
+    for(int i = 0; i < minSpanningTree.size(); ++i){		
 		cout << "edge " << i << " = " << minSpanningTree.at(i)->start->vertexName << " <--> " << minSpanningTree.at(i)->end->vertexName<<endl;
 	}
+
+	cout << "edges in min spanning tree = " << minSpanningTree.size() << endl;
 	return 0;
 }
