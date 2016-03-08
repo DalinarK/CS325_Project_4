@@ -33,6 +33,7 @@ class graph
 {
 private:
 	vector <vertexStruct*> vertexGraph;
+	vector <vertexStruct*> finalTour; 
 
 public:
 	void test();
@@ -58,7 +59,7 @@ public:
 	void mergesort(vector <neighbors *>& neighborvector, int start, int end);
 	void merge(vector <neighbors *>& neighborvector, int start, int mid, int end);
 
-	void graph::sortDistances();
+	void sortDistances();
 
 	vector<MinSpanEdge*> getMinSpanningTree(vertexStruct *start);
 	vertexStruct* getVertex(int index);

@@ -32,13 +32,6 @@ struct vertexStruct{
     }			
 };
 
-struct Person
-{
-    // Left out making a constructor for simplicity's sake.
-    int name;
-};
-
-
 /*Used in graph class to store vertex struct edges*/
 struct MinSpanEdge{
 	vertexStruct *start;
