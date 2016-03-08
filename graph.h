@@ -11,6 +11,8 @@
 #include <numeric>
 #include <random>
 #include <algorithm>
+#include <queue>
+#include <limits>
 
 //#include "mergesort.h"
 #include "structs.h"
@@ -57,7 +59,10 @@ public:
 	void merge(vector <neighbors *>& neighborvector, int start, int mid, int end);
 
 	void graph::sortDistances();
-	};
+
+	vector<MinSpanEdge*> getMinSpanningTree(vertexStruct *start);
+	vertexStruct* getVertex(int index);
+};
 
 
 #endif
