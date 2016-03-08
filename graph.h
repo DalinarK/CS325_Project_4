@@ -10,6 +10,9 @@
 #include <list>
 #include <numeric>
 #include <random>
+#include <algorithm>
+#include <queue>
+#include <limits>
 
 //#include "mergesort.h"
 #include "structs.h"
@@ -48,20 +51,18 @@ public:
 	// get
 	int getSize();
 
-<<<<<<< HEAD
-
 	//added rounding method in standard C++ library.
 	int round(double d);
 
 	// uses custom implementation of mergesort to order the distances between a vertex and all it's neighbors
-
-=======
->>>>>>> BensBranch
 	void mergesort(vector <neighbors *>& neighborvector, int start, int end);
 	void merge(vector <neighbors *>& neighborvector, int start, int mid, int end);
 
+	void graph::sortDistances();
 
-	};
+	vector<MinSpanEdge*> getMinSpanningTree(vertexStruct *start);
+	vertexStruct* getVertex(int index);
+};
 
 
 #endif

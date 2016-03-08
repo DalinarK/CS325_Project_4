@@ -107,9 +107,9 @@ void graph::calculateDistances()
 int graph::round(double d)
 {
 	if(d > 0){
-		return floor(d + 0.5);
+		return (int)floor(d + 0.5);
 	}else{
-		return ceil(d - 0.5);
+		return (int)ceil(d - 0.5);
 	}
 }
 
@@ -221,3 +221,71 @@ void graph::test()
 	cout << "test" << endl;
 }
 
+
+/**********************************************************************
+ *Method will calculate and return a list of vertices representing
+ *the minimum spanning tree.
+ **********************************************************************/
+vertexStruct* graph::getVertex(int index){
+	return vertexGraph.at(index);
+}
+
+/**********************************************************************
+ *Method will calculate and return a list of vertices representing
+ *the minimum spanning tree.
+ **********************************************************************/
+vector<MinSpanEdge*> graph::getMinSpanningTree(vertexStruct *start)
+{
+	std::priority_queue<vertexStruct*, vector<vertexStruct*>> pq;
+
+	int unmarkedVertices = vertexGraph.size();
+	vector <MinSpanEdge*> minSpanningTree;
+	vertexStruct *temp;
+	vertexStruct *cur;
+
+	//intialize start vertex
+	temp = cur =start;
+	temp->primComp = std::numeric_limits<int>::max();
+	
+	//set visted to false for all vertices
+	//set primComp to the distance from the start vertex
+	//add start neighbours to the priority queue
+	for(int i = 0; i < start->neighborDistance.size(); ++i){
+		temp = start->neighborDistance.at(i)->neighborAddress;			
+		temp->visted = false;
+		temp->primComp = start->neighborDistance.at(i)->distance;
+		temp->parent = start;
+		pq.push(temp);
+	}
+
+	//mark the start vertex		
+	start->visted = true;
+	start->primComp = 0;
+	--unmarkedVertices;
+	temp = start;
+
+	//walk through all vertices and add them to the tree according to Prims
+	//algorithms	
+	while(unmarkedVertices > 0){		
+		cur = temp = pq.top();
+		pq.pop();
+		cur->visted = true;		
+		//add edge to min spanning tree
+		minSpanningTree.push_back(new MinSpanEdge(cur->parent,cur));
+		--unmarkedVertices;	
+
+			//need to look at curs neighbours and update the priority queue
+			//if distance from temp to neighbour is smaller than current primComp then found a closer neighbour
+			//so update primComp and parent and then push onto priority queue
+			for(int i = 0; i < cur->neighborDistance.size() && !cur->neighborDistance.at(i)->neighborAddress->visted; ++i){	
+				temp = cur->neighborDistance.at(i)->neighborAddress;
+				if(cur->neighborDistance.at(i)->distance < temp->primComp){
+					temp->primComp = cur->neighborDistance.at(i)->distance;			
+					temp->parent = cur;
+					pq.push(temp);
+			}
+		}
+	}
+
+	return minSpanningTree;
+}
