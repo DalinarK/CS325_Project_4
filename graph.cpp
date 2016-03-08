@@ -261,6 +261,7 @@ vector<MinSpanEdge*> graph::getMinSpanningTree(vertexStruct *start)
 
 	//mark the start vertex		
 	start->visted = true;
+	start->parent = 0;
 	start->primComp = 0;
 	--unmarkedVertices;
 	temp = start;
@@ -276,15 +277,17 @@ vector<MinSpanEdge*> graph::getMinSpanningTree(vertexStruct *start)
 			minSpanningTree.push_back(new MinSpanEdge(cur->parent,cur));
 			--unmarkedVertices;	
 
-				//need to look at curs neighbours and update the priority queue
-				//if distance from temp to neighbour is smaller than current primComp then found a closer neighbour
-				//so update primComp and parent and then push onto priority queue
-				for(int i = 0; i < cur->neighborDistance.size() && !cur->neighborDistance.at(i)->neighborAddress->visted; ++i){	
-					temp = cur->neighborDistance.at(i)->neighborAddress;
+			//need to look at curs neighbours and update the priority queue
+			//if distance from temp to neighbour is smaller than current primComp then found a closer neighbour
+			//so update primComp and parent and then push onto priority queue
+			for(int i = 0; i < cur->neighborDistance.size(); ++i){
+				temp = cur->neighborDistance.at(i)->neighborAddress;
+				if(!temp->visted){					
 					if(cur->neighborDistance.at(i)->distance < temp->primComp){
 						temp->primComp = cur->neighborDistance.at(i)->distance;			
 						temp->parent = cur;
 						pq.push(temp);
+					}
 				}
 			}
 		}else{
