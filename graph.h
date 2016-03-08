@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <queue>
 #include <limits>
+#include <map>
+#include <utility> 
 
 //#include "mergesort.h"
 #include "structs.h"
@@ -33,7 +35,7 @@ class graph
 {
 private:
 	vector <vertexStruct*> vertexGraph;
-	vector <vertexStruct*> finalTour; 
+	vector <vertexStruct*> finalTour;	
 
 public:
 	void test();
@@ -61,8 +63,12 @@ public:
 
 	void sortDistances();
 
-	vector<MinSpanEdge*> getMinSpanningTree(vertexStruct *start);
+	std::map<vertexStruct*,vector<vertexStruct*>> getMinSpanningTree(vertexStruct *start);
 	vertexStruct* getVertex(int index);
+
+	void makeNaiveTour(int startVertex);
+	vector <vertexStruct*>* getTour();	
+	
 };
 
 

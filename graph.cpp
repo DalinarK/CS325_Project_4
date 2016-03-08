@@ -233,20 +233,26 @@ vertexStruct* graph::getVertex(int index){
 /**********************************************************************
  *Method will calculate and return a list of vertices representing
  *the minimum spanning tree.
+ *for Map reference https://cs50.harvard.edu/resources/cppreference.com/cppmap/all.html
  *Postconditions: Need to deallocate the memory returned in the min spanning tree
  **********************************************************************/
-vector<MinSpanEdge*> graph::getMinSpanningTree(vertexStruct *start)
+std::map<vertexStruct*,vector<vertexStruct*>> graph::getMinSpanningTree(vertexStruct *start)
 {
 	std::priority_queue<vertexStruct*, vector<vertexStruct*>> pq;
 
 	int unmarkedVertices = vertexGraph.size();
-	vector <MinSpanEdge*> minSpanningTree;
+	std::map<vertexStruct*,vector<vertexStruct*>> minSpanTree;
+
 	vertexStruct *temp;
 	vertexStruct *cur;
 
 	//intialize start vertex
 	temp = cur =start;
 	temp->primComp = std::numeric_limits<int>::max();
+
+	//add the start vertex to the map
+	vector<vertexStruct*> edgeList;
+	minSpanTree.insert(make_pair(cur, edgeList));
 	
 	//set visted to false for all vertices
 	//set primComp to the distance from the start vertex
@@ -257,6 +263,10 @@ vector<MinSpanEdge*> graph::getMinSpanningTree(vertexStruct *start)
 		temp->primComp = start->neighborDistance.at(i)->distance;
 		temp->parent = start;
 		pq.push(temp);
+
+		//add all vertices to the map
+		vector<vertexStruct*> edgeList;
+		minSpanTree.insert(make_pair(temp, edgeList));
 	}
 
 	//mark the start vertex		
@@ -267,14 +277,16 @@ vector<MinSpanEdge*> graph::getMinSpanningTree(vertexStruct *start)
 	temp = start;
 
 	//walk through all vertices and add them to the tree according to Prims
-	//algorithms	
+	//algorithm	
 	while(unmarkedVertices > 0){	
 		if(!pq.top()->visted){
 			cur = temp = pq.top();
 			pq.pop();
-			cur->visted = true;		
-			//add edge to min spanning tree
-			minSpanningTree.push_back(new MinSpanEdge(cur->parent,cur));
+			cur->visted = true;								
+			
+			//add the edge to the parents edge list in the map		
+			minSpanTree[cur->parent].push_back(cur);		
+			
 			--unmarkedVertices;	
 
 			//need to look at curs neighbours and update the priority queue
@@ -295,5 +307,73 @@ vector<MinSpanEdge*> graph::getMinSpanningTree(vertexStruct *start)
 		}
 	}
 
-	return minSpanningTree;
+	return minSpanTree;
 }
+
+/*********************************************************************************
+**Return a reference to the final tour.
+**********************************************************************************/
+vector <vertexStruct*>* graph::getTour(){	
+	return &finalTour;
+}
+
+/*********************************************************************************
+**Method will use a depth first traversal to generate a final tour
+**Once all vertices have been visited the last vertex will go 
+**directly back to the start vertex.
+*********************************************************************************/
+void graph::makeNaiveTour(int startVertex){
+
+	//make sure vertex graph is empty
+	vertexGraph.empty();	
+
+	vertexStruct *temp, *cur;
+	temp = cur = getVertex(startVertex);
+
+	//start at one to include the start vertex as umarked
+	int unmarkedVertices = 1;
+	cur->visted = false;
+
+	std::map<vertexStruct*,vector<vertexStruct*>> minSpanningTree = getMinSpanningTree(cur);
+
+	vector<vertexStruct*> vertexStack;
+
+	//mark all vertices unvisited
+	for(int i = 0; i < cur->neighborDistance.size(); ++i){
+		temp = cur->neighborDistance.at(i)->neighborAddress;			
+		temp->visted = false;
+		++unmarkedVertices;
+	}
+	
+	//add the start vertex to the vertex graph
+	//mark cur as visited then push cur's edge list onto stack
+	finalTour.push_back(cur);
+	cur->visted = true;
+	--unmarkedVertices;
+	for(int i = 0; i < minSpanningTree[cur].size(); ++i){
+		vertexStack.push_back(minSpanningTree[cur].at(i));
+	}
+
+	while(!vertexStack.empty()){
+		//get first item in stack and then remove it
+		temp = vertexStack.back();
+		vertexStack.pop_back();
+
+		//if temp has not been visited push it into the solution tour
+		//mark it as visited and then push all of its unmarked edges
+		//onto the stack
+		if(!temp->visted){
+			finalTour.push_back(temp);
+			temp->visted = true;
+			--unmarkedVertices;
+
+			//now push all temps unmarked vertice onto stack
+			for(int i = 0; i < minSpanningTree[temp].size(); ++i){
+				if(!minSpanningTree[temp].at(i)->visted){
+					vertexStack.push_back(minSpanningTree[temp].at(i));
+				}
+			}
+		}		
+	}
+}
+

@@ -32,19 +32,5 @@ struct vertexStruct{
     }			
 };
 
-/*Used in graph class to store vertex struct edges*/
-struct MinSpanEdge{
-	vertexStruct *start;
-	vertexStruct *end;
-
-	MinSpanEdge(vertexStruct *s, vertexStruct *e){
-		start = s;
-		end = e;
-	}
-};
-
-
-
-
 
 #endif
