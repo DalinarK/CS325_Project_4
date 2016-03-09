@@ -214,14 +214,14 @@ void graph::writeTourFile(string fileName)
 void graph::createEdgelist()
 {
 	vertexStruct *vertexStructPTR;
-	neighbors *neighborPTR, *neighborNeighborPTR;
+	neighbors *neighborPTR, *neighborneighborPTR;
 
-
+	int g = 0;
 	std::map<vertexStruct*,vector<vertexStruct*>> minSpanningTree = getMinSpanningTree(getVertex(0));
 
 	// create the vector representing the MST. Neighbors are not added yet
 	for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
-		cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
+		// cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
 		// Create a vertex
 		vertexStructPTR = new vertexStruct;
 		vertexStructPTR->vertexName = map_iter->first->vertexName;
@@ -232,25 +232,41 @@ void graph::createEdgelist()
 
 	// add the neighbors
 	for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
+	cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
 		for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
 			// Add only the neighbors in the MST.
+
+			cout << "edge " << map_iter->first->vertexName << " = " << map_iter->second[i]->vertexName <<endl;
+
 			int distance;
 			neighborPTR = new neighbors;
 			neighborPTR->neighborName =  map_iter->second[i]->vertexName;
 			distance = distBetweenTwoVertexes (map_iter->second[i], map_iter->first);
 			neighborPTR->distance = distance;
 			neighborPTR->neighborAddress = map_iter->second[i];
-			cout << "edge " << i << " = " << map_iter->second[i]->vertexName <<endl;
-			map_iter->first->neighborDistance.push_back(neighborPTR);
+			MST[g]->neighborDistance.push_back(neighborPTR);
+			cout << "added neighbor "  << neighborPTR->neighborName << " to " << MST[g]->vertexName << endl;
+			
 			// Go to the neighbors and add the current as their vertex to them as well.
-			neighborPTR = new neighbors;
-			vertexStructPTR = map_iter->second[i];
-			neighborPTR->neighborName = map_iter->first->vertexName;
-			neighborPTR->distance = distance;
-			neighborPTR->neighborAddress =  map_iter->first;
-			vertexStructPTR->neighborDistance.push_back(neighborPTR);
+			neighborneighborPTR = new neighbors;
+			neighborneighborPTR->neighborName = MST[g]->vertexName;
+			neighborneighborPTR->distance = distance;
+			neighborneighborPTR->neighborAddress =  MST[g];
+			MST[neighborPTR->neighborName]->neighborDistance.push_back(neighborneighborPTR);
+			cout << "added reverse " << MST[g]->vertexName << " to " << neighborneighborPTR->neighborName << endl;
+			
+		}
+		g++;
+	}
+
+// Check to see if edges are all there
+	for(unsigned int i = 0; i < MST.size(); i++){
+		cout << "\nEdge list for: " << MST[i]->vertexName << endl;
+		for( unsigned int g = 0; g < MST[i]->neighborDistance.size(); g++ ){
+			cout << "edge " << MST[i]->vertexName << " = " << MST[i]->neighborDistance[g]->neighborName <<endl;
 		}
 	}
+	cout << endl;
 }
 
 int graph::distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second)
@@ -261,7 +277,7 @@ int graph::distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second)
 	long int yDiff = first->yCoord - second->yCoord;
 	// cout<< "yDiff is " << yDiff << endl;
 	long int distance = (int) round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
-	cout << "distance: " << distance << endl;
+	// cout << "distance: " << distance << endl;
 	return distance;
 }
 
