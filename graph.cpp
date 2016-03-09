@@ -65,7 +65,7 @@ void graph::calculateDistances()
 	neighbors *neighborPTR;
 
 	int graphSize = vertexGraph.size();
-	cout << "graph size is" << graphSize << endl;
+	cout << "graph size is " << graphSize << endl;
 	// For each vertex, this function will iterate through all the other vertexes
 	for (int g = 0; g < graphSize; g++)
 	{
@@ -88,8 +88,7 @@ void graph::calculateDistances()
 					// cout << "neighbor name is " << neighborPTR->neighborAddress->vertexName << endl;
 					vertexGraph[g]->neighborDistance.push_back(neighborPTR);
 					// cout << "distance from " << vertexGraph[g]->vertexName << " to " << vertexGraph[g]->neighborDistance[i]->neighborName << ": " << vertexGraph[g]->neighborDistance.back()->distance << endl;		
-				}
-				
+				}				 
 		}
 	} 
 
