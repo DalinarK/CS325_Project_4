@@ -62,6 +62,9 @@ void graph::createGraph(string inputFile)
 //calculates the distances from each vertex to all its neighbors *NOT INCLUDING ITSELF*
 void graph::calculateDistances()
 {
+	int xDiff;
+	int yDiff;
+	int distance;
 	neighbors *neighborPTR;
 
 	int graphSize = vertexGraph.size();
@@ -74,11 +77,11 @@ void graph::calculateDistances()
 			neighborPTR = new neighbors;
 			// Prevents the calculation of the vertexes distance from itself - which would be 0
 
-				int xDiff = vertexGraph[g]->xCoord - vertexGraph[i]->xCoord;
+				xDiff = vertexGraph[g]->xCoord - vertexGraph[i]->xCoord;
 				// cout << "xDiff is " << xDiff << endl;
-				int yDiff = vertexGraph[g]->yCoord - vertexGraph[i]->yCoord;
+				yDiff = vertexGraph[g]->yCoord - vertexGraph[i]->yCoord;
 				// cout<< "yDiff is " << yDiff << endl;
-				int distance = round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+				distance = round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
 				// printf("Distance is %d \n", distance);
 				if (distance != 0)
 				{
@@ -225,14 +228,25 @@ void graph::test()
 // Calculates the distance between two vertexes
 void graph::calculateFinalTourDistance()
 {
+	int yDiff;
+	int xDiff;
+	//calculate the distances between vertexes
 	for (int i = 1; i < finalTour.size(); i++)
 	{
-		int xDiff = finalTour[i-1]->xCoord - finalTour[i]->xCoord;
+		xDiff = finalTour[i-1]->xCoord - finalTour[i]->xCoord;
 		// cout << "xDiff is " << xDiff << endl;
-		int yDiff = finalTour[i-1]->yCoord - finalTour[i]->yCoord;
+		yDiff = finalTour[i-1]->yCoord - finalTour[i]->yCoord;
 		// cout<< "yDiff is " << yDiff << endl;
 		totalDistanceTraveled += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
 	}
+
+	int sizeofVector = finalTour.size() -1;
+	// calculate the distance from first to last vertex to complete tour
+	xDiff = finalTour[0]->xCoord - finalTour[sizeofVector]->xCoord;
+	yDiff = finalTour[0]->yCoord - finalTour[sizeofVector]->yCoord;
+	
+		totalDistanceTraveled += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+
 	cout << "total distance toured is " << totalDistanceTraveled << endl;	
 }
 

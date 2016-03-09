@@ -44,7 +44,7 @@ int main (int argc, const char * argv[1])
 		}
 	}
 	cout << "edges in min spanning tree = " << count << endl;
-	cout << "Making Tour" << endl;
+	// cout << "Making Tour" << endl;
 	fileIO.makeNaiveTour(0);
 	fileIO.calculateFinalTourDistance();
 
@@ -52,9 +52,9 @@ int main (int argc, const char * argv[1])
 
 	cout << "final tour size = " << finalTour->size() << endl;
 
-	for(int i = 0; i < finalTour->size(); ++i){
-		cout << finalTour->at(i)->vertexName << "\t";
-	}
+	// for(int i = 0; i < finalTour->size(); ++i){
+	// 	cout << finalTour->at(i)->vertexName << "\t";
+	// }
 	cout << endl;
 
 	fileIO.writeTourFile(argv[1]);
