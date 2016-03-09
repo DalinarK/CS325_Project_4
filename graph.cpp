@@ -260,7 +260,11 @@ void graph::writeTourFile(string fileName)
  *the minimum spanning tree.
  **********************************************************************/
 vertexStruct* graph::getVertex(int index){
-	return vertexGraph.at(index);
+	if(index >= 0 && index < vertexGraph.size()){
+		return vertexGraph.at(index);
+	}else{
+		return NULL;
+	}
 }
 
 /**********************************************************************
@@ -272,7 +276,7 @@ vertexStruct* graph::getVertex(int index){
 std::map<vertexStruct*,vector<vertexStruct*>> graph::getMinSpanningTree(vertexStruct *start)
 {
 	std::priority_queue<vertexStruct*, vector<vertexStruct*>> pq;
-
+	cout << "Size of Vertex graph = " << vertexGraph.size() << endl;
 	int unmarkedVertices = vertexGraph.size();
 	std::map<vertexStruct*,vector<vertexStruct*>> minSpanTree;
 
@@ -339,7 +343,7 @@ std::map<vertexStruct*,vector<vertexStruct*>> graph::getMinSpanningTree(vertexSt
 			pq.pop();
 		}
 	}
-
+	
 	return minSpanTree;
 }
 
@@ -410,3 +414,29 @@ void graph::makeNaiveTour(int startVertex){
 	}
 }
 
+
+/*********************************************************************************
+**Method will calculate the distance traversed in the tour
+*********************************************************************************/
+int graph::getTourDistance(){
+
+	int distance = 0;
+	int yDiff, xDiff;
+
+	for(int i = 0; i < finalTour.size() - 1; ++ i){
+		xDiff = finalTour[i]->xCoord - finalTour[i + 1]->xCoord;
+		
+		yDiff = finalTour[i]->yCoord - finalTour[i + 1]->yCoord;
+		
+		distance += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+	}
+
+	//now add the distance from last edge back to the start
+	xDiff = finalTour[finalTour.size() - 1]->xCoord - finalTour[0]->xCoord;
+		
+	yDiff = finalTour[finalTour.size() - 1]->yCoord - finalTour[0]->yCoord;
+		
+	distance += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+
+	return distance;
+}

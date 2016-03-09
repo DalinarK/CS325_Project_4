@@ -68,12 +68,20 @@ public:
 
 	void sortDistances();
 
+	//returns a min spanning tree using Prims alogrithm E log(V) runtime
 	std::map<vertexStruct*,vector<vertexStruct*>> getMinSpanningTree(vertexStruct *start);
+	
+	//return a vertex at the index
 	vertexStruct* getVertex(int index);
 
+	//generate a tour of the graph using preorder travesal of the minspanning tree
 	void makeNaiveTour(int startVertex);
-	vector <vertexStruct*>* getTour();	
 	
+	//returns a pointer to the final tour
+	vector <vertexStruct*>* getTour();	
+
+	//calculate tour distance
+	int getTourDistance();
 };
 
 

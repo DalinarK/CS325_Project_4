@@ -27,15 +27,27 @@ int main (int argc, const char * argv[1])
 	
 	fileIO.createGraph(argv[1]);
 	fileIO.calculateDistances();   
-	fileIO.sortDistances();
+	//fileIO.sortDistances();
 
 	std::map<vertexStruct*,vector<vertexStruct*>> minSpanningTree = fileIO.getMinSpanningTree(fileIO.getVertex(0));
 
 	// cout << "Min Spanning tree order: " << endl;
 
 	int count = 0;
+	int i = 0;
 	//How to iterate through a map with key vector
 	//http://www.cplusplus.com/forum/beginner/161248/
+<<<<<<< HEAD
+	for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
+		cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
+		i = 0;
+		for( auto vec_iter = map_iter->second.cbegin() ; vec_iter != map_iter->second.cend() ; ++vec_iter ){
+			cout << "edge_" << count << " = " << vec_iter[i]->vertexName << ", ";
+			++count;
+		}
+	}
+	cout << endl;
+=======
 	for(auto map_iter = minSpanningTree.cbegin(); map_iter != minSpanningTree.cend(); ++map_iter){
 		// cout << "Edge list for " << map_iter->first->vertexName << endl;
 		for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
@@ -43,6 +55,7 @@ int main (int argc, const char * argv[1])
 			++count;
 		}
 	}
+>>>>>>> refs/remotes/origin/master
 	cout << "edges in min spanning tree = " << count << endl;
 	cout << "Making Tour" << endl;
 	fileIO.makeNaiveTour(0);
@@ -57,7 +70,11 @@ int main (int argc, const char * argv[1])
 	}
 	cout << endl;
 
+<<<<<<< HEAD
+	cout << "Tour distance = " << fileIO.getTourDistance() << endl;
+=======
 	fileIO.writeTourFile(argv[1]);
 
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }

@@ -18,7 +18,11 @@ struct vertexStruct{
 	int xCoord;
 	int yCoord;
 	bool visted;
-	int primComp;
+	//used to store the nearest vertex distance found so far in the
+	//get minSpanningTree algorithm
+	int primComp; 
+	//used to store the nearest vertex pointer found so far in the
+	//get minSpanningTree algorithm
 	vertexStruct *parent;
 	vector <neighbors *> neighborDistance;
 
