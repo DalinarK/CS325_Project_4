@@ -109,7 +109,7 @@ void graph::calculateDistances()
 				// cout << "xDiff is " << xDiff << endl;
 				yDiff = vertexGraph[g]->yCoord - vertexGraph[i]->yCoord;
 				// cout<< "yDiff is " << yDiff << endl;
-				distance = round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+				distance = (sqrt(pow(xDiff,2) + pow(yDiff,2)));
 				// printf("Distance is %d \n", distance);
 				if (distance != 0)
 				{
@@ -124,7 +124,7 @@ void graph::calculateDistances()
 		}
 	} 
 
-	// int graphElement = 2;
+	// int graphElement = 15100;
 	// cout << "coord for: " << vertexGraph[graphElement]->vertexName << " " << vertexGraph[graphElement]->xCoord << ", " << vertexGraph[graphElement]->yCoord << endl;
 	// for (int i = 0; i < vertexGraph[graphElement]->neighborDistance.size(); i++)
 	// {
@@ -136,14 +136,14 @@ void graph::calculateDistances()
 
 
 //will round to the nearest integer
-int graph::round(double d)
-{
-	if(d > 0){
-		return (int)floor(d + 0.5);
-	}else{
-		return (int)ceil(d - 0.5);
-	}
-}
+// int graph::round(double d)
+// {
+// 	if(d > 0){
+// 		return (int)floor(d + 0.5);
+// 	}else{
+// 		return (int)ceil(d - 0.5);
+// 	}
+// }
 
 int graph::getSize()
 {
@@ -194,16 +194,37 @@ int graph::createmstEdgeList(std::map<vertexStruct*,vector<vertexStruct*>> minSp
 // Calculates the distance between two vertexes
 void graph::calculateFinalTourDistance()
 {
-	int yDiff;
-	int xDiff;
+	long int yDiff;
+	long int xDiff;
 	//calculate the distances between vertexes
+	long int xSquared;
+	long int ySquared;
+	long int addedTogether;
+	long int squareRootofSum;
+
+	ofstream myfile;
+	myfile.open("test.txt");
+
+
+	cout << "final tour" << finalTour[0]->yCoord << endl;
+
 	for (int i = 1; i < finalTour.size(); i++)
 	{
-		xDiff = finalTour[i-1]->xCoord - finalTour[i]->xCoord;
-		// cout << "xDiff is " << xDiff << endl;
-		yDiff = finalTour[i-1]->yCoord - finalTour[i]->yCoord;
-		// cout<< "yDiff is " << yDiff << endl;
-		totalDistanceTraveled += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+		xDiff = finalTour[i]->xCoord - finalTour[i-1]->xCoord;
+		myfile << "xDiff is " << xDiff << " X1: " << finalTour[i]->vertexName << " X2: " << finalTour[i-1]->vertexName << " " << finalTour[i]->xCoord << " - " <<  finalTour[i-1]->xCoord << endl;
+		yDiff = finalTour[i]->yCoord - finalTour[i-1]->yCoord;
+		myfile << "yDiff is " << yDiff << "Y1: " << finalTour[i]->vertexName << " Y2: " << finalTour[i-1]->vertexName << " " << finalTour[i]->yCoord << " - " <<  finalTour[i-1]->yCoord << endl;
+		
+		xSquared = xDiff * xDiff;
+		myfile << "xSquared " << xSquared << " \n";
+		ySquared = yDiff * yDiff;
+		myfile << "ySquared " << ySquared  << " \n";
+		addedTogether = ySquared + xSquared;
+		myfile << "addedTogether " << addedTogether  << " \n";
+		squareRootofSum = sqrt(addedTogether);
+		myfile << "squareRootofSum " << squareRootofSum  << " \n";
+		totalDistanceTraveled = totalDistanceTraveled + squareRootofSum;
+		myfile << totalDistanceTraveled << " \n";
 	}
 
 	int sizeofVector = finalTour.size() -1;
@@ -211,9 +232,11 @@ void graph::calculateFinalTourDistance()
 	xDiff = finalTour[0]->xCoord - finalTour[sizeofVector]->xCoord;
 	yDiff = finalTour[0]->yCoord - finalTour[sizeofVector]->yCoord;
 	
-		totalDistanceTraveled += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
 
-	cout << "total distance toured is " << totalDistanceTraveled << endl;	
+		totalDistanceTraveled += (sqrt(pow(xDiff,2) + pow(yDiff,2)));
+
+	cout << "end final tour" << finalTour[0]->yCoord << endl;	
+	cout << "Dustin's total distance toured is " << totalDistanceTraveled << endl;	
 }
 
 // Saves the final tour to file
@@ -255,6 +278,9 @@ vertexStruct* graph::getVertex(int index){
  **********************************************************************/
 std::map<vertexStruct*,vector<vertexStruct*>> graph::getMinSpanningTree(vertexStruct *start)
 {
+
+	cout << " Y " << start->yCoord << " ";
+
 	std::priority_queue<vertexStruct*, vector<vertexStruct*>> pq;
 	cout << "Size of Vertex graph = " << vertexGraph.size() << endl;
 	int unmarkedVertices = vertexGraph.size();
@@ -323,6 +349,8 @@ std::map<vertexStruct*,vector<vertexStruct*>> graph::getMinSpanningTree(vertexSt
 			pq.pop();
 		}
 	}
+
+	cout << " Y After " << start->yCoord << endl;
 	
 	return minSpanTree;
 }
@@ -344,8 +372,10 @@ void graph::makeNaiveTour(int startVertex){
 	//make sure vertex graph is empty
 	vertexGraph.empty();	
 
-	vertexStruct *temp, *cur;
-	temp = cur = getVertex(startVertex);
+	vertexStruct *temp, *cur, *start;
+	temp = cur =  start = getVertex(startVertex);
+
+	cout << " temp Y " << start->yCoord << " ";
 
 	//start at one to include the start vertex as umarked
 	int unmarkedVertices = 1;
@@ -392,6 +422,8 @@ void graph::makeNaiveTour(int startVertex){
 			}
 		}
 	}
+
+	cout << " End temp Y " << start->yCoord << " ";
 }
 
 
@@ -400,8 +432,8 @@ void graph::makeNaiveTour(int startVertex){
 *********************************************************************************/
 int graph::getTourDistance(){
 
-	int distance = 0;
-	int yDiff, xDiff;
+	long int distance = 0;
+	long int yDiff, xDiff;
 
 	for(int i = 0; i < finalTour.size() - 1; ++ i){
 		xDiff = finalTour[i]->xCoord - finalTour[i + 1]->xCoord;
@@ -416,7 +448,7 @@ int graph::getTourDistance(){
 		
 	yDiff = finalTour[finalTour.size() - 1]->yCoord - finalTour[0]->yCoord;
 		
-	distance += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+	distance += (sqrt(pow(xDiff,2) + pow(yDiff,2)));
 
 	return distance;
 }

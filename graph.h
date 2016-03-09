@@ -40,7 +40,7 @@ class graph
 private:
 	vector <vertexStruct*> vertexGraph;
 	vector <vertexStruct*> finalTour;
-	int totalDistanceTraveled;	
+	long int totalDistanceTraveled;	
 
 public:
 	void test();
@@ -57,7 +57,7 @@ public:
 	int getSize();
 
 	//added rounding method in standard C++ library.
-	int round(double d);
+	// int round(double d);
 
 	void writeTourFile(string fileName);
 	void calculateFinalTourDistance();

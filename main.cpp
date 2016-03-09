@@ -29,14 +29,14 @@ int main (int argc, const char * argv[1])
 	fileIO.calculateDistances();   
 	//fileIO.sortDistances();
 
-	std::map<vertexStruct*,vector<vertexStruct*>> minSpanningTree = fileIO.getMinSpanningTree(fileIO.getVertex(0));
+	// std::map<vertexStruct*,vector<vertexStruct*>> minSpanningTree = fileIO.getMinSpanningTree(fileIO.getVertex(0));
 
 	// cout << "Min Spanning tree order: " << endl;
 
 	int count = 0;
 	int i = 0;
 
-	count = fileIO.createmstEdgeList(minSpanningTree);
+	// count = fileIO.createmstEdgeList(minSpanningTree);
 	cout << endl;
 /*
 	for(auto map_iter = minSpanningTree.cbegin(); map_iter != minSpanningTree.cend(); ++map_iter){
@@ -47,9 +47,9 @@ int main (int argc, const char * argv[1])
 		}
 	}
 	*/
-	cout << "edges in min spanning tree = " << count << endl;
+	// cout << "edges in min spanning tree = " << count << endl;
 	// cout << "Making Tour" << endl;
-	fileIO.makeNaiveTour(0);
+	fileIO.makeNaiveTour(11000);
 	fileIO.calculateFinalTourDistance();
 
 	vector <vertexStruct*>* finalTour = fileIO.getTour();
