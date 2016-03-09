@@ -63,13 +63,21 @@ void graph::createGraph(string inputFile)
     		int sConverted;
     		if (!getline( ss, s, ' ' )) 
     			break;	
-    		cout << "'" << s << "' ";
+    		// cout << "'" << s << "' ";
     		s = trim(s);
-    		cout << "'" << s << "' " << endl;
-			istringstream fStream(s);			
-    		fStream >> sConverted;
-    		temporaryStore.push_back(sConverted);
+    		cout << "'" << s << "' ";
+    		cout << " length: " << s.length();
+    		if (s.length() > 0)
+    		{
+				istringstream fStream(s);			
+    			fStream >> sConverted;
+				temporaryStore.push_back(sConverted);
+    		}
+
+
+    		
     	}
+    	cout << endl;
     	newStruct->vertexName = temporaryStore[0];
     	newStruct->xCoord = temporaryStore[1];
     	newStruct->yCoord = temporaryStore[2];	
