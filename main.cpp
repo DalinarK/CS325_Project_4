@@ -39,7 +39,7 @@ int main (int argc, const char * argv[1])
 	// // //http://www.cplusplus.com/forum/beginner/161248/
 
 	// for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
-	// 	cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
+	// 	cout << "\nEdge list for: " << map_iter->first->vertexName <z< endl;
 	// 	i = 0;
 	// 	for( auto vec_iter = map_iter->second.cbegin() ; vec_iter != map_iter->second.cend() ; ++vec_iter ){
 	// // 		// cout << "edge_" << count << " = " << vec_iter[vec_iter]->vertexName << ", ";

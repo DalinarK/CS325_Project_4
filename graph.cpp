@@ -233,7 +233,7 @@ void graph::createEdgelist()
 	// add the neighbors
 	for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
 		for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
-			// Add only the neighbors in the MST
+			// Add only the neighbors in the MST.
 			int distance;
 			neighborPTR = new neighbors;
 			neighborPTR->neighborName =  map_iter->second[i]->vertexName;
