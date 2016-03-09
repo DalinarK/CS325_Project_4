@@ -4,6 +4,7 @@
 graph::graph()
 {
 	vector <vertexStruct*> vertexGraph;
+	vector <vertexStruct*> MST;
 	totalDistanceTraveled = 0;
 }
 
@@ -149,9 +150,9 @@ int graph::getSize()
 // Sorts the neighbor by using stl
 void graph::sortDistances()
 {
-	int g = 1;
+	// int g = 1;
 
-	for (int g = 0; g < vertexGraph.size(); g++)
+	for (unsigned int g = 0; g < vertexGraph.size(); g++)
 	{
 		cout << "Vertex:" << vertexGraph[g]->vertexName << " is now sorted" << endl;
 		sort(vertexGraph[g]->neighborDistance.begin(), vertexGraph[g]->neighborDistance.end(), sortByDistance);
@@ -173,7 +174,7 @@ void graph::calculateFinalTourDistance()
 	long int  yDiff;
 	long int  xDiff;
 	//calculate the distances between vertexes
-	for (int i = 1; i < finalTour.size(); i++)
+	for (unsigned int i = 1; i < finalTour.size(); i++)
 	{
 		xDiff = finalTour[i-1]->xCoord - finalTour[i]->xCoord;
 		// cout << "xDiff is " << xDiff << endl;
@@ -204,19 +205,72 @@ void graph::writeTourFile(string fileName)
 	ofstream myfile;
 	myfile.open(outputfileName);
 	myfile << totalDistanceTraveled << "\n";
-	for(int i = 0; i < finalTour.size(); ++i){
+	for(unsigned int i = 0; i < finalTour.size(); ++i){
 		myfile << finalTour.at(i)->vertexName << "\n";
 	}
 
 }
 
+void graph::createEdgelist()
+{
+	vertexStruct *vertexStructPTR;
+	neighbors *neighborPTR, *neighborNeighborPTR;
+
+
+	std::map<vertexStruct*,vector<vertexStruct*>> minSpanningTree = getMinSpanningTree(getVertex(0));
+
+	// create the vector representing the MST. Neighbors are not added yet
+	for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
+		cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
+		// Create a vertex
+		vertexStructPTR = new vertexStruct;
+		vertexStructPTR->vertexName = map_iter->first->vertexName;
+		vertexStructPTR->xCoord = map_iter->first->xCoord;
+		vertexStructPTR->yCoord = map_iter->first->yCoord;
+		MST.push_back(vertexStructPTR);
+	}
+
+	// add the neighbors
+	for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
+		for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
+			// Add only the neighbors in the MST
+			int distance;
+			neighborPTR = new neighbors;
+			neighborPTR->neighborName =  map_iter->second[i]->vertexName;
+			distance = distBetweenTwoVertexes (map_iter->second[i], map_iter->first);
+			neighborPTR->distance = distance;
+			neighborPTR->neighborAddress = map_iter->second[i];
+			cout << "edge " << i << " = " << map_iter->second[i]->vertexName <<endl;
+			map_iter->first->neighborDistance.push_back(neighborPTR);
+			// Go to the neighbors and add the current as their vertex to them as well.
+			neighborPTR = new neighbors;
+			vertexStructPTR = map_iter->second[i];
+			neighborPTR->neighborName = map_iter->first->vertexName;
+			neighborPTR->distance = distance;
+			neighborPTR->neighborAddress =  map_iter->first;
+			vertexStructPTR->neighborDistance.push_back(neighborPTR);
+		}
+	}
+}
+
+int graph::distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second)
+{
+	
+	long int xDiff = first->xCoord - second->xCoord;
+	// cout << "xDiff is " << xDiff << endl;
+	long int yDiff = first->yCoord - second->yCoord;
+	// cout<< "yDiff is " << yDiff << endl;
+	long int distance = (int) round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+	cout << "distance: " << distance << endl;
+	return distance;
+}
 
 /**********************************************************************
  *Method will calculate and return a list of vertices representing
  *the minimum spanning tree.
  **********************************************************************/
 vertexStruct* graph::getVertex(int index){
-	if(index >= 0 && index < vertexGraph.size()){
+	if(index >= 0 && index < (int) vertexGraph.size()){
 		return vertexGraph.at(index);
 	}else{
 		return NULL;
@@ -250,7 +304,7 @@ std::map<vertexStruct*,vector<vertexStruct*>> graph::getMinSpanningTree(vertexSt
 	//set visted to false for all vertices
 	//set primComp to the distance from the start vertex
 	//add start neighbours to the priority queue
-	for(int i = 0; i < start->neighborDistance.size(); ++i){
+	for(unsigned int i = 0; i < start->neighborDistance.size(); ++i){
 		temp = start->neighborDistance.at(i)->neighborAddress;			
 		temp->visted = false;
 		temp->primComp = start->neighborDistance.at(i)->distance;
@@ -285,7 +339,7 @@ std::map<vertexStruct*,vector<vertexStruct*>> graph::getMinSpanningTree(vertexSt
 			//need to look at curs neighbours and update the priority queue
 			//if distance from temp to neighbour is smaller than current primComp then found a closer neighbour
 			//so update primComp and parent and then push onto priority queue
-			for(int i = 0; i < cur->neighborDistance.size(); ++i){
+			for(unsigned int i = 0; i < cur->neighborDistance.size(); ++i){
 				temp = cur->neighborDistance.at(i)->neighborAddress;
 				if(!temp->visted){					
 					if(cur->neighborDistance.at(i)->distance < temp->primComp){
@@ -332,7 +386,7 @@ void graph::makeNaiveTour(int startVertex){
 	vector<vertexStruct*> vertexStack;
 
 	//mark all vertices unvisited
-	for(int i = 0; i < cur->neighborDistance.size(); ++i){
+	for(unsigned int i = 0; i < cur->neighborDistance.size(); ++i){
 		temp = cur->neighborDistance.at(i)->neighborAddress;			
 		temp->visted = false;
 		++unmarkedVertices;
@@ -343,7 +397,7 @@ void graph::makeNaiveTour(int startVertex){
 	finalTour.push_back(cur);
 	cur->visted = true;
 	--unmarkedVertices;
-	for(int i = 0; i < minSpanningTree[cur].size(); ++i){
+	for(unsigned int i = 0; i < minSpanningTree[cur].size(); ++i){
 		vertexStack.push_back(minSpanningTree[cur].at(i));
 	}
 
@@ -361,7 +415,7 @@ void graph::makeNaiveTour(int startVertex){
 			--unmarkedVertices;
 
 			//now push all temps unmarked vertice onto stack
-			for(int i = 0; i < minSpanningTree[temp].size(); ++i){
+			for(unsigned int i = 0; i < minSpanningTree[temp].size(); ++i){
 				if(!minSpanningTree[temp].at(i)->visted){
 					vertexStack.push_back(minSpanningTree[temp].at(i));
 				}
@@ -379,7 +433,7 @@ int graph::getTourDistance(){
 	int distance = 0;
 	int yDiff, xDiff;
 
-	for(int i = 0; i < finalTour.size() - 1; ++ i){
+	for(unsigned int i = 0; i < finalTour.size() - 1; ++ i){
 		xDiff = finalTour[i]->xCoord - finalTour[i + 1]->xCoord;
 		
 		yDiff = finalTour[i]->yCoord - finalTour[i + 1]->yCoord;

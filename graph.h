@@ -40,6 +40,9 @@ class graph
 private:
 	vector <vertexStruct*> vertexGraph;
 	vector <vertexStruct*> finalTour;
+
+	// this is an intermediate vector holding the created MST used for the christofides
+	vector <vertexStruct*> MST;
 	long int  totalDistanceTraveled;	
 
 public:
@@ -65,8 +68,14 @@ public:
 
 	void sortDistances();
 
+	//Calculates the distance between two vertices
+	int distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second);
+
 	//returns a min spanning tree using Prims alogrithm E log(V) runtime
 	std::map<vertexStruct*,vector<vertexStruct*>> getMinSpanningTree(vertexStruct *start);
+
+	// converts the minSpanning tree created by getMinSpanningTree into a vector <vectorStruct*>
+	void createEdgelist();
 	
 	//return a vertex at the index
 	vertexStruct* getVertex(int index);
