@@ -43,6 +43,9 @@ private:
 
 	// this is an intermediate vector holding the created MST used for the christofides
 	vector <vertexStruct*> MST;
+
+	// this is the subraph of that only contains vertices odd degree
+	vector <vertexStruct*> oddSubGraph;
 	long int  totalDistanceTraveled;	
 
 public:
@@ -62,7 +65,6 @@ public:
 	//added rounding method in standard C++ library.
 	int round(double d);
 
-
 	void writeTourFile(string fileName);
 	void calculateFinalTourDistance();
 
@@ -76,6 +78,12 @@ public:
 
 	// converts the minSpanning tree created by getMinSpanningTree into a vector <vectorStruct*>
 	void createEdgelist();
+
+	// Creates the subraph of that only contains vertices odd degree
+	void createOddDegreeSubGraph();
+
+	// Creates a minimum-weight perfect matching subgraph of OddSubGraph
+	void createMinMatching();
 	
 	//return a vertex at the index
 	vertexStruct* getVertex(int index);

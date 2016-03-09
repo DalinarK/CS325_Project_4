@@ -254,12 +254,11 @@ void graph::createEdgelist()
 			neighborneighborPTR->neighborAddress =  MST[g];
 			MST[neighborPTR->neighborName]->neighborDistance.push_back(neighborneighborPTR);
 			cout << "added reverse " << MST[g]->vertexName << " to " << neighborneighborPTR->neighborName << endl;
-			
 		}
 		g++;
 	}
 
-// Check to see if edges are all there
+	// Check to see if edges are all there
 	for(unsigned int i = 0; i < MST.size(); i++){
 		cout << "\nEdge list for: " << MST[i]->vertexName << endl;
 		for( unsigned int g = 0; g < MST[i]->neighborDistance.size(); g++ ){
@@ -267,6 +266,77 @@ void graph::createEdgelist()
 		}
 	}
 	cout << endl;
+}
+
+void graph::createOddDegreeSubGraph()
+{
+	vertexStruct *vertexStructPTR;
+	for (unsigned int i = 0; i < MST.size(); i++)
+	{
+		if (MST[i]->neighborDistance.size()%2 != 0)
+		{
+			vertexStructPTR = new vertexStruct;
+			cout << "Adding " << MST[i]->vertexName << " to OddDegreeSubGraph because it has " << MST[i]->neighborDistance.size() << " edges" << endl;
+			vertexStructPTR->vertexName = MST[i]->vertexName;
+			vertexStructPTR->xCoord = MST[i]->xCoord;
+			vertexStructPTR->yCoord = MST[i]->yCoord;
+			vertexStructPTR->visted = false;
+			oddSubGraph.push_back(vertexStructPTR);
+		}
+	}
+
+	long int xDiff;
+	long int  yDiff;
+	long int  distance;
+	neighbors *neighborPTR;
+
+
+	// Calculate the distances between all of the points
+	int graphSize = oddSubGraph.size();
+	// cout << "subgraph size is: " << graphSize << endl;
+	// For each vertex, this function will iterate through all the other vertexes
+	for (int g = 0; g < graphSize; g++)
+	{
+		// cout << "added vertex" << oddSubGraph[g]->vertexName << " x: " << oddSubGraph[g]->xCoord << " y: " << oddSubGraph[g]->yCoord << endl;
+
+		// cout << "vertex " << oddSubGraph[g]->vertexName << " has " << oddSubGraph[g]->neighborDistance.size() << " neighbors " << endl;
+		for (int i = 0; i < graphSize; i++)
+		{
+			neighborPTR = new neighbors;
+			// Prevents the calculation of the vertexes distance from itself - which would be 0
+
+				xDiff = oddSubGraph[g]->xCoord - oddSubGraph[i]->xCoord;
+				// cout << "xDiff is " << xDiff << " " <<oddSubGraph[g]->xCoord  << " - " << oddSubGraph[i]->xCoord << endl;
+				yDiff = oddSubGraph[g]->yCoord - oddSubGraph[i]->yCoord;
+				// cout<< "yDiff is " << yDiff << endl;
+				distance = (int) round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+				// cout << "Distance is " << distance << endl;
+				if (distance != 0)
+				{
+					neighborPTR->neighborName = oddSubGraph[i]->vertexName;
+					neighborPTR->distance = distance;
+					neighborPTR->neighborAddress = oddSubGraph[i];
+					// cout << "neighbor name is " << neighborPTR->neighborAddress->vertexName << endl;
+					oddSubGraph[g]->neighborDistance.push_back(neighborPTR);
+					// cout << "distance from " << oddSubGraph[g]->vertexName << " to " << oddSubGraph[g]->neighborDistance.back()->neighborName << ": " << oddSubGraph[g]->neighborDistance.back()->distance << endl;		
+				}
+				
+		}
+	} 
+
+	// int graphElement = 2;
+	// // cout << "coord for: " << vertexGraph[graphElement]->vertexName << " " << vertexGraph[graphElement]->xCoord << ", " << vertexGraph[graphElement]->yCoord << endl;
+	// for (unsigned int i = 0; i < oddSubGraph[graphElement]->neighborDistance.size(); i++)
+	// {
+	// 	cout << "distance from " << oddSubGraph[graphElement]->vertexName << " to " << oddSubGraph[graphElement]->neighborDistance[i]->neighborName << ": " << oddSubGraph[graphElement]->neighborDistance[i]->distance << endl;		
+
+	// }
+}
+
+void graph::createMinMatching()
+{
+
+
 }
 
 int graph::distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second)

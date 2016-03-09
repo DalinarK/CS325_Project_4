@@ -40,15 +40,15 @@ int main (int argc, const char * argv[1])
 
 	// for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
 	// 	cout << "\nEdge list for: " << map_iter->first->vertexName <z< endl;
-	// 	i = 0;
 		// for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
 		// 	// cout << "edge " << i << " = " << map_iter->second[i]->vertexName <<endl;
-		// 	++count;
 		// }
 	// }
 	// cout << endl;
 
 	fileIO.createEdgelist();
+	fileIO.createOddDegreeSubGraph();
+	fileIO.createMinMatching();
 
 	// cout << "edges in min spanning tree = " << count << endl;
 	// cout << "Making Tour" << endl;
