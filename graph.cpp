@@ -96,13 +96,13 @@ void graph::calculateDistances()
 		}
 	} 
 
-	// int graphElement = 40;
+	int graphElement = 2;
 	// cout << "coord for: " << vertexGraph[graphElement]->vertexName << " " << vertexGraph[graphElement]->xCoord << ", " << vertexGraph[graphElement]->yCoord << endl;
-	// for (int i = 0; i < vertexGraph[graphElement]->neighborDistance.size(); i++)
-	// {
-	// 	cout << "distance from " << vertexGraph[graphElement]->vertexName << " to " << vertexGraph[graphElement]->neighborDistance[i]->neighborName << ": " << vertexGraph[graphElement]->neighborDistance[i]->distance << endl;		
+	for (int i = 0; i < vertexGraph[graphElement]->neighborDistance.size(); i++)
+	{
+		cout << "distance from " << vertexGraph[graphElement]->vertexName << " to " << vertexGraph[graphElement]->neighborDistance[i]->neighborName << ": " << vertexGraph[graphElement]->neighborDistance[i]->distance << endl;		
 
-	// }
+	}
 
 }
 
@@ -126,16 +126,16 @@ int graph::getSize()
 // Sorts the neighbor by using stl
 void graph::sortDistances()
 {
-	int g = 0;
+	int g = 1;
 
 	for (int g = 0; g < vertexGraph.size(); g++)
 	{
 		cout << "Vertex:" << vertexGraph[g]->vertexName << " is now sorted" << endl;
 		sort(vertexGraph[g]->neighborDistance.begin(), vertexGraph[g]->neighborDistance.end(), sortByDistance);
 		
-		//for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++){
-		//	cout << "Neighbor name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " distance: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
-		//}	
+		// for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++){
+		// 	cout << "Neighbor name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " distance: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+		// }	
 	}
 }
 
