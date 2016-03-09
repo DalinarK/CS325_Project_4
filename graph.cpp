@@ -65,8 +65,8 @@ void graph::createGraph(string inputFile)
     			break;	
     		// cout << "'" << s << "' ";
     		s = trim(s);
-    		cout << "'" << s << "' ";
-    		cout << " length: " << s.length();
+    		// cout << "'" << s << "' ";
+    		// cout << " length: " << s.length();
     		if (s.length() > 0)
     		{
 				istringstream fStream(s);			
@@ -77,7 +77,6 @@ void graph::createGraph(string inputFile)
 
     		
     	}
-    	cout << endl;
     	newStruct->vertexName = temporaryStore[0];
     	newStruct->xCoord = temporaryStore[1];
     	newStruct->yCoord = temporaryStore[2];	
@@ -90,13 +89,13 @@ void graph::createGraph(string inputFile)
 //calculates the distances from each vertex to all its neighbors *NOT INCLUDING ITSELF*
 void graph::calculateDistances()
 {
-	int xDiff;
-	int yDiff;
-	int distance;
+	long int xDiff;
+	long int  yDiff;
+	long int  distance;
 	neighbors *neighborPTR;
 
 	int graphSize = vertexGraph.size();
-	cout << "graph size is" << graphSize << endl;
+	cout << "graph size is: " << graphSize << endl;
 	// For each vertex, this function will iterate through all the other vertexes
 	for (int g = 0; g < graphSize; g++)
 	{
@@ -109,7 +108,7 @@ void graph::calculateDistances()
 				// cout << "xDiff is " << xDiff << endl;
 				yDiff = vertexGraph[g]->yCoord - vertexGraph[i]->yCoord;
 				// cout<< "yDiff is " << yDiff << endl;
-				distance = round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+				distance = (int) round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
 				// printf("Distance is %d \n", distance);
 				if (distance != 0)
 				{
@@ -124,13 +123,13 @@ void graph::calculateDistances()
 		}
 	} 
 
-	int graphElement = 2;
-	// cout << "coord for: " << vertexGraph[graphElement]->vertexName << " " << vertexGraph[graphElement]->xCoord << ", " << vertexGraph[graphElement]->yCoord << endl;
-	for (int i = 0; i < vertexGraph[graphElement]->neighborDistance.size(); i++)
-	{
-		cout << "distance from " << vertexGraph[graphElement]->vertexName << " to " << vertexGraph[graphElement]->neighborDistance[i]->neighborName << ": " << vertexGraph[graphElement]->neighborDistance[i]->distance << endl;		
+	// int graphElement = 2;
+	// // cout << "coord for: " << vertexGraph[graphElement]->vertexName << " " << vertexGraph[graphElement]->xCoord << ", " << vertexGraph[graphElement]->yCoord << endl;
+	// for (int i = 0; i < vertexGraph[graphElement]->neighborDistance.size(); i++)
+	// {
+	// 	cout << "distance from " << vertexGraph[graphElement]->vertexName << " to " << vertexGraph[graphElement]->neighborDistance[i]->neighborName << ": " << vertexGraph[graphElement]->neighborDistance[i]->distance << endl;		
 
-	}
+	// }
 
 }
 
@@ -138,11 +137,7 @@ void graph::calculateDistances()
 //will round to the nearest integer
 int graph::round(double d)
 {
-	if(d > 0){
-		return (int)floor(d + 0.5);
-	}else{
-		return (int)ceil(d - 0.5);
-	}
+	return d + .5;
 }
 
 int graph::getSize()
@@ -167,87 +162,6 @@ void graph::sortDistances()
 	}
 }
 
-
-// Sorts the neighbors by distance
-void graph::mergeSortDistances()
-{
-	cout << "sorted distance: " << endl;
-
-	// cout << "coord for: " << vertexGraph[g]->vertexName << " " << vertexGraph[g]->xCoord << ", " << vertexGraph[g]->yCoord << endl;
-	// for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
-	// {
-	// 	cout << "distance from " << vertexGraph[g]->vertexName << " to " << vertexGraph[g]->neighborDistance[i]->neighborName << ": " << vertexGraph[g]->neighborDistance[i]->distance << endl;		
-
-	// }
-
-	// for every vertex, sort the neighbors list by distance
-	for (int g = 0; g < vertexGraph.size(); g++)
-	{
-		int end = vertexGraph[g]->neighborDistance.size() -1;
-		mergesort(vertexGraph[g]->neighborDistance, 0, end);
-	}
-
-	int g = 0;
-	// for (int g = 0; g < vertexGraph.size(); g++)
-	// {
-	// 	cout << "base vertex" << vertexGraph[g]->vertexName << endl;
-		for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++)
-		{
-			cout << "name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " value: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
-		}
-	// }
-
-}
-// got from https://www.hackerrank.com/ by searching for "mergesort c++"
-void graph::mergesort(vector <neighbors *>& neighborvector, int start, int end)
-{
-	int mid = 0;
-	if(start < end)
-	{
-		mid = (start + end)/2;
-		mergesort(neighborvector, start, mid);
-		mergesort(neighborvector, mid+1, end);
-		merge(neighborvector, start, mid, end);
-	}
-
-}
-
-void graph::merge(vector <neighbors *>& neighborvector, int start, int mid, int end) 
-{
-        vector <neighbors *> tempVector;
-        tempVector.resize(vertexGraph[0]->neighborDistance.size());
-
-        int l=start;
-        int r=end;
-        int m=mid+1;
-        int k=l;
-
-        while(l<=mid && m<=r)
-        {
-            if(neighborvector[l]->distance <= neighborvector[m]->distance)
-            {
-                tempVector[k++] = neighborvector[l++];
-            }
-            else
-            {
-                tempVector[k++] = neighborvector[m++];    
-            }  
-        }
-
-       	while(l<=mid){
-       		 tempVector[k++]=neighborvector[l++];
-       	}        
-        while(m<=r){
-            tempVector[k++]=neighborvector[m++];         
-        }
-
-        for(int i1=start;i1<=end;i1++){
-            neighborvector[i1]=tempVector[i1];
-            // cout << neighborvector[i1]->distance << " ";
-        }
-    
-}
-
 void graph::test()
 {
 	cout << "test" << endl;
@@ -256,8 +170,8 @@ void graph::test()
 // Calculates the distance between two vertexes
 void graph::calculateFinalTourDistance()
 {
-	int yDiff;
-	int xDiff;
+	long int  yDiff;
+	long int  xDiff;
 	//calculate the distances between vertexes
 	for (int i = 1; i < finalTour.size(); i++)
 	{
@@ -273,7 +187,7 @@ void graph::calculateFinalTourDistance()
 	xDiff = finalTour[0]->xCoord - finalTour[sizeofVector]->xCoord;
 	yDiff = finalTour[0]->yCoord - finalTour[sizeofVector]->yCoord;
 	
-		totalDistanceTraveled += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+		totalDistanceTraveled += (int) round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
 
 	cout << "total distance toured is " << totalDistanceTraveled << endl;	
 }

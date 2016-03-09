@@ -40,7 +40,7 @@ class graph
 private:
 	vector <vertexStruct*> vertexGraph;
 	vector <vertexStruct*> finalTour;
-	int totalDistanceTraveled;	
+	long int  totalDistanceTraveled;	
 
 public:
 	void test();
