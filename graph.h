@@ -26,6 +26,7 @@ using std::endl;
 using std::ifstream;
 using std::getline;
 using std::istringstream;
+using std::ofstream;
 
 enum phase {scan, execute};
 enum status {dead, alive};
@@ -35,7 +36,8 @@ class graph
 {
 private:
 	vector <vertexStruct*> vertexGraph;
-	vector <vertexStruct*> finalTour;	
+	vector <vertexStruct*> finalTour;
+	int totalDistanceTraveled;	
 
 public:
 	void test();
@@ -60,6 +62,9 @@ public:
 	// uses custom implementation of mergesort to order the distances between a vertex and all it's neighbors
 	void mergesort(vector <neighbors *>& neighborvector, int start, int end);
 	void merge(vector <neighbors *>& neighborvector, int start, int mid, int end);
+
+	void writeTourFile(string fileName);
+	void calculateFinalTourDistance();
 
 	void sortDistances();
 

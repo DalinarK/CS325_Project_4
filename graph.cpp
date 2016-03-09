@@ -4,6 +4,7 @@
 graph::graph()
 {
 	vector <vertexStruct*> vertexGraph;
+	totalDistanceTraveled = 0;
 }
 
 // Returns true if lhs distance is < rhs distance.
@@ -221,6 +222,38 @@ void graph::test()
 	cout << "test" << endl;
 }
 
+// Calculates the distance between two vertexes
+void graph::calculateFinalTourDistance()
+{
+	for (int i = 1; i < finalTour.size(); i++)
+	{
+		int xDiff = finalTour[i-1]->xCoord - finalTour[i]->xCoord;
+		// cout << "xDiff is " << xDiff << endl;
+		int yDiff = finalTour[i-1]->yCoord - finalTour[i]->yCoord;
+		// cout<< "yDiff is " << yDiff << endl;
+		totalDistanceTraveled += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+	}
+	cout << "total distance toured is " << totalDistanceTraveled << endl;	
+}
+
+// Saves the final tour to file
+void graph::writeTourFile(string fileName)
+{
+	// creating the output file name
+	cout << "writing to file ";
+	string outputfileName = fileName.append(".tour");
+	cout << outputfileName << endl;
+
+	// http://www.cplusplus.com/doc/tutorial/files/
+	ofstream myfile;
+	myfile.open(outputfileName);
+	myfile << totalDistanceTraveled << "\n";
+	for(int i = 0; i < finalTour.size(); ++i){
+		myfile << finalTour.at(i)->vertexName << "\n";
+	}
+
+}
+
 
 /**********************************************************************
  *Method will calculate and return a list of vertices representing
@@ -377,7 +410,7 @@ void graph::makeNaiveTour(int startVertex){
 					vertexStack.push_back(minSpanningTree[temp].at(i));
 				}
 			}
-		}		
+		}
 	}
 }
 
