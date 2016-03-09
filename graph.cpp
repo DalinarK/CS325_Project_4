@@ -11,6 +11,23 @@ graph::graph()
 static bool sortByDistance(const neighbors *lhs, const neighbors *rhs)
 {return lhs->distance < rhs->distance; }
 
+// trim from start
+static inline std::string &ltrim(std::string &s) {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+        return s;
+}
+
+// trim from end
+static inline std::string &rtrim(std::string &s) {
+        s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+        return s;
+}
+
+// trim from both ends
+static inline std::string &trim(std::string &s) {
+        return ltrim(rtrim(s));
+}
+
 // This function takes in the name of a file to open and then reads the files and creates a graph out of the
 // coordinates in the file.
 void graph::createGraph(string inputFile)
@@ -45,7 +62,10 @@ void graph::createGraph(string inputFile)
     		string s;
     		int sConverted;
     		if (!getline( ss, s, ' ' )) 
-    			break;			
+    			break;	
+    		cout << "'" << s << "' ";
+    		s = trim(s);
+    		cout << "'" << s << "' " << endl;
 			istringstream fStream(s);			
     		fStream >> sConverted;
     		temporaryStore.push_back(sConverted);

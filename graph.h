@@ -15,6 +15,9 @@
 #include <limits>
 #include <map>
 #include <utility> 
+#include <functional> 
+#include <cctype>
+#include <locale>
 
 //#include "mergesort.h"
 #include "structs.h"
