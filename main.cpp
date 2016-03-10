@@ -50,7 +50,7 @@ int main (int argc, const char * argv[1])
 	fileIO.createOddDegreeSubGraph();
 	fileIO.createMinMatching();
 	fileIO.combineMSTandMinMatch();
-
+	fileIO.calculateEulerTour(0);
 	// cout << "edges in min spanning tree = " << count << endl;
 	// cout << "Making Tour" << endl;
 	fileIO.makeNaiveTour(0, "MST");

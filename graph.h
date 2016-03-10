@@ -50,7 +50,7 @@ private:
 	vector <vertexStruct*> minimumWeight;
 
 	// this is the combined subgraph and MST;
-	vector <vertexStruct*> combinedMSTandMinMatch;
+	vector <vertexStruct*> eulerTour;
 	long int  totalDistanceTraveled;	
 
 public:
@@ -93,6 +93,8 @@ public:
 	// Combines the min-weight perfect matching graph with the MST 
 	void combineMSTandMinMatch();
 	
+	// Calculates the euler tour
+	void calculateEulerTour(int startVertex);
 	//return a vertex at the index
 	vertexStruct* getVertex(int index);
 

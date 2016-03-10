@@ -429,8 +429,59 @@ void graph::combineMSTandMinMatch()
 			}
 		}
 	}
+
+	for (unsigned int i = 0; i < MST.size(); i++)
+	{
+		cout << "Vertex " << MST[i]->vertexName << endl;
+		for (unsigned int g = 0; g < MST[i]->neighborDistance.size(); g++)
+		{
+			cout << MST[i]->neighborDistance[g]->neighborName << endl;
+		}
+	}
 }
 
+void graph::calculateEulerTour(int startVertex)
+{
+	vertexStruct *vertexStructPTR;
+
+	cout << "CombinedGraph is size " << MST.size() << endl;
+	//create a tour and set visited to false
+	vertexStruct *vertexIter, *vertexNextIter;
+	vertexIter = MST[startVertex];
+
+	// Set visited to false
+	for (unsigned int i = 0; i < MST.size(); i++)
+	{
+		MST[i]->visted = false;
+	}
+
+	// used to keep track of the visited vertexes.
+	int vistedVertexes = 0;
+	// Add any vertex visted to the Euler tour. Remove the edges so that we can't reuse the same edges
+	while (vertexIter->neighborDistance.size() != 0)
+	{
+		cout << "Visited " << vertexIter->vertexName << " heading to " << vertexIter->neighborDistance.back()->neighborAddress->vertexName << endl;
+		vertexNextIter = vertexIter->neighborDistance.back()->neighborAddress;
+		vertexIter->visted = true;
+		eulerTour.push_back(vertexIter);
+		// remove the neighbor from each vertex so iterator can't use the same edge twice
+		cout << "removing " << vertexIter->neighborDistance.back()->neighborName << " and " << vertexIter->vertexName << endl;
+		vertexIter->neighborDistance.pop_back();
+		for (int i = 0; i < vertexNextIter->neighborDistance.size(); i++)
+		{
+			if (vertexNextIter->neighborDistance[i]->neighborName == vertexIter->vertexName)
+			{
+				cout << " removing " << vertexIter->vertexName << "make sure this matches " << vertexNextIter->neighborDistance[vertexNextIter->neighborDistance.begin()+i-1]->neighborName;
+				vertexNextIter->neighborDistance.erase(vertexNextIter->neighborDistance.begin()+i-1);
+			}
+		}
+		vertexNextIter->neighborDistance.pop_back();
+		vertexIter = vertexNextIter;
+	}
+
+
+
+}
 int graph::distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second)
 {
 	
