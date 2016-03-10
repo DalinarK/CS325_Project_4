@@ -44,8 +44,10 @@ private:
 	// this is an intermediate vector holding the created MST used for the christofides
 	vector <vertexStruct*> MST;
 
-	// this is the subraph of that only contains vertices odd degree
+	// this is the subgraph of that only contains vertices odd degree
 	vector <vertexStruct*> oddSubGraph;
+	//This is the subgraph of the minimum weight matching tree
+	vector <vertexStruct*> minimumWeight;
 	long int  totalDistanceTraveled;	
 
 public:

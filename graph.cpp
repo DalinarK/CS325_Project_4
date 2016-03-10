@@ -271,6 +271,8 @@ void graph::createEdgelist()
 void graph::createOddDegreeSubGraph()
 {
 	vertexStruct *vertexStructPTR;
+
+	
 	for (unsigned int i = 0; i < MST.size(); i++)
 	{
 		if (MST[i]->neighborDistance.size()%2 != 0)
@@ -322,6 +324,17 @@ void graph::createOddDegreeSubGraph()
 				}
 				
 		}
+	}
+
+	// Sort the distances between all the edges in the subgraph
+	for (unsigned int g = 0; g < oddSubGraph.size(); g++)
+	{
+		cout << "Vertex:" << oddSubGraph[g]->vertexName << " is now sorted" << endl;
+		sort(oddSubGraph[g]->neighborDistance.begin(), oddSubGraph[g]->neighborDistance.end(), sortByDistance);
+		
+		for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++){
+			cout << "Neighbor name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " distance: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+		}	
 	} 
 
 	// int graphElement = 2;
@@ -335,7 +348,67 @@ void graph::createOddDegreeSubGraph()
 
 void graph::createMinMatching()
 {
+	vertexStruct *vertexStructPTR;
+	neighbors *neighborPTR;
 
+	//go through the entire list of vectors
+	for (unsigned int i = 0; i < oddSubGraph.size(); i++)
+	{
+		// Find the first vertex that hasn't been visited yet
+		if (oddSubGraph[i]->visted != true)
+		{
+			oddSubGraph[i]->visted = true;
+
+			vertexStructPTR = new vertexStruct;
+			vertexStructPTR->vertexName = oddSubGraph[i]->vertexName;
+			vertexStructPTR->xCoord = oddSubGraph[i]->xCoord;
+			vertexStructPTR->yCoord = oddSubGraph[i]->yCoord;
+			minimumWeight.push_back(vertexStructPTR);
+			// Look through the rest of the vectors and find one that isn't visited yet. THe first one found
+			// should be the lowest weight available because everything is sorted
+			for (unsigned int g = 0; g < oddSubGraph[g]->neighborDistance.size(); g++)
+			{
+				if (oddSubGraph[i]->neighborDistance[g]->neighborAddress->visted != true)
+				{
+					oddSubGraph[i]->neighborDistance[g]->neighborAddress->visted = true;
+
+					// adding neighbors to the current vertex
+					cout << "edge " << minimumWeight.back()->vertexName << " = " << oddSubGraph[g]->neighborDistance[i]->neighborAddress->vertexName <<endl;
+
+					int distance;
+					neighborPTR = new neighbors;
+					neighborPTR->neighborName =  oddSubGraph[g]->neighborDistance[i]->neighborAddress->vertexName;
+					distance = distBetweenTwoVertexes (minimumWeight.back(), oddSubGraph[g]->neighborDistance[i]->neighborAddress);
+					neighborPTR->distance = distance;
+					neighborPTR->neighborAddress = oddSubGraph[g]->neighborDistance[i]->neighborAddress;
+					minimumWeight.back()->neighborDistance.push_back(neighborPTR);
+					cout << "added neighbor "  << neighborPTR->neighborName << " to " << minimumWeight.back()->vertexName <<  " with distance " << distance << endl;
+					
+
+					// Add the second vertex to the minimumWeight vector
+					// cout << "vertex " << minimumWeight.back()->vertexName << " joined with " << oddSubGraph[g]->neighborDistance[i]->neighborAddress->vertexName << endl;
+					vertexStructPTR = new vertexStruct;
+					vertexStructPTR->vertexName = oddSubGraph[g]->neighborDistance[i]->neighborAddress->vertexName;
+					vertexStructPTR->xCoord = oddSubGraph[g]->neighborDistance[i]->neighborAddress->xCoord;
+					vertexStructPTR->yCoord = oddSubGraph[g]->neighborDistance[i]->neighborAddress->yCoord;
+					cout << "pushing second vertex " << vertexStructPTR->vertexName << " onto minimumWeight " << endl;
+					minimumWeight.push_back(vertexStructPTR);
+
+					// add the first vertex as a neighbor to the second vertex
+					cout << "reverse: added neighbor " <<  minimumWeight[minimumWeight.size()-2]->vertexName << " to " << minimumWeight.back()->vertexName << endl;
+					neighborPTR = new neighbors;
+					neighborPTR->neighborName = minimumWeight[minimumWeight.size()-2]->vertexName;
+					neighborPTR->distance = distance;
+					neighborPTR->neighborAddress = minimumWeight[minimumWeight.size()-2];
+					minimumWeight.back()->neighborDistance.push_back(neighborPTR);
+					// cout << "added neighbor "  << neighborPTR->neighborName << " to " << MST[g]->vertexName <<  " with distance " << distance << endl;
+					break;
+				}
+
+				// compare to make sure the weight is the lowest
+			}
+		}
+	}
 
 }
 
