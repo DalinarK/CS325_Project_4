@@ -60,10 +60,10 @@ int main (int argc, const char * argv[1])
 
 	// cout << "final tour size = " << finalTour->size() << endl;
 
-	// for(int i = 0; i < finalTour->size(); ++i){
-	// 	cout << finalTour->at(i)->vertexName << "\t";
-	// }
-	// cout << endl;
+	for(int i = 0; i < fileIO.getEulerTour().size(); ++i){
+	 	cout << fileIO.getEulerTour().at(i)->vertexName << "\t";
+	 }
+	 cout << endl;
 
 	cout << "tour size = " << fileIO.getEulerTour().size();
 	cout << "Tour distance = " << fileIO.getTourDistance() << endl;

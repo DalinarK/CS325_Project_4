@@ -493,6 +493,7 @@ void graph::calculateEulerTour(int startVertex)
 			}
 		}
 	}
+	eulerTour.pop_back();
 }
 int graph::distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second)
 {
