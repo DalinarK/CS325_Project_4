@@ -72,7 +72,7 @@ int main (int argc, const char * argv[1])
 	tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
 
 	tspGraph.calculateFinalTourDistance();
-	for(int i = 0; i < (tspGraph.getTour())->size(); ++i){
+	for(int i = 0; i < (int)(tspGraph.getTour())->size(); ++i){
 		cout << "tour " << i << "= " << (tspGraph.getTour())->at(i)->vertexName << "\t";
 	}	
 
@@ -90,25 +90,28 @@ int main (int argc, const char * argv[1])
 	tspGraph.calculateFinalTourDistance();
 	int tourDistance = tspGraph.getTourDistance();
 
-	
-	/*Random iterative improvements
-	int i = 0;
-	for(int i =0; i < 5; ++i){
-		//tspGraph.performBruteThreeOpt();
-		cout << " i = " << i << "\t";
-		tspGraph.performHeuristicThreeOpt();
-		//tspGraph.performHeuristic1ThreeOpt();
-		//if(i == 9)
-			//tspGraph.performTwoOpt();
-	}*/
+	int counter = 0;
 
-	tspGraph.performHeuristicTwoOpt();
-	//tspGraph.main2Opt();
+	while(tspGraph.performHeuristicTwoOpt()){
+		//tspGraph.performHeuristicThreeOpt();
+		tspGraph.performHeuristicTwoOpt();
+		cout << counter++ << "\t";
+	}
+	
+	if(tspGraph.getTour()->size() < 1000){
+		counter = 0;
+		while(tspGraph.performHeuristicThreeOpt()){				
+			cout << counter++ << "\t";
+		}
+	}
+
+	
+	
 
 	cout << "After 2-opt" << endl;
 	
 
-	for(int i = 0; i < (tspGraph.getTour())->size(); ++i){
+	for(int i = 0; i < (int)(tspGraph.getTour())->size(); ++i){
 		cout << "tour " << i << "= " << (tspGraph.getTour())->at(i)->vertexName << "\t";
 	}
 
