@@ -41,7 +41,12 @@ private:
 	vector <vertexStruct*> vertexGraph;
 	vector <vertexStruct*> finalTour;
 
-	// this is an intermediate vector holding the created MST used for the christofides
+	//this is the first part of the christofide conversion. 
+	vector <vertexStruct*> MSTVector;
+
+	// this is an intermediate vector holding the created MST used for the christofides.
+	// The difference between MST and MSTHolder is that if MST vertex A and B share an edge, both
+	// list each other as neighbors while MSTVector does not.
 	vector <vertexStruct*> MST;
 
 	// this is the subgraph of that only contains vertices odd degree
@@ -49,8 +54,11 @@ private:
 	//This is the subgraph of the minimum weight matching tree
 	vector <vertexStruct*> minimumWeight;
 
-	// this is the combined subgraph and MST;
+	// this is the combined minimum weight matching and MST;
 	vector <vertexStruct*> combinedMSTandMinMatch;
+
+	//This is the euler tour of the combined minimum weight matching and MST
+	vector <vertexStruct*> Euler;
 	long int  totalDistanceTraveled;	
 
 public:
@@ -81,7 +89,11 @@ public:
 	//returns a min spanning tree using Prims alogrithm E log(V) runtime
 	std::map<vertexStruct*,vector<vertexStruct*>> getMinSpanningTree(vertexStruct *start);
 
-	// converts the minSpanning tree created by getMinSpanningTree into a vector <vectorStruct*>
+	// converts the minSpanning tree created by getMinSpanningTree into vector form. Vertices are only listed as neighbors on one side
+	// example: vertex a and b share an edge. Only vertex a lists b as a neighbor.
+	void createMSTVector();
+	// converts the minSpanning tree created by getMinSpanningTree into a vector <vectorStruct*>. Vertices are only listed as neighbors on one side
+	// example: vertex a and b share an edge. Both vertex b and a list each other as neighbors.
 	void createEdgelist();
 
 	// Creates the subraph of that only contains vertices odd degree
@@ -92,12 +104,15 @@ public:
 
 	// Combines the min-weight perfect matching graph with the MST 
 	void combineMSTandMinMatch();
+
+	// Calculates a eulertour from the combined MSTandMinMatch graph
+	void calculateEulerTour();
 	
 	//return a vertex at the index
 	vertexStruct* getVertex(int index);
 
 	//generate a tour of the graph using preorder travesal of the minspanning tree
-	void makeNaiveTour(int startVertex, string graphName);
+	void makeNaiveTour(int startVertex);
 	
 	//returns a pointer to the final tour
 	vector <vertexStruct*>* getTour();	

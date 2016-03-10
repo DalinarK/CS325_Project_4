@@ -211,6 +211,58 @@ void graph::writeTourFile(string fileName)
 
 }
 
+void graph::createMSTVector()
+{
+	cout << "creating vector" << endl;
+
+	vertexStruct *vertexStructPTR;
+	neighbors *neighborPTR;
+
+	int g = 0;
+	std::map<vertexStruct*,vector<vertexStruct*>> minSpanningTree = getMinSpanningTree(getVertex(0));
+
+	// create the vector representing the MSTVector. Neighbors are not added yet
+	for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
+		// cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
+		// Create a vertex
+		vertexStructPTR = new vertexStruct;
+		vertexStructPTR->vertexName = map_iter->first->vertexName;
+		vertexStructPTR->xCoord = map_iter->first->xCoord;
+		vertexStructPTR->yCoord = map_iter->first->yCoord;
+		MSTVector.push_back(vertexStructPTR);
+	}
+
+	// add the neighbors
+	for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
+	cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
+		for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
+			// Add only the neighbors in the MSTVector.
+
+			cout << "edge " << map_iter->first->vertexName << " = " << map_iter->second[i]->vertexName <<endl;
+
+			int distance;
+			neighborPTR = new neighbors;
+			neighborPTR->neighborName =  map_iter->second[i]->vertexName;
+			distance = distBetweenTwoVertexes (map_iter->second[i], map_iter->first);
+			neighborPTR->distance = distance;
+			neighborPTR->neighborAddress = map_iter->second[i];
+			MSTVector[g]->neighborDistance.push_back(neighborPTR);
+			cout << "added neighbor "  << neighborPTR->neighborName << " to " << MSTVector[g]->vertexName << endl;
+		}
+		g++;
+	}
+
+	// Check to see if edges are all there
+	for(unsigned int i = 0; i < MSTVector.size(); i++){
+		cout << "\nEdge list for: " << MSTVector[i]->vertexName << endl;
+		for( unsigned int g = 0; g < MSTVector[i]->neighborDistance.size(); g++ ){
+			cout << "edge " << MSTVector[i]->vertexName << " = " << MSTVector[i]->neighborDistance[g]->neighborName <<endl;
+		}
+	}
+	cout << endl;
+
+}
+
 void graph::createEdgelist()
 {
 	vertexStruct *vertexStructPTR;
@@ -374,9 +426,9 @@ void graph::createMinMatching()
 				{
 					oddSubGraph[i]->neighborDistance[g]->neighborAddress->visted = true;
 					cout << "Vertex " << oddSubGraph[i]->neighborDistance[g]->neighborAddress->vertexName << " has not been visited! Now marked as " << oddSubGraph[i]->neighborDistance[g]->neighborAddress->visted << endl;
+					
 					// adding neighbors to the current vertex
 					cout << "edge " << minimumWeight.back()->vertexName << " = " << oddSubGraph[g]->neighborDistance[i]->neighborAddress->vertexName <<endl;
-
 					int distance;
 					neighborPTR = new neighbors;
 					neighborPTR->neighborName =  oddSubGraph[g]->neighborDistance[i]->neighborAddress->vertexName;
@@ -396,12 +448,12 @@ void graph::createMinMatching()
 					minimumWeight.push_back(vertexStructPTR);
 
 					// add the first vertex as a neighbor to the second vertex
-					cout << "reverse: added neighbor " <<  minimumWeight[minimumWeight.size()-2]->vertexName << " to " << minimumWeight.back()->vertexName << endl;
-					neighborPTR = new neighbors;
-					neighborPTR->neighborName = minimumWeight[minimumWeight.size()-2]->vertexName;
-					neighborPTR->distance = distance;
-					neighborPTR->neighborAddress = minimumWeight[minimumWeight.size()-2];
-					minimumWeight.back()->neighborDistance.push_back(neighborPTR);
+					// cout << "reverse: added neighbor " <<  minimumWeight[minimumWeight.size()-2]->vertexName << " to " << minimumWeight.back()->vertexName << endl;
+					// neighborPTR = new neighbors;
+					// neighborPTR->neighborName = minimumWeight[minimumWeight.size()-2]->vertexName;
+					// neighborPTR->distance = distance;
+					// neighborPTR->neighborAddress = minimumWeight[minimumWeight.size()-2];
+					// minimumWeight.back()->neighborDistance.push_back(neighborPTR);
 					// cout << "added neighbor "  << neighborPTR->neighborName << " to " << MST[g]->vertexName <<  " with distance " << distance << endl;
 					break;
 				}
@@ -413,22 +465,41 @@ void graph::createMinMatching()
 
 void graph::combineMSTandMinMatch()
 {
-	for (unsigned int i = 0; i < MST.size(); i++)
+	for (unsigned int i = 0; i < MSTVector.size(); i++)
 	{
 		for (unsigned int g = 0; g < minimumWeight.size(); g++)
 		{
-			if (MST[i]->vertexName == minimumWeight[g]->vertexName)
+			if (MSTVector[i]->vertexName == minimumWeight[g]->vertexName)
 			{
 				
 				for (unsigned int j = 0; j < minimumWeight[g]->neighborDistance.size(); j++)
 				{ 
-					cout << MST[i]->vertexName << " matched. Combining edges with " << minimumWeight[g]->neighborDistance[j]->neighborName << endl;
-					MST[i]->neighborDistance.push_back(minimumWeight[g]->neighborDistance[j]);
+					cout << MSTVector[i]->vertexName << " matched. Combining edges with " << minimumWeight[g]->neighborDistance[j]->neighborName << endl;
+					MSTVector[i]->neighborDistance.push_back(minimumWeight[g]->neighborDistance[j]);
 				}
 
 			}
 		}
 	}
+
+	for (unsigned int i = 0; i < MSTVector.size(); i++)
+	{
+		cout << "Vertex " << MSTVector[i]->vertexName << endl;
+		for (unsigned int g = 0; g < MSTVector[i]->neighborDistance.size(); g++)
+		{
+			cout << MSTVector[i]->neighborDistance[g]->neighborName << endl;
+		}
+	}
+}
+
+void graph::calculateEulerTour()
+{
+	cout << "CombinedGraph is size " << combinedMSTandMinMatch.size() << endl;
+	for (unsigned int i = 0; i < combinedMSTandMinMatch.size(); i++)
+	{
+
+	}
+
 }
 
 int graph::distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second)
@@ -547,7 +618,7 @@ vector <vertexStruct*>* graph::getTour(){
 **Once all vertices have been visited the last vertex will go 
 **directly back to the start vertex.
 *********************************************************************************/
-void graph::makeNaiveTour(int startVertex, string graphName){
+void graph::makeNaiveTour(int startVertex){
 
 	//make sure vertex graph is empty
 	vertexGraph.empty();	

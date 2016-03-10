@@ -31,34 +31,35 @@ int main (int argc, const char * argv[1])
 
 	// std::map<vertexStruct*,vector<vertexStruct*>> minSpanningTree = fileIO.getMinSpanningTree(fileIO.getVertex(0));
 
-	// // cout << "Min Spanning tree order: " << endl;
+	cout << "Min Spanning tree order: " << endl;
 
 	// int count = 0;
 	// int i = 0;
-	// // //How to iterate through a map with key vector
-	// // //http://www.cplusplus.com/forum/beginner/161248/
+	// //How to iterate through a map with key vector
+	// //http://www.cplusplus.com/forum/beginner/161248/
 
 	// for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
-	// 	cout << "\nEdge list for: " << map_iter->first->vertexName <z< endl;
-		// for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
-		// 	// cout << "edge " << i << " = " << map_iter->second[i]->vertexName <<endl;
-		// }
+	// 	cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
+	// 	for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
+	// 		cout << "edge " << i << " = " << map_iter->second[i]->vertexName <<endl;
+	// 	}
 	// }
 	// cout << endl;
-
+	fileIO.createMSTVector();
 	fileIO.createEdgelist();
 	fileIO.createOddDegreeSubGraph();
 	fileIO.createMinMatching();
 	fileIO.combineMSTandMinMatch();
+	// fileIO.calculateEulerTour();
 
 	// cout << "edges in min spanning tree = " << count << endl;
 	// cout << "Making Tour" << endl;
-	fileIO.makeNaiveTour(0, "MST");
-	fileIO.calculateFinalTourDistance();
+	// fileIO.makeNaiveTour(0);
+	// fileIO.calculateFinalTourDistance();
 
-	vector <vertexStruct*>* finalTour = fileIO.getTour();
+	// vector <vertexStruct*>* finalTour = fileIO.getTour();
 
-	cout << "final tour size = " << finalTour->size() << endl;
+	// cout << "final tour size = " << finalTour->size() << endl;
 
 	// for(int i = 0; i < finalTour->size(); ++i){
 	// 	cout << finalTour->at(i)->vertexName << "\t";
@@ -66,9 +67,9 @@ int main (int argc, const char * argv[1])
 	cout << endl;
 
 
-	cout << "Tour distance = " << fileIO.getTourDistance() << endl;
+	// cout << "Tour distance = " << fileIO.getTourDistance() << endl;
 
-	fileIO.writeTourFile(argv[1]);
+	// fileIO.writeTourFile(argv[1]);
 
 
 	return 0;
