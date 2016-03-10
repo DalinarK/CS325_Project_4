@@ -42,12 +42,14 @@ private:
 	vector <vertexStruct*> finalTour;
 
 	// this is an intermediate vector holding the created MST used for the christofides
-	vector <vertexStruct*> MST;
+	
 
 	// this is the subgraph of that only contains vertices odd degree
 	vector <vertexStruct*> oddSubGraph;
 	//This is the subgraph of the minimum weight matching tree
-	vector <vertexStruct*> minimumWeight;
+	std::map<vertexStruct*,vector<vertexStruct*>> minimumWeight;
+
+	std::map<vertexStruct*,vector<vertexStruct*>> minSpanningTree ;
 
 	// this is the combined subgraph and MST;
 	vector <vertexStruct*> eulerTour;
@@ -94,7 +96,7 @@ public:
 	void combineMSTandMinMatch();
 	
 	// Calculates the euler tour
-	void calculateEulerTour(int startVertex);
+	void calculateEulerTour(int index);
 	//return a vertex at the index
 	vertexStruct* getVertex(int index);
 

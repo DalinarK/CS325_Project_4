@@ -27,38 +27,19 @@ int main (int argc, const char * argv[1])
 	
 	fileIO.createGraph(argv[1]);
 	fileIO.calculateDistances();   
-	//fileIO.sortDistances();
-
-	// std::map<vertexStruct*,vector<vertexStruct*>> minSpanningTree = fileIO.getMinSpanningTree(fileIO.getVertex(0));
-
-	// // cout << "Min Spanning tree order: " << endl;
-
-	// int count = 0;
-	// int i = 0;
-	// // //How to iterate through a map with key vector
-	// // //http://www.cplusplus.com/forum/beginner/161248/
-
-	// for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
-	// 	cout << "\nEdge list for: " << map_iter->first->vertexName <z< endl;
-		// for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
-		// 	// cout << "edge " << i << " = " << map_iter->second[i]->vertexName <<endl;
-		// }
-	// }
-	// cout << endl;
+	// fileIO.sortDistances();
+	// cout << "finished sorting " << endl;
 
 	fileIO.createEdgelist();
+
 	fileIO.createOddDegreeSubGraph();
+	cout << "finished odddegree " << endl;
 	fileIO.createMinMatching();
+	cout << "finished minmatching " << endl;
 	fileIO.combineMSTandMinMatch();
+	cout << "combinedMSt " << endl;
 	fileIO.calculateEulerTour(0);
-	// cout << "edges in min spanning tree = " << count << endl;
-	// cout << "Making Tour" << endl;
-	// fileIO.makeNaiveTour(0, "MST");
-	fileIO.calculateFinalTourDistance();
-
-	// vector <vertexStruct*>* finalTour = fileIO.getTour();
-
-	// cout << "final tour size = " << finalTour->size() << endl;
+	cout << "calculate eueler done" << endl;
 
 	for(int i = 0; i < fileIO.getEulerTour().size(); ++i){
 	 	cout << fileIO.getEulerTour().at(i)->vertexName << "\t";
