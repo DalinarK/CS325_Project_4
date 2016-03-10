@@ -49,6 +49,7 @@ int main (int argc, const char * argv[1])
 	fileIO.createEdgelist();
 	fileIO.createOddDegreeSubGraph();
 	fileIO.createMinMatching();
+	fileIO.combineMSTandMinMatch();
 
 	// cout << "edges in min spanning tree = " << count << endl;
 	// cout << "Making Tour" << endl;

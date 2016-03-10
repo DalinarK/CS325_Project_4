@@ -332,7 +332,7 @@ void graph::createOddDegreeSubGraph()
 		cout << "Vertex:" << oddSubGraph[g]->vertexName << " is now sorted. Size is " << endl;
 	// 	sort(oddSubGraph[g]->neighborDistance.begin(), oddSubGraph[g]->neighborDistance.end(), sortByDistance);
 		
-		for (int i = 0; i < oddSubGraph[g]->neighborDistance.size(); i++){
+		for (unsigned int i = 0; i < oddSubGraph[g]->neighborDistance.size(); i++){
 			cout << "Neighbor name: " << oddSubGraph[g]->neighborDistance[i]->neighborName << " distance: " << oddSubGraph[g]->neighborDistance[i]->distance << endl;
 		}	
 	// } 
@@ -386,7 +386,6 @@ void graph::createMinMatching()
 					minimumWeight.back()->neighborDistance.push_back(neighborPTR);
 					cout << "added neighbor "  << neighborPTR->neighborName << " to " << minimumWeight.back()->vertexName <<  " with distance " << distance << endl;
 					
-
 					// Add the second vertex to the minimumWeight vector
 					// cout << "vertex " << minimumWeight.back()->vertexName << " joined with " << oddSubGraph[g]->neighborDistance[i]->neighborAddress->vertexName << endl;
 					vertexStructPTR = new vertexStruct;
@@ -406,12 +405,30 @@ void graph::createMinMatching()
 					// cout << "added neighbor "  << neighborPTR->neighborName << " to " << MST[g]->vertexName <<  " with distance " << distance << endl;
 					break;
 				}
-
-				// compare to make sure the weight is the lowest
 			}
 		}
 	}
 
+}
+
+void graph::combineMSTandMinMatch()
+{
+	for (unsigned int i = 0; i < MST.size(); i++)
+	{
+		for (unsigned int g = 0; g < minimumWeight.size(); g++)
+		{
+			if (MST[i]->vertexName == minimumWeight[g]->vertexName)
+			{
+				
+				for (unsigned int j = 0; j < minimumWeight[g]->neighborDistance.size(); j++)
+				{ 
+					cout << MST[i]->vertexName << " matched. Combining edges with " << minimumWeight[g]->neighborDistance[j]->neighborName << endl;
+					MST[i]->neighborDistance.push_back(minimumWeight[g]->neighborDistance[j]);
+				}
+
+			}
+		}
+	}
 }
 
 int graph::distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second)

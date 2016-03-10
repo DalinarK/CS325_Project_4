@@ -48,6 +48,9 @@ private:
 	vector <vertexStruct*> oddSubGraph;
 	//This is the subgraph of the minimum weight matching tree
 	vector <vertexStruct*> minimumWeight;
+
+	// this is the combined subgraph and MST;
+	vector <vertexStruct*> combinedMSTandMinMatch;
 	long int  totalDistanceTraveled;	
 
 public:
@@ -86,6 +89,9 @@ public:
 
 	// Creates a minimum-weight perfect matching subgraph of OddSubGraph
 	void createMinMatching();
+
+	// Combines the min-weight perfect matching graph with the MST 
+	void combineMSTandMinMatch();
 	
 	//return a vertex at the index
 	vertexStruct* getVertex(int index);
