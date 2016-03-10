@@ -53,7 +53,7 @@ int main (int argc, const char * argv[1])
 
 	// cout << "edges in min spanning tree = " << count << endl;
 	// cout << "Making Tour" << endl;
-	fileIO.makeNaiveTour(0);
+	fileIO.makeNaiveTour(0, "MST");
 	fileIO.calculateFinalTourDistance();
 
 	vector <vertexStruct*>* finalTour = fileIO.getTour();

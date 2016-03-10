@@ -547,7 +547,7 @@ vector <vertexStruct*>* graph::getTour(){
 **Once all vertices have been visited the last vertex will go 
 **directly back to the start vertex.
 *********************************************************************************/
-void graph::makeNaiveTour(int startVertex){
+void graph::makeNaiveTour(int startVertex, string graphName){
 
 	//make sure vertex graph is empty
 	vertexGraph.empty();	

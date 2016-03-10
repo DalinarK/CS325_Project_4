@@ -97,7 +97,7 @@ public:
 	vertexStruct* getVertex(int index);
 
 	//generate a tour of the graph using preorder travesal of the minspanning tree
-	void makeNaiveTour(int startVertex);
+	void makeNaiveTour(int startVertex, string graphName);
 	
 	//returns a pointer to the final tour
 	vector <vertexStruct*>* getTour();	
