@@ -409,7 +409,7 @@ int graph::distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second)
 **http://cs.stackexchange.com/questions/19808/how-does-the-3-opt-algorithm-for-tsp-work
 **Function doesn't work
 **********************************************************************************************/
-void graph::performBruteThreeOpt(){
+bool graph::performHeuristicThreeOpt(){
 	
 	//store the current totalDistanceTraveled
 	int distance = totalDistanceTraveled;
@@ -428,7 +428,7 @@ void graph::performBruteThreeOpt(){
 
 
 		//edgeTwo:
-		for (int vertexCIndex = vertexAIndex + 2; vertexCIndex <= finalTour.size() - 4; vertexCIndex ++)
+		for (int vertexCIndex = vertexAIndex + 2; vertexCIndex <= finalTour.size() - 4 && equalsCloseBNeighbour(vertexCIndex, pointB); vertexCIndex ++)
 		{
 			int edgeTwoNumber = vertexCIndex / 2 + 1;
         
@@ -471,6 +471,8 @@ void graph::performBruteThreeOpt(){
 
 					//reset back to original tour
 					if(distance < totalDistanceTraveled){
+
+						totalDistanceTraveled = distance;
 						finalTour.at(vertexBIndex) = pointB;
 						pointB->primComp = vertexBIndex;
 						finalTour.at(vertexCIndex) = pointC;					
@@ -480,243 +482,18 @@ void graph::performBruteThreeOpt(){
 						finalTour.at(vertexEIndex) = pointE;
 						pointE->primComp = vertexEIndex;
 					}else{
-						//cout << "found one brute" << "\t";
-						return;
+						//cout << "found one 3-opt" << "\t";
+						return true;
 					}
 
 				}                        
 			}
 		}
 	}
+	return false;
 }
 
-/*********************************************************************************************
-**Method will optimize the grap using a 3-opt 
-**Reference to help understand 3-opt https://www.kaggle.com/c/traveling-santa-problem/forums/t/3510/anyone-using-3-opt
-**https://www.seas.gwu.edu/~simhaweb/champalg/tsp/tsp.html
-**http://cs.stackexchange.com/questions/19808/how-does-the-3-opt-algorithm-for-tsp-work
-**Postcondition:  Method returns 1 if successful
-**Heuristic make: A close to D and B close to F and C close to E
-** Doesn't work
-**********************************************************************************************/
-int graph::performHeuristicThreeOpt(){
-	
-	if(finalTour.size() < 3){
-		return 0;
-	}
 
-	//store the current totalDistanceTraveled
-	int distance = totalDistanceTraveled;	
-
-	int distanceAB, distanceCD, distanceEF;
-	int distanceAD, distanceEC, distanceBF;
-	int vertexAIndex, vertexBIndex, vertexCIndex, vertexDIndex, vertexEIndex, vertexFIndex;
-
-	vertexStruct *pointA, *pointB, *pointC, *pointD, *pointE, *pointF;
-	while(true){
-		pointA = pointB = pointC = pointD = pointE = pointF = NULL;
-		
-		//*************************************************************edgeOne:
-		//assign the indices to pointA and B
-		int random = rand() % finalTour.size();
-		vertexAIndex = random;	
-		if(random < finalTour.size() -1){
-			vertexBIndex = random +1;
-		}else{
-			vertexBIndex = random -1;
-		}
-
-		pointA = finalTour.at(vertexAIndex);
-		pointB = finalTour.at(vertexBIndex);
-
-		distanceAB = distBetweenTwoVertexes(pointA, pointB);
-
-		//*************************************************************edgeTwo:					
-		if(pointA->neighborDistance.size() > 1){
-			//set D		
-			for(int i = 0; i < pointA->neighborDistance.size(); ++i){
-				if(pointA->neighborDistance.at(i)->neighborAddress != pointB){
-					pointD = pointA->neighborDistance.at(i)->neighborAddress;						
-					vertexDIndex = pointD->primComp;
-					break;
-				}
-			}
-			//set C
-			for(int i = 0; i < pointA->neighborDistance.size(); ++i){
-				if(pointA->neighborDistance.at(i)->neighborAddress != pointB && pointA->neighborDistance.at(i)->neighborAddress != pointD){
-					pointC = pointA->neighborDistance.at(i)->neighborAddress;		
-					vertexCIndex = pointC->primComp;
-					break;
-				}
-			}
-
-		}else if(pointB->neighborDistance.size() > 1){
-			//set C
-			for(int i = 0; i < pointB->neighborDistance.size(); ++i){
-				if(pointB->neighborDistance.at(i)->neighborAddress != pointA){
-					pointC = pointB->neighborDistance.at(i)->neighborAddress;
-					vertexCIndex = pointC->primComp;
-					break;
-				}
-			}
-			//set D
-			for(int i = 0; i < pointB->neighborDistance.size(); ++i){
-				if(pointB->neighborDistance.at(i)->neighborAddress != pointB && pointB->neighborDistance.at(i)->neighborAddress != pointC){
-					pointD = pointB->neighborDistance.at(i)->neighborAddress;						
-					vertexDIndex = pointD->primComp;
-					break;
-				}
-			}						
-		}else{
-			//try again
-			cout << "continuing \t";
-			continue;
-		}
-                
-		distanceCD = distBetweenTwoVertexes(pointC, pointD);    
-
-		//*************************************************************edgeThree:
-		//set E
-		if(pointC->neighborDistance.size() > 1){
-			for(int i = 0; i < pointC->neighborDistance.size(); ++i){
-				if(pointC->neighborDistance.at(i)->neighborAddress != pointA && pointC->neighborDistance.at(i)->neighborAddress != pointB &&
-				   pointC->neighborDistance.at(i)->neighborAddress != pointD){
-					pointE = pointC->neighborDistance.at(i)->neighborAddress;
-					vertexEIndex = pointE->primComp;
-				}
-			}
-			//set F
-			for(int i = 0; i < pointC->neighborDistance.size(); ++i){
-				if(pointC->neighborDistance.at(i)->neighborAddress != pointA && pointC->neighborDistance.at(i)->neighborAddress != pointB &&
-				   pointC->neighborDistance.at(i)->neighborAddress != pointD && pointC->neighborDistance.at(i)->neighborAddress != pointE ){
-					pointF = pointC->neighborDistance.at(i)->neighborAddress;						
-					vertexFIndex = pointF->primComp;
-				}
-			}
-			
-		}else if(pointD->neighborDistance.size() > 1){
-			for(int i = 0; i < pointD->neighborDistance.size(); ++i){
-				if(pointD->neighborDistance.at(i)->neighborAddress != pointA && pointD->neighborDistance.at(i)->neighborAddress != pointB &&
-				   pointD->neighborDistance.at(i)->neighborAddress != pointC){
-					pointE = pointD->neighborDistance.at(i)->neighborAddress;
-					vertexEIndex = pointE->primComp;
-				}
-			}
-			//set F
-			for(int i = 0; i < pointD->neighborDistance.size(); ++i){
-				if(pointD->neighborDistance.at(i)->neighborAddress != pointA && pointD->neighborDistance.at(i)->neighborAddress != pointB &&
-				   pointD->neighborDistance.at(i)->neighborAddress != pointC && pointD->neighborDistance.at(i)->neighborAddress != pointE ){
-					pointF = pointD->neighborDistance.at(i)->neighborAddress;						
-					vertexFIndex = pointF->primComp;
-				}
-			}
-			
-		//set e and f to c and d and perform 2-opt
-		}else{
-			cout << "continuing \t";
-			continue;
-		}
-                
-		distanceEF = distBetweenTwoVertexes(pointE, pointF);
-    
-		//calculate distance between three points            
-		int distanceABCDEF = distanceAB + distanceCD + distanceEF;
-	
-		distanceAD = distBetweenTwoVertexes(pointA, pointD);
-		distanceEC = distBetweenTwoVertexes(pointE, pointC);
-		distanceBF = distBetweenTwoVertexes(pointB, pointF);
-
-		//calculate distance between rearranged three points            
-		int distanceADECBF = distanceAD + distanceEC + distanceBF;
-                cout << "distanceADECBF = " << distanceADECBF << " distance ABCDEF = " << distanceABCDEF << endl;
-		//look for improvement
-		if (distanceADECBF < distanceABCDEF && verticeNotEqual(pointA, pointB, pointC, pointD, pointE, pointF)){
-			cout << "distanceADECBF = " << distanceADECBF << " distance ABCDEF = " << distanceABCDEF << endl;
-			//improvement so swap vertices	
-			finalTour.at(vertexBIndex) = pointD;
-			pointD->primComp = vertexBIndex;
-			finalTour.at(vertexCIndex) = pointE;					
-			pointE->primComp = vertexCIndex;
-			finalTour.at(vertexDIndex) = pointC;
-			pointC->primComp = vertexDIndex;
-			finalTour.at(vertexEIndex) = pointB;	
-			pointB->primComp = vertexEIndex;
-					
-			calculateFinalTourDistance();														
-
-			//reset back to original tour
-			//reset total distance back to original
-			if(distance < totalDistanceTraveled){
-				cout << "resetting ";
-				totalDistanceTraveled = distance;
-				finalTour.at(vertexBIndex) = pointB;
-				pointB->primComp = vertexBIndex;
-				finalTour.at(vertexCIndex) = pointC;					
-				pointC->primComp = vertexCIndex;
-				finalTour.at(vertexDIndex) = pointD;
-				pointD->primComp = vertexDIndex;
-				finalTour.at(vertexEIndex) = pointE;
-				pointE->primComp = vertexEIndex;
-			}else{			
-				//return 1 if successful
-				//cout << "found one heur\t";
-				return 1;
-			}
-		}
-		cout << "nothing "<< verticeNotEqual(pointA, pointB, pointC, pointD, pointE, pointF) << "\t";
-	}
-	return 0;
-}
-
-	
-/*********************************************************************************************
-**Method will optimize the grap using 2-opt 
-**Reference to help understand 3-opt https://www.kaggle.com/c/traveling-santa-problem/forums/t/3510/anyone-using-3-opt
-**https://www.seas.gwu.edu/~simhaweb/champalg/tsp/tsp.html
-**http://cs.stackexchange.com/questions/19808/how-does-the-3-opt-algorithm-for-tsp-work
-**https://en.wikipedia.org/wiki/2-opt
-**
-**********************************************************************************************/
-int graph::performTwoOpt(){	
-	//repeat until no improvement is made {       
-	//store the current totalDistanceTraveled
-	int distance = totalDistanceTraveled;
-	int new_distance = 0;
-	
-
-	for (int i = 0; i < finalTour.size() - 1; i++) {
-        for (int k = i + 1; k < finalTour.size(); k++) {
-			vector<vertexStruct*> tourMod;
-			tourMod.clear();
-			//perform the swap into tourMod
-			for (int x =0; x < i; x++){			   
-				tourMod.push_back(finalTour.at(x));
-			}
-			for (int x = k; x >= i; x--){			   
-				tourMod.push_back(finalTour.at(x));
-			}
-			for (int x = k+1; x < finalTour.size(); x++){			   
-				tourMod.push_back(finalTour.at(x));
-			}               
-               
-			new_distance = calculateTDistance(tourMod);
-			//cout << "tourMod size = "<< tourMod.size() << "final tour size = " << finalTour.size() << "distance = " << distance << "new distance is " << new_distance << "\t";
-            if (new_distance < distance) {
-				
-				//cout << "found one 2opt" << "\t";
-				totalDistanceTraveled = new_distance;
-				//cout << "new distance is " << new_distance << "found improvement \t";
-				finalTour.clear();
-                for (int x =0; x < tourMod.size(); x++){			   
-					tourMod.at(x)->primComp = x;
-					finalTour.push_back(tourMod.at(x));
-				}                   
-			}
-        }
-    }
- 
-	return 0;
-}
 
 /*********************************************************************************************
 **Method will optimize the grap using 2-opt 
@@ -729,12 +506,10 @@ int graph::performTwoOpt(){
 **for another edge (pA, pB), completing a move only if
 **dist(pA, pB) + dist(pC, pD) > dist(pA, pC) + dist(pB, pD).**we can prune our search if dist(pA, pB) > dist(pB, pC) does not hold
 **********************************************************************************************/
-void graph::performHeuristicTwoOpt( ){	
+bool graph::performHeuristicTwoOpt( ){	
 			
 	//store the current totalDistanceTraveled
 	int distance = totalDistanceTraveled;	
-
-	vector<vertexStruct*> tourModified;
 
 	int distanceAB, distanceCD;
 	int distanceAC, distanceBD, distanceBC;
@@ -747,134 +522,67 @@ void graph::performHeuristicTwoOpt( ){
 
 	//edgeOne:
 	for (vertexAIndex = 0; (vertexAIndex <= finalTour.size() - 4) && finalTour.size() > 4; vertexAIndex ++)
-	{
-		
-		int edgeOneNumber = vertexAIndex / 2 + 1;
-
+	{			
 		vertexBIndex = vertexAIndex + 1;
 		
-
 		pointA = finalTour.at(vertexAIndex);
 		pointB = finalTour.at(vertexBIndex);		
-		
-		
-		for(int i = 0; i < pointB->neighborDistance.size() && i < 1000; ++i){
-			if(pointB->neighborDistance.at(i)->neighborAddress != pointA &&
-				pointB->neighborDistance.at(i)->neighborAddress != pointD){
-				vertexCIndex = pointB->neighborDistance.at(i)->neighborAddress->primComp;
-			}
-		}
+		//edgeTwo:
+		for (int vertexCIndex = vertexAIndex + 2; vertexCIndex <= finalTour.size() - 2 && 
+			equalsCloseBNeighbour(vertexCIndex, pointB); vertexCIndex ++)
+		{						
+			int vertexDIndex = vertexCIndex + 1;
+        				        
+			pointC = finalTour.at(vertexCIndex);		
+			pointD = finalTour.at(vertexDIndex);       
 
-		if(vertexCIndex < finalTour.size() -1){
-			int num = finalTour.size() - vertexCIndex;
-			srand(time(NULL));			
-			vertexDIndex = vertexCIndex + rand() % num;
-		}else{
-			continue;
-		}		
-			        
-		pointC = finalTour.at(vertexCIndex);		
-        pointD = finalTour.at(vertexDIndex);       
+			distanceCD = distBetweenTwoVertexes(pointC, pointD);
+			distanceAB = distBetweenTwoVertexes(pointA, pointB);			             									                
+			distanceABCD = distanceAB + distanceCD;
 
-		distanceCD = distBetweenTwoVertexes(pointC, pointD);
-		distanceAB = distBetweenTwoVertexes(pointA, pointB);			             									                
-		distanceABCD = distanceAB + distanceCD;
-
-		distanceAC = distBetweenTwoVertexes(pointA, pointC);
-		distanceBD = distBetweenTwoVertexes(pointB, pointD);
-		distanceBC = distBetweenTwoVertexes(pointB, pointC);
-		distanceACBD = distanceAC + distanceBD;
-
-        if(distanceAB > distanceBC)  {
+			distanceAC = distBetweenTwoVertexes(pointA, pointC);
+			distanceBD = distBetweenTwoVertexes(pointB, pointD);
+			distanceBC = distBetweenTwoVertexes(pointB, pointC);
+			distanceACBD = distanceAC + distanceBD;			
 			
 			if (distanceACBD < distanceABCD){
-				tourModified.clear();
-
-				//perform swap              
-				for(int i = 0; i < vertexBIndex; ++i){
-					tourModified.push_back(finalTour.at(i));
-				}
-					              
-				for(int i = vertexCIndex; i >= vertexBIndex; --i){
-					tourModified.push_back(finalTour.at(i));
-				}
-
-				for(int i = vertexCIndex + 1; i < finalTour.size(); ++i){
-					tourModified.push_back(finalTour.at(i));
-				}
+				//improvement so swap vertices	
+				finalTour.at(vertexBIndex) = pointC;
+				pointC->primComp = vertexBIndex;
+				finalTour.at(vertexCIndex) = pointB;					
+				pointB->primComp = vertexCIndex;				
 				
-				int modifiedDistance = calculateTDistance(tourModified);
-
-				cout << "mod Distance = " << modifiedDistance << " distance = " << distance << endl;
-				if (modifiedDistance < distance) {
-				
-					//cout << "found one 2opt" << "\t";
-					totalDistanceTraveled = modifiedDistance;
-					//cout << "new distance is " << new_distance << "found improvement \t";
-					finalTour.empty();
-
-					for (int x =0; x < tourModified.size(); x++){			   
-						tourModified.at(x)->primComp = x;
-						finalTour.push_back(tourModified.at(x));
-					}                   
-				}
-			}			
+				calculateFinalTourDistance();
+								
+				if (totalDistanceTraveled < distance) {
+					//found improvement
+					return true;	               
+				}else{
+					//go back
+					//no improvement
+					totalDistanceTraveled = distance;
+					finalTour.at(vertexBIndex) = pointB;
+					pointB->primComp = vertexBIndex;
+					finalTour.at(vertexCIndex) = pointC;					
+					pointC->primComp = vertexCIndex;
+				}						
+			}
 		}
 	}
+	return false;
 }
 
-int graph::calculateTDistance(vector<vertexStruct*> finalTour){
-	int totalDTraveled = 0;
-	long int  yDiff;
-	long int  xDiff;
-	//calculate the distances between vertexes
-	for (int i = 1; i < finalTour.size(); i++)
-	{
-		xDiff = finalTour[i-1]->xCoord - finalTour[i]->xCoord;
-		// cout << "xDiff is " << xDiff << endl;
-		yDiff = finalTour[i-1]->yCoord - finalTour[i]->yCoord;
-		// cout<< "yDiff is " << yDiff << endl;
-		totalDTraveled += graph::round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+bool graph::equalsCloseBNeighbour(int vertexIndex, vertexStruct *pointB){
+		
+	for(int i =0; i < pointB->neighborDistance.size() && i < 40; ++i){
+		if(finalTour.at(vertexIndex) == pointB->neighborDistance.at(i)->neighborAddress){
+			return true;
+		}
 	}
-
-	int sizeofVector = finalTour.size() -1;
-	// calculate the distance from first to last vertex to complete tour
-	xDiff = finalTour[0]->xCoord - finalTour[sizeofVector]->xCoord;
-	yDiff = finalTour[0]->yCoord - finalTour[sizeofVector]->yCoord;
-	
-	totalDTraveled += (int) graph::round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
-
-	return totalDTraveled;
+	return false;
 }
 
-	
-bool graph::verticeNotEqual(vertexStruct *a, vertexStruct *b, vertexStruct *c, vertexStruct *d, vertexStruct *e, vertexStruct *f){
-	
-	vertexStruct* aV[] = {a, b, c, d, e, f};
 
-	for(int i = 1; i < 6; ++i){
-		if(aV[i] == a){
-			return false;
-		}
-
-		if(i > 1 && aV[i] == b){
-			return false;
-		}
-
-		if(i > 2 && aV[i] == c){
-			return false;
-		}
-
-		if(i > 3 && aV[i] == d){
-			return false;
-		}
-
-		if(i > 4 && aV[i] == e){
-			return false;
-		}
-	}	
-	return true;
-}
 
 /*********************************************************************************
  * ** Function name: main2Opt

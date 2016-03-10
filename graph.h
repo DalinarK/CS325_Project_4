@@ -82,19 +82,12 @@ public:
 	//calculate tour distance
 	int getTourDistance();
 
-	//run a 3-opt optimization on the final graph
-	//Function doesn't work
-	void performBruteThreeOpt();
-
 	//run a heuristic 3-opt optimization on the final graph
 	//Function doesn't work
-	int performHeuristicThreeOpt();
+	bool performHeuristicThreeOpt();
 
 	//run a heuristic 2-opt optimization on the final graph
-	int performTwoOpt();
-
-	//run a heuristic 2-opt optimization on the final graph
-	void performHeuristicTwoOpt();
+	bool performHeuristicTwoOpt();
 
 	//calculates distance between two vertices
 	int distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second);
@@ -106,6 +99,8 @@ public:
 	void graph::main2Opt();
 
 	int getVertexGraphSize(){ return vertexGraph.size();}
+
+	bool equalsCloseBNeighbour(int vertexIndex, vertexStruct *pointB);
 
 };
 
