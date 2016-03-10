@@ -325,17 +325,17 @@ void graph::createOddDegreeSubGraph()
 				
 		}
 	}
-
+	int g = 0;
 	// Sort the distances between all the edges in the subgraph
-	for (unsigned int g = 0; g < oddSubGraph.size(); g++)
-	{
-		cout << "Vertex:" << oddSubGraph[g]->vertexName << " is now sorted" << endl;
-		sort(oddSubGraph[g]->neighborDistance.begin(), oddSubGraph[g]->neighborDistance.end(), sortByDistance);
+	// for (unsigned int g = 0; g < oddSubGraph.size(); g++)
+	// {
+		cout << "Vertex:" << oddSubGraph[g]->vertexName << " is now sorted. Size is " << endl;
+	// 	sort(oddSubGraph[g]->neighborDistance.begin(), oddSubGraph[g]->neighborDistance.end(), sortByDistance);
 		
-		for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++){
-			cout << "Neighbor name: " << vertexGraph[g]->neighborDistance[i]->neighborName << " distance: " << vertexGraph[g]->neighborDistance[i]->distance << endl;
+		for (int i = 0; i < oddSubGraph[g]->neighborDistance.size(); i++){
+			cout << "Neighbor name: " << oddSubGraph[g]->neighborDistance[i]->neighborName << " distance: " << oddSubGraph[g]->neighborDistance[i]->distance << endl;
 		}	
-	} 
+	// } 
 
 	// int graphElement = 2;
 	// // cout << "coord for: " << vertexGraph[graphElement]->vertexName << " " << vertexGraph[graphElement]->xCoord << ", " << vertexGraph[graphElement]->yCoord << endl;
@@ -358,6 +358,7 @@ void graph::createMinMatching()
 		if (oddSubGraph[i]->visted != true)
 		{
 			oddSubGraph[i]->visted = true;
+			cout << "Vertex " << oddSubGraph[i]->vertexName << " has not been visited! Now marked as " << oddSubGraph[i]->visted << endl;
 
 			vertexStructPTR = new vertexStruct;
 			vertexStructPTR->vertexName = oddSubGraph[i]->vertexName;
@@ -368,10 +369,11 @@ void graph::createMinMatching()
 			// should be the lowest weight available because everything is sorted
 			for (unsigned int g = 0; g < oddSubGraph[g]->neighborDistance.size(); g++)
 			{
+
 				if (oddSubGraph[i]->neighborDistance[g]->neighborAddress->visted != true)
 				{
 					oddSubGraph[i]->neighborDistance[g]->neighborAddress->visted = true;
-
+					cout << "Vertex " << oddSubGraph[i]->neighborDistance[g]->neighborAddress->vertexName << " has not been visited! Now marked as " << oddSubGraph[i]->neighborDistance[g]->neighborAddress->visted << endl;
 					// adding neighbors to the current vertex
 					cout << "edge " << minimumWeight.back()->vertexName << " = " << oddSubGraph[g]->neighborDistance[i]->neighborAddress->vertexName <<endl;
 
@@ -391,7 +393,7 @@ void graph::createMinMatching()
 					vertexStructPTR->vertexName = oddSubGraph[g]->neighborDistance[i]->neighborAddress->vertexName;
 					vertexStructPTR->xCoord = oddSubGraph[g]->neighborDistance[i]->neighborAddress->xCoord;
 					vertexStructPTR->yCoord = oddSubGraph[g]->neighborDistance[i]->neighborAddress->yCoord;
-					cout << "pushing second vertex " << vertexStructPTR->vertexName << " onto minimumWeight " << endl;
+					// cout << "pushing second vertex " << vertexStructPTR->vertexName << " onto minimumWeight " << endl;
 					minimumWeight.push_back(vertexStructPTR);
 
 					// add the first vertex as a neighbor to the second vertex
