@@ -153,7 +153,7 @@ void graph::sortDistances()
 
 	for (int g = 0; g < vertexGraph.size(); g++)
 	{
-		cout << "Vertex:" << vertexGraph[g]->vertexName << " is now sorted" << endl;
+		//cout << "Vertex:" << vertexGraph[g]->vertexName << " is now sorted" << endl;
 		sort(vertexGraph[g]->neighborDistance.begin(), vertexGraph[g]->neighborDistance.end(), sortByDistance);
 		
 		// for (int i = 0; i < vertexGraph[g]->neighborDistance.size(); i++){
@@ -170,6 +170,7 @@ void graph::test()
 // Calculates the distance between two vertexes
 void graph::calculateFinalTourDistance()
 {
+	totalDistanceTraveled = 0;
 	long int  yDiff;
 	long int  xDiff;
 	//calculate the distances between vertexes
@@ -189,7 +190,7 @@ void graph::calculateFinalTourDistance()
 	
 		totalDistanceTraveled += (int) round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
 
-	cout << "total distance toured is " << totalDistanceTraveled << endl;	
+	//cout << "total distance toured is " << totalDistanceTraveled << endl;	
 }
 
 // Saves the final tour to file
@@ -316,9 +317,13 @@ vector <vertexStruct*>* graph::getTour(){
 **directly back to the start vertex.
 *********************************************************************************/
 void graph::makeNaiveTour(int startVertex){
-
-	//make sure vertex graph is empty
-	vertexGraph.empty();	
+	
+	//used to store the index where the vertex is stored in the final graph
+	//will be used to set primComp in the vertexStruct
+	int index = 0;
+	//make sure final tour is empty	
+	finalTour.clear();
+	totalDistanceTraveled = 0;
 
 	vertexStruct *temp, *cur;
 	temp = cur = getVertex(startVertex);
@@ -341,6 +346,7 @@ void graph::makeNaiveTour(int startVertex){
 	//add the start vertex to the vertex graph
 	//mark cur as visited then push cur's edge list onto stack
 	finalTour.push_back(cur);
+	cur->primComp = index++;
 	cur->visted = true;
 	--unmarkedVertices;
 	for(int i = 0; i < minSpanningTree[cur].size(); ++i){
@@ -357,6 +363,7 @@ void graph::makeNaiveTour(int startVertex){
 		//onto the stack
 		if(!temp->visted){
 			finalTour.push_back(temp);
+			temp->primComp = index++;
 			temp->visted = true;
 			--unmarkedVertices;
 
@@ -372,27 +379,490 @@ void graph::makeNaiveTour(int startVertex){
 
 
 /*********************************************************************************
-**Method will calculate the distance traversed in the tour
+**Method is a getter
 *********************************************************************************/
 int graph::getTourDistance(){
 
-	int distance = 0;
-	int yDiff, xDiff;
+	return totalDistanceTraveled;
+}
 
-	for(int i = 0; i < finalTour.size() - 1; ++ i){
-		xDiff = finalTour[i]->xCoord - finalTour[i + 1]->xCoord;
-		
-		yDiff = finalTour[i]->yCoord - finalTour[i + 1]->yCoord;
-		
-		distance += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
-	}
+/*********************************************************************************
+**Method will calculate the distance between two vertices
+*********************************************************************************/
+int graph::distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second)
+{
 
-	//now add the distance from last edge back to the start
-	xDiff = finalTour[finalTour.size() - 1]->xCoord - finalTour[0]->xCoord;
-		
-	yDiff = finalTour[finalTour.size() - 1]->yCoord - finalTour[0]->yCoord;
-		
-	distance += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
-
+	long int xDiff = first->xCoord - second->xCoord;
+	// cout << "xDiff is " << xDiff << endl;
+	long int yDiff = first->yCoord - second->yCoord;
+	// cout<< "yDiff is " << yDiff << endl;
+	long int distance = (int) round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+	//cout << "distance: " << distance << endl;
 	return distance;
 }
+
+
+/*********************************************************************************************
+**Method will optimize the grap using a 3-opt 
+**Reference to help understand 3-opt https://www.kaggle.com/c/traveling-santa-problem/forums/t/3510/anyone-using-3-opt
+**https://www.seas.gwu.edu/~simhaweb/champalg/tsp/tsp.html
+**http://cs.stackexchange.com/questions/19808/how-does-the-3-opt-algorithm-for-tsp-work
+**
+**********************************************************************************************/
+void graph::performBruteThreeOpt(){
+	
+	//store the current totalDistanceTraveled
+	int distance = totalDistanceTraveled;
+
+	//edgeOne:
+	for (int vertexAIndex = 0; (vertexAIndex <= finalTour.size() - 6) && finalTour.size() > 6; vertexAIndex ++)
+	{
+		int edgeOneNumber = vertexAIndex / 2 + 1;
+
+		int vertexBIndex = vertexAIndex + 1;
+
+		vertexStruct *pointA = finalTour.at(vertexAIndex);
+		vertexStruct *pointB = finalTour.at(vertexBIndex);
+
+		double distanceAB = distBetweenTwoVertexes(pointA, pointB);
+
+
+		//edgeTwo:
+		for (int vertexCIndex = vertexAIndex + 2; vertexCIndex <= finalTour.size() - 4; vertexCIndex ++)
+		{
+			int edgeTwoNumber = vertexCIndex / 2 + 1;
+        
+			int vertexDIndex = vertexCIndex + 1;
+        
+			vertexStruct *pointC = finalTour.at(vertexCIndex);
+			vertexStruct *pointD = finalTour.at(vertexDIndex);
+                
+			double distanceCD = distBetweenTwoVertexes(pointC, pointD);
+                			                        
+			//edgeThree:
+			for (int vertexEIndex = vertexCIndex + 2; vertexEIndex < finalTour.size() - 1; vertexEIndex++)
+			{
+				int vertexFIndex = vertexEIndex + 1;
+                
+				vertexStruct *pointE = finalTour.at(vertexEIndex);
+				vertexStruct *pointF = finalTour.at(vertexFIndex);
+                
+				double distanceEF = distBetweenTwoVertexes(pointE, pointF);
+                
+				double distanceABCDEF = distanceAB + distanceCD + distanceEF;
+				double distanceAD = distBetweenTwoVertexes(pointA, pointD);
+				double distanceEC = distBetweenTwoVertexes(pointE, pointC);
+				double distanceBF = distBetweenTwoVertexes(pointB, pointF);
+				double distanceADECBF = distanceAD + distanceEC + distanceBF;
+                
+				if (distanceADECBF < distanceABCDEF){
+
+					//improvement so swap vertices	
+					finalTour.at(vertexBIndex) = pointD;
+					pointD->primComp = vertexBIndex;
+					finalTour.at(vertexCIndex) = pointE;					
+					pointE->primComp = vertexCIndex;
+					finalTour.at(vertexDIndex) = pointC;
+					pointC->primComp = vertexDIndex;
+					finalTour.at(vertexEIndex) = pointB;	
+					pointB->primComp = vertexEIndex;
+					
+					calculateFinalTourDistance();														
+
+					//reset back to original tour
+					if(distance < totalDistanceTraveled){
+						finalTour.at(vertexBIndex) = pointB;
+						pointB->primComp = vertexBIndex;
+						finalTour.at(vertexCIndex) = pointC;					
+						pointC->primComp = vertexCIndex;
+						finalTour.at(vertexDIndex) = pointD;
+						pointD->primComp = vertexDIndex;
+						finalTour.at(vertexEIndex) = pointE;
+						pointE->primComp = vertexEIndex;
+					}else{
+						//cout << "found one brute" << "\t";
+						return;
+					}
+
+				}                        
+			}
+		}
+	}
+}
+
+/*********************************************************************************************
+**Method will optimize the grap using a 3-opt 
+**Reference to help understand 3-opt https://www.kaggle.com/c/traveling-santa-problem/forums/t/3510/anyone-using-3-opt
+**https://www.seas.gwu.edu/~simhaweb/champalg/tsp/tsp.html
+**http://cs.stackexchange.com/questions/19808/how-does-the-3-opt-algorithm-for-tsp-work
+**Postcondition:  Method returns 1 if successful
+**Heuristic make: A close to D and B close to F and C close to F
+**********************************************************************************************/
+int graph::performHeuristicThreeOpt(){
+	
+	if(finalTour.size() < 3){
+		return 0;
+	}
+
+	//store the current totalDistanceTraveled
+	int distance = totalDistanceTraveled;	
+
+	int distanceAB, distanceCD, distanceEF;
+	int distanceAD, distanceEC, distanceBF;
+	int vertexAIndex, vertexBIndex, vertexCIndex, vertexDIndex, vertexEIndex, vertexFIndex;
+
+	vertexStruct *pointA, *pointB, *pointC, *pointD, *pointE, *pointF;
+	
+	//*************************************************************edgeOne:
+	//assign the indices to pointA and B
+	int random = rand() % finalTour.size();
+	vertexAIndex = random;	
+	if(random < finalTour.size() -1){
+		vertexBIndex = random +1;
+	}else{
+		vertexBIndex = random -1;
+	}
+
+	pointA = finalTour.at(vertexAIndex);
+	pointB = finalTour.at(vertexBIndex);
+
+	distanceAB = distBetweenTwoVertexes(pointA, pointB);
+
+	//*************************************************************edgeTwo:					
+	if(pointA->neighborDistance.size() > 1){
+		pointC = pointA->neighborDistance.at(1)->neighborAddress;		
+		vertexCIndex = pointC->primComp;		
+		pointD = pointA->neighborDistance.at(0)->neighborAddress;						
+		vertexDIndex = pointD->primComp;
+	}else if(pointB->neighborDistance.size() > 1){		
+		pointC = pointB->neighborDistance.at(0)->neighborAddress;
+		vertexCIndex = pointC->primComp;
+		pointD = pointB->neighborDistance.at(1)->neighborAddress;						
+		vertexDIndex = pointD->primComp;
+	}else{
+		//try again
+		return 0;
+	}
+                
+	distanceCD = distBetweenTwoVertexes(pointC, pointD);
+    
+
+	//*************************************************************edgeThree:					
+	if(pointC->neighborDistance.size() > 1){
+		pointE = pointC->neighborDistance.at(0)->neighborAddress;
+		vertexEIndex = pointE->primComp;
+		pointF = pointC->neighborDistance.at(1)->neighborAddress;						
+		vertexFIndex = pointF->primComp;
+	}else if(pointD->neighborDistance.size() > 1){
+		pointE = pointD->neighborDistance.at(0)->neighborAddress;
+		vertexEIndex = pointE->primComp;
+		pointF = pointD->neighborDistance.at(1)->neighborAddress;						
+		vertexFIndex = pointF->primComp;
+	//set e and f to c and d and perform 2-opt
+	}else{
+		return 0;
+	}
+                
+	distanceEF = distBetweenTwoVertexes(pointE, pointF);
+    
+	//calculate distance between three points            
+	int distanceABCDEF = distanceAB + distanceCD + distanceEF;
+	
+	distanceAD = distBetweenTwoVertexes(pointA, pointD);
+	distanceEC = distBetweenTwoVertexes(pointE, pointC);
+	distanceBF = distBetweenTwoVertexes(pointB, pointF);
+
+	//calculate distance between rearranged three points            
+	int distanceADECBF = distanceAD + distanceEC + distanceBF;
+                
+	//look for improvement
+	if (distanceADECBF < distanceABCDEF && verticeNotEqual(pointA, pointB, pointC, pointD, pointE, pointF)){
+
+		//improvement so swap vertices	
+		finalTour.at(vertexBIndex) = pointD;
+		pointD->primComp = vertexBIndex;
+		finalTour.at(vertexCIndex) = pointE;					
+		pointE->primComp = vertexCIndex;
+		finalTour.at(vertexDIndex) = pointC;
+		pointC->primComp = vertexDIndex;
+		finalTour.at(vertexEIndex) = pointB;	
+		pointB->primComp = vertexEIndex;
+					
+		calculateFinalTourDistance();														
+
+		//reset back to original tour
+		//reset total distance back to original
+		if(distance < totalDistanceTraveled){			
+			totalDistanceTraveled = distance;
+			finalTour.at(vertexBIndex) = pointB;
+			pointB->primComp = vertexBIndex;
+			finalTour.at(vertexCIndex) = pointC;					
+			pointC->primComp = vertexCIndex;
+			finalTour.at(vertexDIndex) = pointD;
+			pointD->primComp = vertexDIndex;
+			finalTour.at(vertexEIndex) = pointE;
+			pointE->primComp = vertexEIndex;
+		}else{			
+			//return 1 if successful
+			//cout << "found one heur\t";
+			return 1;
+		}
+	}
+	return 0;
+}
+
+/********************************************************************************************
+**Method will optimize the grap using a 3-opt 
+**Reference to help understand 3-opt https://www.kaggle.com/c/traveling-santa-problem/forums/t/3510/anyone-using-3-opt
+**https://www.seas.gwu.edu/~simhaweb/champalg/tsp/tsp.html
+**http://cs.stackexchange.com/questions/19808/how-does-the-3-opt-algorithm-for-tsp-work
+**Postcondition:  Method returns 1 if successful
+**Heuristic make: A close to D and B close to F and C close to F
+**********************************************************************************************/
+int graph::performHeuristic1ThreeOpt(){
+	
+	if(finalTour.size() < 3){
+		return 0;
+	}
+
+	bool fset = false;
+	//store the current totalDistanceTraveled
+	int distance = totalDistanceTraveled;	
+
+	int distanceAB, distanceCD, distanceEF;
+	int distanceAD, distanceEC, distanceBF;
+	int vertexAIndex, vertexBIndex, vertexCIndex, vertexDIndex, vertexEIndex, vertexFIndex;
+
+	vertexStruct *pointA = NULL, *pointB = NULL, *pointC = NULL, *pointD = NULL, *pointE = NULL, *pointF = NULL;
+	
+	//*************************************************************edgeOne:
+	//assign the indices to pointA and B
+	int random = rand() % finalTour.size();
+	vertexAIndex = random;
+	
+	if(random < finalTour.size() -1){
+		vertexBIndex = random +1;
+	}else{
+		vertexBIndex = random -1;
+	}
+
+	pointA = finalTour.at(vertexAIndex);
+	pointB = finalTour.at(vertexBIndex);
+
+	distanceAB = distBetweenTwoVertexes(pointA, pointB);
+
+	//*************************************************************edgeTwo:					
+	if(pointA->neighborDistance.size() > 1){
+		//set D
+		pointD = pointA->neighborDistance.at(0)->neighborAddress;						
+		vertexDIndex = pointD->primComp;
+		//set C
+		pointC = pointA->neighborDistance.at(1)->neighborAddress;		
+		vertexCIndex = pointC->primComp;
+						
+	}else if(pointB->neighborDistance.size() > 1){		
+		//set C
+		pointC = pointB->neighborDistance.at(1)->neighborAddress;
+		vertexCIndex = pointC->primComp;
+		//set F
+		pointF = pointB->neighborDistance.at(0)->neighborAddress;						
+		vertexFIndex = pointF->primComp;
+
+		fset = true;
+	}else{
+		//try again
+		return 0;
+	}
+                
+	distanceCD = distBetweenTwoVertexes(pointC, pointD);
+    
+
+	//*************************************************************edgeThree:
+	if(fset){
+		if(pointC->neighborDistance.size() > 1){
+			pointE = pointC->neighborDistance.at(0)->neighborAddress;
+			vertexEIndex = pointE->primComp;
+			pointD = pointC->neighborDistance.at(1)->neighborAddress;						
+			vertexDIndex = pointD->primComp;
+		}else if(pointF->neighborDistance.size() > 1){
+			pointE = pointF->neighborDistance.at(0)->neighborAddress;
+			vertexEIndex = pointE->primComp;
+			pointD = pointF->neighborDistance.at(1)->neighborAddress;						
+			vertexDIndex = pointD->primComp;
+		}else{
+			cout << "two opt" << "\t";
+			pointE = pointC;
+			vertexEIndex = pointC->primComp;
+			pointD = pointF;
+			vertexDIndex = pointF->primComp;
+		}
+	//set e and f to c and d and perform 2-opt
+	}else{
+		if(pointC->neighborDistance.size() > 1){
+			pointE = pointC->neighborDistance.at(0)->neighborAddress;
+			vertexEIndex = pointE->primComp;
+			pointF = pointC->neighborDistance.at(1)->neighborAddress;						
+			vertexFIndex = pointF->primComp;
+		}else if(pointD->neighborDistance.size() > 1){
+			pointE = pointD->neighborDistance.at(0)->neighborAddress;
+			vertexEIndex = pointE->primComp;
+			pointF = pointD->neighborDistance.at(1)->neighborAddress;						
+			vertexFIndex = pointF->primComp;
+		}else{
+			cout << "two opt" << "\t";
+			pointE = pointC;
+			vertexEIndex = pointC->primComp;
+			pointF = pointD;
+			vertexFIndex = pointD->primComp;
+		}
+	}
+                
+	distanceEF = distBetweenTwoVertexes(pointE, pointF);
+    
+	//calculate distance between three points            
+	int distanceABCDEF = distanceAB + distanceCD + distanceEF;
+	
+	distanceAD = distBetweenTwoVertexes(pointA, pointD);
+	distanceEC = distBetweenTwoVertexes(pointE, pointC);
+	distanceBF = distBetweenTwoVertexes(pointB, pointF);
+
+	//calculate distance between rearranged three points            
+	int distanceADECBF = distanceAD + distanceEC + distanceBF;
+                
+	//look for improvement
+	if (distanceADECBF < distanceABCDEF && verticeNotEqual(pointA, pointB, pointC, pointD, pointE, pointF)){
+
+		//improvement so swap vertices	
+		finalTour.at(vertexBIndex) = pointD;
+		pointD->primComp = vertexBIndex;
+		finalTour.at(vertexCIndex) = pointE;					
+		pointE->primComp = vertexCIndex;
+		finalTour.at(vertexDIndex) = pointC;
+		pointC->primComp = vertexDIndex;
+		finalTour.at(vertexEIndex) = pointB;	
+		pointB->primComp = vertexEIndex;
+					
+		calculateFinalTourDistance();														
+
+		//reset back to original tour
+		//reset total distance back to original
+		if(distance < totalDistanceTraveled){			
+			totalDistanceTraveled = distance;
+			finalTour.at(vertexBIndex) = pointB;
+			pointB->primComp = vertexBIndex;
+			finalTour.at(vertexCIndex) = pointC;					
+			pointC->primComp = vertexCIndex;
+			finalTour.at(vertexDIndex) = pointD;
+			pointD->primComp = vertexDIndex;
+			finalTour.at(vertexEIndex) = pointE;
+			pointE->primComp = vertexEIndex;
+		}else{	
+			//cout << "found one heur1" << "\t";
+			//return 1 if successful
+			return 1;
+		}
+	}
+	return 0;
+}
+	
+/*********************************************************************************************
+**Method will optimize the grap using 2-opt 
+**Reference to help understand 3-opt https://www.kaggle.com/c/traveling-santa-problem/forums/t/3510/anyone-using-3-opt
+**https://www.seas.gwu.edu/~simhaweb/champalg/tsp/tsp.html
+**http://cs.stackexchange.com/questions/19808/how-does-the-3-opt-algorithm-for-tsp-work
+**https://en.wikipedia.org/wiki/2-opt
+**
+**********************************************************************************************/
+int graph::performTwoOpt(){	
+	//repeat until no improvement is made {       
+	//store the current totalDistanceTraveled
+	int distance = totalDistanceTraveled;
+	int new_distance = 0;
+	
+
+	for (int i = 0; i < finalTour.size() - 1; i++) {
+        for (int k = i + 1; k < finalTour.size(); k++) {
+			vector<vertexStruct*> tourMod;
+			tourMod.clear();
+			//perform the swap into tourMod
+			for (int x =0; x < i; x++){			   
+				tourMod.push_back(finalTour.at(x));
+			}
+			for (int x = k; x >= i; x--){			   
+				tourMod.push_back(finalTour.at(x));
+			}
+			for (int x = k+1; x < finalTour.size(); x++){			   
+				tourMod.push_back(finalTour.at(x));
+			}               
+               
+			new_distance = calculateTDistance(tourMod);
+			//cout << "tourMod size = "<< tourMod.size() << "final tour size = " << finalTour.size() << "distance = " << distance << "new distance is " << new_distance << "\t";
+            if (new_distance < distance) {
+				//cout << "found one 2opt" << "\t";
+				totalDistanceTraveled = new_distance;
+				//cout << "new distance is " << new_distance << "found improvement \t";
+				finalTour.clear();
+                for (int x =0; x < tourMod.size(); x++){			   
+					finalTour.push_back(tourMod.at(x));
+				}                   
+			}
+        }
+    }
+ 
+	return 0;
+}
+
+int graph::calculateTDistance(vector<vertexStruct*> finalTour){
+	int totalDTraveled = 0;
+	long int  yDiff;
+	long int  xDiff;
+	//calculate the distances between vertexes
+	for (int i = 1; i < finalTour.size(); i++)
+	{
+		xDiff = finalTour[i-1]->xCoord - finalTour[i]->xCoord;
+		// cout << "xDiff is " << xDiff << endl;
+		yDiff = finalTour[i-1]->yCoord - finalTour[i]->yCoord;
+		// cout<< "yDiff is " << yDiff << endl;
+		totalDTraveled += graph::round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+	}
+
+	int sizeofVector = finalTour.size() -1;
+	// calculate the distance from first to last vertex to complete tour
+	xDiff = finalTour[0]->xCoord - finalTour[sizeofVector]->xCoord;
+	yDiff = finalTour[0]->yCoord - finalTour[sizeofVector]->yCoord;
+	
+	totalDTraveled += (int) graph::round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
+
+	return totalDTraveled;
+}
+
+	
+bool graph::verticeNotEqual(vertexStruct *a, vertexStruct *b, vertexStruct *c, vertexStruct *d, vertexStruct *e, vertexStruct *f){
+	
+	vertexStruct* aV[] = {a, b, c, d, e, f};
+
+	for(int i = 1; i < 6; ++i){
+		if(aV[i] == a){
+			return false;
+		}
+
+		if(i > 1 && aV[i] == b){
+			return false;
+		}
+
+		if(i > 2 && aV[i] == c){
+			return false;
+		}
+
+		if(i > 3 && aV[i] == d){
+			return false;
+		}
+
+		if(i > 4 && aV[i] == e){
+			return false;
+		}
+	}	
+	return true;
+}
+
+	
