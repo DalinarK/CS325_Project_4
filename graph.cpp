@@ -798,11 +798,13 @@ int graph::performTwoOpt(){
 			new_distance = calculateTDistance(tourMod);
 			//cout << "tourMod size = "<< tourMod.size() << "final tour size = " << finalTour.size() << "distance = " << distance << "new distance is " << new_distance << "\t";
             if (new_distance < distance) {
+				
 				//cout << "found one 2opt" << "\t";
 				totalDistanceTraveled = new_distance;
 				//cout << "new distance is " << new_distance << "found improvement \t";
 				finalTour.clear();
                 for (int x =0; x < tourMod.size(); x++){			   
+					tourMod.at(x)->primComp = x;
 					finalTour.push_back(tourMod.at(x));
 				}                   
 			}
