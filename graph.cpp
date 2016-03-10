@@ -585,3 +585,5 @@ bool graph::equalsCloseBNeighbour(int vertexIndex, vertexStruct *pointB){
 }
 
 
+
+

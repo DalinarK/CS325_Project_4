@@ -10,6 +10,9 @@ struct test {
 	int a;
 };
 
+//return a vertex at the index
+vector<vertexStruct*> copyFinalTour();
+
 int main (int argc, const char * argv[1])
 {
 	srand(time(NULL));
@@ -68,10 +71,27 @@ int main (int argc, const char * argv[1])
 	}*/
 
 	
+	int lastDistance = 0, nextDistance = 0;
 
 	tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
-
 	tspGraph.calculateFinalTourDistance();
+	
+	vector<vertexStruct*> copy = copyFinalTour(*tspGraph.getTour());
+
+	for(int i = 0; i < 10; ++i){
+		
+
+		tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
+		tspGraph.calculateFinalTourDistance();
+		nextDistance = tspGraph.getTourDistance();
+
+		if(nextDistance < lastDistance){
+			vector<vertexStruct*> copy = copyFinalTour(*tspGraph.getTour());	
+			lastDistance = nextDistance;	 
+		}	
+	}
+
+
 	for(int i = 0; i < (int)(tspGraph.getTour())->size(); ++i){
 		cout << "tour " << i << "= " << (tspGraph.getTour())->at(i)->vertexName << "\t";
 	}	
@@ -120,4 +140,14 @@ int main (int argc, const char * argv[1])
 	tspGraph.writeTourFile(argv[1]);
 
 	return 0;
+}
+
+//return a vertex at the index
+vector<vertexStruct*> copyFinalTour(vector<vertexStruct*> tour){
+	
+	vector<vertexStruct*> copy;
+
+	for(int i = 0; i < tour.size(); ++i){
+		copy.push_back(tour.at(i));
+	}
 }
