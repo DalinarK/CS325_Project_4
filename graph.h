@@ -61,6 +61,8 @@ public:
 
 
 	void writeTourFile(string fileName);
+
+	//calculates final tour distance and sets instance variable totalDistanceTraveled
 	void calculateFinalTourDistance();
 
 	void sortDistances();
@@ -71,7 +73,7 @@ public:
 	//return a vertex at the index
 	vertexStruct* getVertex(int index);
 
-	//generate a tour of the graph using preorder travesal of the minspanning tree
+	//generate a tour of the graph using preorder traversal of the minspanning tree
 	void makeNaiveTour(int startVertex);
 	
 	//returns a pointer to the final tour
@@ -79,6 +81,25 @@ public:
 
 	//calculate tour distance
 	int getTourDistance();
+
+	//run a 3-opt optimization on the final graph
+	void performBruteThreeOpt();
+
+	//run a heuristic 3-opt optimization on the final graph
+	int performHeuristicThreeOpt();
+
+	//run a heuristic 3-opt optimization on the final graph
+	int performHeuristic1ThreeOpt();
+
+	//run a heuristic 2-opt optimization on the final graph
+	int performTwoOpt();
+
+	//calculates distance between two vertices
+	int distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second);
+
+	int calculateTDistance(vector<vertexStruct*> finalTour);
+	bool verticeNotEqual(vertexStruct *a, vertexStruct *b, vertexStruct *c, vertexStruct *d, vertexStruct *e, vertexStruct *f);
+
 };
 
 

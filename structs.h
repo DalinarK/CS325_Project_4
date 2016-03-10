@@ -18,9 +18,14 @@ struct vertexStruct{
 	int xCoord;
 	int yCoord;
 	bool visted;
+
 	//used to store the nearest vertex distance found so far in the
 	//get minSpanningTree algorithm
-	int primComp; 
+	//primComp is also set in the makeNaiveTour method and stores the
+	//indexes the struct is stored at
+	//primComp is used in the performHeuristicThreeOpt method
+	int primComp;
+
 	//used to store the nearest vertex pointer found so far in the
 	//get minSpanningTree algorithm
 	vertexStruct *parent;
