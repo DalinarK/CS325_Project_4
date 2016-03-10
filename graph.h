@@ -95,11 +95,10 @@ public:
 	int calculateTDistance(vector<vertexStruct*> finalTour);
 	bool verticeNotEqual(vertexStruct *a, vertexStruct *b, vertexStruct *c, vertexStruct *d, vertexStruct *e, vertexStruct *f);
 
-	void graph::optHelper( const int& i, const int& k );
-	void graph::main2Opt();
 
 	int getVertexGraphSize(){ return vertexGraph.size();}
 
+	//used in 2-opt and 3-opt to only test neighbours close to pointB
 	bool equalsCloseBNeighbour(int vertexIndex, vertexStruct *pointB);
 
 };

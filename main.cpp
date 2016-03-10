@@ -97,10 +97,12 @@ int main (int argc, const char * argv[1])
 		tspGraph.performHeuristicTwoOpt();
 		cout << counter++ << "\t";
 	}
-
-	counter = 0;
-	while(tspGraph.performHeuristicThreeOpt()){				
-		cout << counter++ << "\t";
+	
+	if(tspGraph.getTour()->size() < 1000){
+		counter = 0;
+		while(tspGraph.performHeuristicThreeOpt()){				
+			cout << counter++ << "\t";
+		}
 	}
 
 	

@@ -574,7 +574,9 @@ bool graph::performHeuristicTwoOpt( ){
 
 bool graph::equalsCloseBNeighbour(int vertexIndex, vertexStruct *pointB){
 		
-	for(int i =0; i < pointB->neighborDistance.size() && i < 40; ++i){
+	int testSize = pointB->neighborDistance.size() < 1000 ? 20 : 5;
+
+	for(int i =0; i < pointB->neighborDistance.size() && i < testSize; ++i){
 		if(finalTour.at(vertexIndex) == pointB->neighborDistance.at(i)->neighborAddress){
 			return true;
 		}
@@ -583,63 +585,3 @@ bool graph::equalsCloseBNeighbour(int vertexIndex, vertexStruct *pointB){
 }
 
 
-
-/*********************************************************************************
- * ** Function name: main2Opt
- * ** Parameters : Final tour of cities
- * ** Description: iApplyiung 2 opr to tsp
- * *********************************************************************************/
-void graph::main2Opt()
-{
-    vector <vertexStruct*> newTour;
-    int size = finalTour.size(); 
-    int counter = 0;
-    /* Perform 20 iterations */
-    while ( counter < 20 )
-    {
-        double currentBest = totalDistanceTraveled;
-        for ( int i = 0; i < size - 1; i++ ) 
-        {
-            for ( int k = i + 1; k < size; k++) 
-            {
-                optHelper( i, k );
-                double newDistance = getTourDistance();
-                /* If distance with swapped cities is less then update current */
-                if ( newDistance < currentBest ) 
-                {
-                    counter = 0;
-                    finalTour = newTour;
-                    currentBest = newDistance;
-                }
-            }
-        }
-        counter++;
-    }
-}
-
-/*********************************************************************************
- * ** Function name: optHelper
- * ** Parameters : Indexes pf Final tour of cities
- * ** Description: iApplyiung 2 opr to tsp
-* *********************************************************************************/
-void graph::optHelper( const int& i, const int& k ) 
-{
-    vector <vertexStruct*> newTour;
-    int size = finalTour.size();
-    //take tour 0 to i-1 and add to new Tour
-    for ( int j = 0; j <= i - 1; ++j )
-    {
-        newTour.at(j) = finalTour.at(j);
-    }
-    //take tour city at i to tour city at k and add in reverse order to new tou
-    int dec = 0;
-    for ( int c = i; c <= k; ++c )
-    {
-        newTour.at(c) = finalTour.at(k - dec);
-        dec++;
-    }
-    for ( int c = k + 1; c < size; ++c )
-    {
-        newTour.at(c) = finalTour.at(c);
-    }
-}
