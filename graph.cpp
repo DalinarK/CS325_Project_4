@@ -329,12 +329,12 @@ void graph::createOddDegreeSubGraph()
 	// Sort the distances between all the edges in the subgraph
 	// for (unsigned int g = 0; g < oddSubGraph.size(); g++)
 	// {
-		cout << "Vertex:" << oddSubGraph[g]->vertexName << " is now sorted. Size is " << endl;
+	//	cout << "Vertex:" << oddSubGraph[g]->vertexName << " is now sorted. Size is " << endl;
 	// 	sort(oddSubGraph[g]->neighborDistance.begin(), oddSubGraph[g]->neighborDistance.end(), sortByDistance);
 		
-		for (unsigned int i = 0; i < oddSubGraph[g]->neighborDistance.size(); i++){
-			cout << "Neighbor name: " << oddSubGraph[g]->neighborDistance[i]->neighborName << " distance: " << oddSubGraph[g]->neighborDistance[i]->distance << endl;
-		}	
+	//	for (unsigned int i = 0; i < oddSubGraph[g]->neighborDistance.size(); i++){
+	//		cout << "Neighbor name: " << oddSubGraph[g]->neighborDistance[i]->neighborName << " distance: " << oddSubGraph[g]->neighborDistance[i]->distance << endl;
+	//	}	
 	// } 
 
 	// int graphElement = 2;
@@ -358,7 +358,7 @@ void graph::createMinMatching()
 		if (oddSubGraph[i]->visted != true)
 		{
 			oddSubGraph[i]->visted = true;
-			cout << "Vertex " << oddSubGraph[i]->vertexName << " has not been visited! Now marked as " << oddSubGraph[i]->visted << endl;
+			//cout << "Vertex " << oddSubGraph[i]->vertexName << " has not been visited! Now marked as " << oddSubGraph[i]->visted << endl;
 
 			vertexStructPTR = new vertexStruct;
 			vertexStructPTR->vertexName = oddSubGraph[i]->vertexName;
@@ -373,9 +373,9 @@ void graph::createMinMatching()
 				if (oddSubGraph[i]->neighborDistance[g]->neighborAddress->visted != true)
 				{
 					oddSubGraph[i]->neighborDistance[g]->neighborAddress->visted = true;
-					cout << "Vertex " << oddSubGraph[i]->neighborDistance[g]->neighborAddress->vertexName << " has not been visited! Now marked as " << oddSubGraph[i]->neighborDistance[g]->neighborAddress->visted << endl;
+					//cout << "Vertex " << oddSubGraph[i]->neighborDistance[g]->neighborAddress->vertexName << " has not been visited! Now marked as " << oddSubGraph[i]->neighborDistance[g]->neighborAddress->visted << endl;
 					// adding neighbors to the current vertex
-					cout << "edge " << minimumWeight.back()->vertexName << " = " << oddSubGraph[g]->neighborDistance[i]->neighborAddress->vertexName <<endl;
+					//cout << "edge " << minimumWeight.back()->vertexName << " = " << oddSubGraph[g]->neighborDistance[i]->neighborAddress->vertexName <<endl;
 
 					int distance;
 					neighborPTR = new neighbors;
@@ -384,7 +384,7 @@ void graph::createMinMatching()
 					neighborPTR->distance = distance;
 					neighborPTR->neighborAddress = oddSubGraph[g]->neighborDistance[i]->neighborAddress;
 					minimumWeight.back()->neighborDistance.push_back(neighborPTR);
-					cout << "added neighbor "  << neighborPTR->neighborName << " to " << minimumWeight.back()->vertexName <<  " with distance " << distance << endl;
+					//cout << "added neighbor "  << neighborPTR->neighborName << " to " << minimumWeight.back()->vertexName <<  " with distance " << distance << endl;
 					
 					// Add the second vertex to the minimumWeight vector
 					// cout << "vertex " << minimumWeight.back()->vertexName << " joined with " << oddSubGraph[g]->neighborDistance[i]->neighborAddress->vertexName << endl;
@@ -396,7 +396,7 @@ void graph::createMinMatching()
 					minimumWeight.push_back(vertexStructPTR);
 
 					// add the first vertex as a neighbor to the second vertex
-					cout << "reverse: added neighbor " <<  minimumWeight[minimumWeight.size()-2]->vertexName << " to " << minimumWeight.back()->vertexName << endl;
+					//cout << "reverse: added neighbor " <<  minimumWeight[minimumWeight.size()-2]->vertexName << " to " << minimumWeight.back()->vertexName << endl;
 					neighborPTR = new neighbors;
 					neighborPTR->neighborName = minimumWeight[minimumWeight.size()-2]->vertexName;
 					neighborPTR->distance = distance;
@@ -422,7 +422,7 @@ void graph::combineMSTandMinMatch()
 				
 				for (unsigned int j = 0; j < minimumWeight[g]->neighborDistance.size(); j++)
 				{ 
-					cout << MST[i]->vertexName << " matched. Combining edges with " << minimumWeight[g]->neighborDistance[j]->neighborName << endl;
+					//cout << MST[i]->vertexName << " matched. Combining edges with " << minimumWeight[g]->neighborDistance[j]->neighborName << endl;
 					MST[i]->neighborDistance.push_back(minimumWeight[g]->neighborDistance[j]);
 				}
 
@@ -430,7 +430,7 @@ void graph::combineMSTandMinMatch()
 		}
 	}
 
-	for (unsigned int i = 0; i < MST.size(); i++)
+	/*for (unsigned int i = 0; i < MST.size(); i++)
 	{
 		cout << "Vertex " << MST[i]->vertexName << endl;
 		for (unsigned int g = 0; g < MST[i]->neighborDistance.size(); g++)
@@ -438,7 +438,7 @@ void graph::combineMSTandMinMatch()
 			cout << MST[i]->neighborDistance[g]->neighborName << endl;
 			// cout << MST[i]->neighborDistance[g]->neighborAddress->vertexName << endl;
 		}
-	}
+	}*/
 }
 
 void graph::calculateEulerTour(int startVertex)
@@ -448,18 +448,19 @@ void graph::calculateEulerTour(int startVertex)
 
 	vertexStruct *temp, *cur;
 	temp = cur = MST[startVertex];
-
+	
 	//start at one to include the start vertex as umarked
 	int unmarkedVertices = MST.size();
+
 	cur->visted = false;
 
 	vector<vertexStruct*> vertexStack;
 
 	// //mark all vertices unvisited
-	for(unsigned int i = 0; i < MST.size(); ++i){
-		MST[i]->visted = false;
+	for(unsigned int i = 0; i < vertexGraph.size(); ++i){		
+		vertexGraph[i]->visted = false;
 	}
-	
+
 	// //add the start vertex to the vertex graph
 	// //mark cur as visited then push cur's edge list onto stack
 	eulerTour.push_back(cur);
@@ -467,7 +468,7 @@ void graph::calculateEulerTour(int startVertex)
 	--unmarkedVertices;
 	for(unsigned int i = 0; i < cur->neighborDistance.size(); ++i){
 		// cout << "pushing " << cur->neighborDistance->neighborName << endl;
-		vertexStack.push_back(cur->neighborDistance.at(i)->neighborAddress);
+		vertexStack.push_back(cur->neighborDistance.at(i)->neighborAddress);		
 	}
 
 	while(!vertexStack.empty()){
@@ -477,9 +478,10 @@ void graph::calculateEulerTour(int startVertex)
 
 		//if temp has not been visited push it into the solution tour
 		//mark it as visited and then push all of its unmarked edges
-		//onto the stack
+		//onto the stack		
 		if(!temp->visted){
 			eulerTour.push_back(temp);
+			
 			temp->visted = true;
 			--unmarkedVertices;
 
@@ -673,17 +675,17 @@ int graph::getTourDistance(){
 	int yDiff, xDiff;
 
 	for(unsigned int i = 0; i < eulerTour.size() - 1; ++ i){
-		xDiff = finalTour[i]->xCoord - finalTour[i + 1]->xCoord;
+		xDiff = eulerTour[i]->xCoord - eulerTour[i + 1]->xCoord;
 		
-		yDiff = finalTour[i]->yCoord - finalTour[i + 1]->yCoord;
+		yDiff = eulerTour[i]->yCoord - eulerTour[i + 1]->yCoord;
 		
 		distance += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
 	}
 
 	//now add the distance from last edge back to the start
-	xDiff = finalTour[finalTour.size() - 1]->xCoord - finalTour[0]->xCoord;
+	xDiff = eulerTour[eulerTour.size() - 1]->xCoord - eulerTour[0]->xCoord;
 		
-	yDiff = finalTour[finalTour.size() - 1]->yCoord - finalTour[0]->yCoord;
+	yDiff = eulerTour[eulerTour.size() - 1]->yCoord - eulerTour[0]->yCoord;
 		
 	distance += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
 

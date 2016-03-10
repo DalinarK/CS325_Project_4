@@ -103,6 +103,7 @@ public:
 	
 	//returns a pointer to the final tour
 	vector <vertexStruct*>* getTour();	
+	vector <vertexStruct*> getEulerTour(){return eulerTour;}
 
 	//calculate tour distance
 	int getTourDistance();

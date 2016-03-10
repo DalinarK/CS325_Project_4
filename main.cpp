@@ -65,7 +65,7 @@ int main (int argc, const char * argv[1])
 	// }
 	// cout << endl;
 
-
+	cout << "tour size = " << fileIO.getEulerTour().size();
 	cout << "Tour distance = " << fileIO.getTourDistance() << endl;
 
 	fileIO.writeTourFile(argv[1]);
