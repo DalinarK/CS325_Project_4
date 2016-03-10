@@ -99,7 +99,7 @@ void graph::calculateDistances()
 	// For each vertex, this function will iterate through all the other vertexes
 	for (int g = 0; g < graphSize; g++)
 	{
-		for (int i = 0; i < graphSize; i++)
+		for (int i = 0; i < (int)graphSize; i++)
 		{
 			neighborPTR = new neighbors;
 			// Prevents the calculation of the vertexes distance from itself - which would be 0
@@ -151,7 +151,7 @@ void graph::sortDistances()
 {
 	int g = 1;
 
-	for (int g = 0; g < vertexGraph.size(); g++)
+	for (int g = 0; g < (int)vertexGraph.size(); g++)
 	{
 		//cout << "Vertex:" << vertexGraph[g]->vertexName << " is now sorted" << endl;
 		sort(vertexGraph[g]->neighborDistance.begin(), vertexGraph[g]->neighborDistance.end(), sortByDistance);
@@ -174,7 +174,7 @@ void graph::calculateFinalTourDistance()
 	long int  yDiff;
 	long int  xDiff;
 	//calculate the distances between vertexes
-	for (int i = 1; i < finalTour.size(); i++)
+	for (int i = 1; i < (int)finalTour.size(); i++)
 	{
 		xDiff = finalTour[i-1]->xCoord - finalTour[i]->xCoord;
 		// cout << "xDiff is " << xDiff << endl;
@@ -205,7 +205,7 @@ void graph::writeTourFile(string fileName)
 	ofstream myfile;
 	myfile.open(outputfileName);
 	myfile << totalDistanceTraveled << "\n";
-	for(int i = 0; i < finalTour.size(); ++i){
+	for(int i = 0; i < (int)finalTour.size(); ++i){
 		myfile << finalTour.at(i)->vertexName << "\n";
 	}
 
@@ -251,7 +251,7 @@ std::map<vertexStruct*,vector<vertexStruct*>> graph::getMinSpanningTree(vertexSt
 	//set visted to false for all vertices
 	//set primComp to the distance from the start vertex
 	//add start neighbours to the priority queue
-	for(int i = 0; i < start->neighborDistance.size(); ++i){
+	for(int i = 0; i < (int)start->neighborDistance.size(); ++i){
 		temp = start->neighborDistance.at(i)->neighborAddress;			
 		temp->visted = false;
 		temp->primComp = start->neighborDistance.at(i)->distance;
@@ -286,7 +286,7 @@ std::map<vertexStruct*,vector<vertexStruct*>> graph::getMinSpanningTree(vertexSt
 			//need to look at curs neighbours and update the priority queue
 			//if distance from temp to neighbour is smaller than current primComp then found a closer neighbour
 			//so update primComp and parent and then push onto priority queue
-			for(int i = 0; i < cur->neighborDistance.size(); ++i){
+			for(int i = 0; i < (int)cur->neighborDistance.size(); ++i){
 				temp = cur->neighborDistance.at(i)->neighborAddress;
 				if(!temp->visted){					
 					if(cur->neighborDistance.at(i)->distance < temp->primComp){
@@ -337,7 +337,7 @@ void graph::makeNaiveTour(int startVertex){
 	vector<vertexStruct*> vertexStack;
 
 	//mark all vertices unvisited
-	for(int i = 0; i < cur->neighborDistance.size(); ++i){
+	for(int i = 0; i < (int)cur->neighborDistance.size(); ++i){
 		temp = cur->neighborDistance.at(i)->neighborAddress;			
 		temp->visted = false;
 		++unmarkedVertices;
@@ -349,7 +349,7 @@ void graph::makeNaiveTour(int startVertex){
 	cur->primComp = index++;
 	cur->visted = true;
 	--unmarkedVertices;
-	for(int i = 0; i < minSpanningTree[cur].size(); ++i){
+	for(int i = 0; i < (int)minSpanningTree[cur].size(); ++i){
 		vertexStack.push_back(minSpanningTree[cur].at(i));
 	}
 
@@ -368,7 +368,7 @@ void graph::makeNaiveTour(int startVertex){
 			--unmarkedVertices;
 
 			//now push all temps unmarked vertice onto stack
-			for(int i = 0; i < minSpanningTree[temp].size(); ++i){
+			for(int i = 0; i < (int)minSpanningTree[temp].size(); ++i){
 				if(!minSpanningTree[temp].at(i)->visted){
 					vertexStack.push_back(minSpanningTree[temp].at(i));
 				}
@@ -415,7 +415,7 @@ bool graph::performHeuristicThreeOpt(){
 	int distance = totalDistanceTraveled;
 
 	//edgeOne:
-	for (int vertexAIndex = 0; (vertexAIndex <= finalTour.size() - 6) && finalTour.size() > 6; vertexAIndex ++)
+	for (int vertexAIndex = 0; (vertexAIndex <= (int)finalTour.size() - 6) && (int)finalTour.size() > 6; vertexAIndex ++)
 	{
 		int edgeOneNumber = vertexAIndex / 2 + 1;
 
@@ -428,7 +428,7 @@ bool graph::performHeuristicThreeOpt(){
 
 
 		//edgeTwo:
-		for (int vertexCIndex = vertexAIndex + 2; vertexCIndex <= finalTour.size() - 4 && equalsCloseBNeighbour(vertexCIndex, pointB); vertexCIndex ++)
+		for (int vertexCIndex = vertexAIndex + 2; vertexCIndex <= (int)finalTour.size() - 4 && equalsCloseBNeighbour(vertexCIndex, pointB); vertexCIndex ++)
 		{
 			int edgeTwoNumber = vertexCIndex / 2 + 1;
         
@@ -440,7 +440,7 @@ bool graph::performHeuristicThreeOpt(){
 			double distanceCD = distBetweenTwoVertexes(pointC, pointD);
                 			                        
 			//edgeThree:
-			for (int vertexEIndex = vertexCIndex + 2; vertexEIndex < finalTour.size() - 1; vertexEIndex++)
+			for (int vertexEIndex = vertexCIndex + 2; vertexEIndex < (int)finalTour.size() - 1; vertexEIndex++)
 			{
 				int vertexFIndex = vertexEIndex + 1;
                 
@@ -521,14 +521,14 @@ bool graph::performHeuristicTwoOpt( ){
 	vertexStruct *pointA = NULL, *pointB = NULL, *pointC = NULL, *pointD = NULL;
 
 	//edgeOne:
-	for (vertexAIndex = 0; (vertexAIndex <= finalTour.size() - 4) && finalTour.size() > 4; vertexAIndex ++)
+	for (vertexAIndex = 0; (vertexAIndex <= (int)finalTour.size() - 4) && finalTour.size() > 4; vertexAIndex ++)
 	{			
 		vertexBIndex = vertexAIndex + 1;
 		
 		pointA = finalTour.at(vertexAIndex);
 		pointB = finalTour.at(vertexBIndex);		
 		//edgeTwo:
-		for (int vertexCIndex = vertexAIndex + 2; vertexCIndex <= finalTour.size() - 2 && 
+		for (int vertexCIndex = vertexAIndex + 2; vertexCIndex <= (int)finalTour.size() - 2 && 
 			equalsCloseBNeighbour(vertexCIndex, pointB); vertexCIndex ++)
 		{						
 			int vertexDIndex = vertexCIndex + 1;
@@ -576,7 +576,7 @@ bool graph::equalsCloseBNeighbour(int vertexIndex, vertexStruct *pointB){
 		
 	int testSize = pointB->neighborDistance.size() < 1000 ? 20 : 5;
 
-	for(int i =0; i < pointB->neighborDistance.size() && i < testSize; ++i){
+	for(int i =0; i < (int)pointB->neighborDistance.size() && i < testSize; ++i){
 		if(finalTour.at(vertexIndex) == pointB->neighborDistance.at(i)->neighborAddress){
 			return true;
 		}

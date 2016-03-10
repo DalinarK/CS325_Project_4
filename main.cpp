@@ -72,7 +72,7 @@ int main (int argc, const char * argv[1])
 	tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
 
 	tspGraph.calculateFinalTourDistance();
-	for(int i = 0; i < (tspGraph.getTour())->size(); ++i){
+	for(int i = 0; i < (int)(tspGraph.getTour())->size(); ++i){
 		cout << "tour " << i << "= " << (tspGraph.getTour())->at(i)->vertexName << "\t";
 	}	
 
@@ -111,7 +111,7 @@ int main (int argc, const char * argv[1])
 	cout << "After 2-opt" << endl;
 	
 
-	for(int i = 0; i < (tspGraph.getTour())->size(); ++i){
+	for(int i = 0; i < (int)(tspGraph.getTour())->size(); ++i){
 		cout << "tour " << i << "= " << (tspGraph.getTour())->at(i)->vertexName << "\t";
 	}
 
