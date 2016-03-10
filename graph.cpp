@@ -466,16 +466,34 @@ void graph::calculateEulerTour(int startVertex)
 		eulerTour.push_back(vertexIter);
 		// remove the neighbor from each vertex so iterator can't use the same edge twice
 		cout << "removing " << vertexIter->neighborDistance.back()->neighborName << " and " << vertexIter->vertexName << endl;
-		vertexIter->neighborDistance.pop_back();
 		for (int i = 0; i < vertexNextIter->neighborDistance.size(); i++)
 		{
 			if (vertexNextIter->neighborDistance[i]->neighborName == vertexIter->vertexName)
 			{
-				cout << " removing " << vertexIter->vertexName << "make sure this matches " << vertexNextIter->neighborDistance[vertexNextIter->neighborDistance.begin()+i-1]->neighborName;
-				vertexNextIter->neighborDistance.erase(vertexNextIter->neighborDistance.begin()+i-1);
+				cout << " removing " << vertexIter->vertexName << " make sure this matches " << vertexNextIter->neighborDistance[i]->neighborName << endl;
+				for (unsigned int j = i; j < vertexNextIter->neighborDistance.size()-1; j++)
+				{
+					cout << "copying " << vertexNextIter->neighborDistance[j+1]->neighborName << " over "  << vertexNextIter->neighborDistance[j]->neighborName << endl;
+					vertexNextIter->neighborDistance[j] = vertexNextIter->neighborDistance[j+1];
+					vertexNextIter->neighborDistance.pop_back();
+				}
+				// vertexNextIter->neighborDistance.erase(vertexNextIter->neighborDistance.begin()+i);
+				break;
 			}
 		}
-		vertexNextIter->neighborDistance.pop_back();
+		cout << "Before pop current neighbors in vertex: " << vertexIter->vertexName << endl;
+		for (int i = 0; i < vertexIter->neighborDistance.size(); i++)
+		{
+			cout << vertexIter->neighborDistance[i]->neighborName << endl;
+		}
+		
+		vertexIter->neighborDistance.pop_back();
+		cout << "after pop current neighbors in vertex: " << vertexIter->vertexName << endl;
+		for (int i = 0; i < vertexIter->neighborDistance.size(); i++)
+		{
+			cout << vertexIter->neighborDistance[i]->neighborName << endl;
+		}
+		
 		vertexIter = vertexNextIter;
 	}
 
