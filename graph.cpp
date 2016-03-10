@@ -174,19 +174,19 @@ void graph::calculateFinalTourDistance()
 	long int  yDiff;
 	long int  xDiff;
 	//calculate the distances between vertexes
-	for (unsigned int i = 1; i < finalTour.size(); i++)
+	for (unsigned int i = 1; i < eulerTour.size(); i++)
 	{
-		xDiff = finalTour[i-1]->xCoord - finalTour[i]->xCoord;
+		xDiff = eulerTour[i-1]->xCoord - eulerTour[i]->xCoord;
 		// cout << "xDiff is " << xDiff << endl;
-		yDiff = finalTour[i-1]->yCoord - finalTour[i]->yCoord;
+		yDiff = eulerTour[i-1]->yCoord - eulerTour[i]->yCoord;
 		// cout<< "yDiff is " << yDiff << endl;
 		totalDistanceTraveled += round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
 	}
 
-	int sizeofVector = finalTour.size() -1;
+	int sizeofVector = eulerTour.size() -1;
 	// calculate the distance from first to last vertex to complete tour
-	xDiff = finalTour[0]->xCoord - finalTour[sizeofVector]->xCoord;
-	yDiff = finalTour[0]->yCoord - finalTour[sizeofVector]->yCoord;
+	xDiff = eulerTour[0]->xCoord - eulerTour[sizeofVector]->xCoord;
+	yDiff = eulerTour[0]->yCoord - eulerTour[sizeofVector]->yCoord;
 	
 		totalDistanceTraveled += (int) round(sqrt(pow(xDiff,2) + pow(yDiff,2)));
 
@@ -205,8 +205,8 @@ void graph::writeTourFile(string fileName)
 	ofstream myfile;
 	myfile.open(outputfileName);
 	myfile << totalDistanceTraveled << "\n";
-	for(unsigned int i = 0; i < finalTour.size(); ++i){
-		myfile << finalTour.at(i)->vertexName << "\n";
+	for(unsigned int i = 0; i < eulerTour.size(); ++i){
+		myfile << eulerTour.at(i)->vertexName << "\n";
 	}
 
 }
@@ -436,69 +436,61 @@ void graph::combineMSTandMinMatch()
 		for (unsigned int g = 0; g < MST[i]->neighborDistance.size(); g++)
 		{
 			cout << MST[i]->neighborDistance[g]->neighborName << endl;
+			// cout << MST[i]->neighborDistance[g]->neighborAddress->vertexName << endl;
 		}
 	}
 }
 
 void graph::calculateEulerTour(int startVertex)
 {
-	vertexStruct *vertexStructPTR;
+		//make sure vertex graph is empty
+	eulerTour.clear();	
 
-	cout << "CombinedGraph is size " << MST.size() << endl;
-	//create a tour and set visited to false
-	vertexStruct *vertexIter, *vertexNextIter;
-	vertexIter = MST[startVertex];
+	vertexStruct *temp, *cur;
+	temp = cur = MST[startVertex];
 
-	// Set visited to false
-	for (unsigned int i = 0; i < MST.size(); i++)
-	{
+	//start at one to include the start vertex as umarked
+	int unmarkedVertices = MST.size();
+	cur->visted = false;
+
+	vector<vertexStruct*> vertexStack;
+
+	// //mark all vertices unvisited
+	for(unsigned int i = 0; i < MST.size(); ++i){
 		MST[i]->visted = false;
 	}
-
-	// used to keep track of the visited vertexes.
-	int vistedVertexes = 0;
-	// Add any vertex visted to the Euler tour. Remove the edges so that we can't reuse the same edges
-	while (vertexIter->neighborDistance.size() != 0)
-	{
-		cout << "Visited " << vertexIter->vertexName << " heading to " << vertexIter->neighborDistance.back()->neighborAddress->vertexName << endl;
-		vertexNextIter = vertexIter->neighborDistance.back()->neighborAddress;
-		vertexIter->visted = true;
-		eulerTour.push_back(vertexIter);
-		// remove the neighbor from each vertex so iterator can't use the same edge twice
-		cout << "removing " << vertexIter->neighborDistance.back()->neighborName << " and " << vertexIter->vertexName << endl;
-		for (int i = 0; i < vertexNextIter->neighborDistance.size(); i++)
-		{
-			if (vertexNextIter->neighborDistance[i]->neighborName == vertexIter->vertexName)
-			{
-				cout << " removing " << vertexIter->vertexName << " make sure this matches " << vertexNextIter->neighborDistance[i]->neighborName << endl;
-				for (unsigned int j = i; j < vertexNextIter->neighborDistance.size()-1; j++)
-				{
-					cout << "copying " << vertexNextIter->neighborDistance[j+1]->neighborName << " over "  << vertexNextIter->neighborDistance[j]->neighborName << endl;
-					vertexNextIter->neighborDistance[j] = vertexNextIter->neighborDistance[j+1];
-					vertexNextIter->neighborDistance.pop_back();
-				}
-				// vertexNextIter->neighborDistance.erase(vertexNextIter->neighborDistance.begin()+i);
-				break;
-			}
-		}
-		cout << "Before pop current neighbors in vertex: " << vertexIter->vertexName << endl;
-		for (int i = 0; i < vertexIter->neighborDistance.size(); i++)
-		{
-			cout << vertexIter->neighborDistance[i]->neighborName << endl;
-		}
-		
-		vertexIter->neighborDistance.pop_back();
-		cout << "after pop current neighbors in vertex: " << vertexIter->vertexName << endl;
-		for (int i = 0; i < vertexIter->neighborDistance.size(); i++)
-		{
-			cout << vertexIter->neighborDistance[i]->neighborName << endl;
-		}
-		
-		vertexIter = vertexNextIter;
+	
+	// //add the start vertex to the vertex graph
+	// //mark cur as visited then push cur's edge list onto stack
+	eulerTour.push_back(cur);
+	cur->visted = true;
+	--unmarkedVertices;
+	for(unsigned int i = 0; i < cur->neighborDistance.size(); ++i){
+		// cout << "pushing " << cur->neighborDistance->neighborName << endl;
+		vertexStack.push_back(cur->neighborDistance.at(i)->neighborAddress);
 	}
 
+	while(!vertexStack.empty()){
+		//get first item in stack and then remove it
+		temp = vertexStack.back();
+		vertexStack.pop_back();
 
+		//if temp has not been visited push it into the solution tour
+		//mark it as visited and then push all of its unmarked edges
+		//onto the stack
+		if(!temp->visted){
+			eulerTour.push_back(temp);
+			temp->visted = true;
+			--unmarkedVertices;
 
+			//now push all temps unmarked vertice onto stack
+			for(unsigned int i = 0; i < temp->neighborDistance.size(); ++i){
+				if(!temp->neighborDistance.at(i)->neighborAddress->visted){
+					vertexStack.push_back(temp->neighborDistance.at(i)->neighborAddress);
+				}
+			}
+		}
+	}
 }
 int graph::distBetweenTwoVertexes(vertexStruct * first, vertexStruct * second)
 {
@@ -680,7 +672,7 @@ int graph::getTourDistance(){
 	int distance = 0;
 	int yDiff, xDiff;
 
-	for(unsigned int i = 0; i < finalTour.size() - 1; ++ i){
+	for(unsigned int i = 0; i < eulerTour.size() - 1; ++ i){
 		xDiff = finalTour[i]->xCoord - finalTour[i + 1]->xCoord;
 		
 		yDiff = finalTour[i]->yCoord - finalTour[i + 1]->yCoord;

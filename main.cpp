@@ -53,17 +53,17 @@ int main (int argc, const char * argv[1])
 	fileIO.calculateEulerTour(0);
 	// cout << "edges in min spanning tree = " << count << endl;
 	// cout << "Making Tour" << endl;
-	fileIO.makeNaiveTour(0, "MST");
+	// fileIO.makeNaiveTour(0, "MST");
 	fileIO.calculateFinalTourDistance();
 
-	vector <vertexStruct*>* finalTour = fileIO.getTour();
+	// vector <vertexStruct*>* finalTour = fileIO.getTour();
 
-	cout << "final tour size = " << finalTour->size() << endl;
+	// cout << "final tour size = " << finalTour->size() << endl;
 
 	// for(int i = 0; i < finalTour->size(); ++i){
 	// 	cout << finalTour->at(i)->vertexName << "\t";
 	// }
-	cout << endl;
+	// cout << endl;
 
 
 	cout << "Tour distance = " << fileIO.getTourDistance() << endl;
