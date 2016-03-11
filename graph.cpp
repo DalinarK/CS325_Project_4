@@ -233,7 +233,7 @@ vertexStruct* graph::getVertex(int index){
 std::map<vertexStruct*,vector<vertexStruct*>> graph::getMinSpanningTree(vertexStruct *start)
 {
 	std::priority_queue<vertexStruct*, vector<vertexStruct*>> pq;
-	cout << "Size of Vertex graph = " << vertexGraph.size() << endl;
+	
 	int unmarkedVertices = vertexGraph.size();
 	std::map<vertexStruct*,vector<vertexStruct*>> minSpanTree;
 
@@ -352,7 +352,7 @@ void graph::makeNaiveTour(int startVertex){
 	for(int i = 0; i < (int)minSpanningTree[cur].size(); ++i){
 		vertexStack.push_back(minSpanningTree[cur].at(i));
 	}
-
+	
 	while(!vertexStack.empty()){
 		//get first item in stack and then remove it
 		temp = vertexStack.back();

@@ -11,7 +11,7 @@ struct test {
 };
 
 //return a vertex at the index
-vector<vertexStruct*> copyFinalTour();
+vector<vertexStruct*> copyFinalTour(vector<vertexStruct*> tour);
 
 int main (int argc, const char * argv[1])
 {
@@ -31,72 +31,55 @@ int main (int argc, const char * argv[1])
 	
 	tspGraph.createGraph(argv[1]);
 	tspGraph.calculateDistances();   
-	tspGraph.sortDistances();
-
-
-/*
-	std::map<vertexStruct*,vector<vertexStruct*>> minSpanningTree = tspGraph.getMinSpanningTree(tspGraph.getVertex(0));
-
-	// cout << "Min Spanning tree order: " << endl;
-
-	int count = 0;
-	int i = 0;
-	//How to iterate through a map with key vector
-	//http://www.cplusplus.com/forum/beginner/161248/
-	for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
-		// cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
-		i = 0;
-		for( auto vec_iter = map_iter->second.cbegin() ; vec_iter != map_iter->second.cend() ; ++vec_iter ){
-			// cout << "edge_" << count << " = " << vec_iter[i]->vertexName << ", ";
-			++count;
-		}
+	
+	if(tspGraph.getSize() < 800){
+		tspGraph.sortDistances();
 	}
-	cout << endl;
-
-	for(auto map_iter = minSpanningTree.cbegin(); map_iter != minSpanningTree.cend(); ++map_iter){
-		// cout << "Edge list for " << map_iter->first->vertexName << endl;
-		for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
-			// cout << "edge " << i << " = " << map_iter->second[i]->vertexName <<endl;
-			++count;
-		}
-	}
-	*/
-
-	// cout << "Making Tour" << endl;
-	/*for(int i = 0; i < 10; ++i ){
-		tspGraph.makeNaiveTour(i);
-		tspGraph.calculateFinalTourDistance();
-		cout << "newTour created distance = " << tspGraph.getTourDistance() << endl;
-
-	}*/
-
 	
 	int lastDistance = 0, nextDistance = 0;
 
 	tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
 	tspGraph.calculateFinalTourDistance();
+	lastDistance = tspGraph.getTourDistance();
 	
 	vector<vertexStruct*> copy = copyFinalTour(*tspGraph.getTour());
 
-	for(int i = 0; i < 10; ++i){
+	if(tspGraph.getSize() < 300){
+		for(int i = 0; i < 1000; ++i){				
+			tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
+			tspGraph.calculateFinalTourDistance();
+			nextDistance = tspGraph.getTourDistance();		
+			
+			if(nextDistance < lastDistance){
+				copy = copyFinalTour(*tspGraph.getTour());	
+				lastDistance = nextDistance;	 
+			}		
+		}
+	}else if(tspGraph.getSize() < 10000){
+		for(int i = 0; i < 100; ++i){				
+			tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
+			tspGraph.calculateFinalTourDistance();
+			nextDistance = tspGraph.getTourDistance();		
+			
+			if(nextDistance < lastDistance){
+				copy = copyFinalTour(*tspGraph.getTour());	
+				lastDistance = nextDistance;	 
+			}
 		
-
-		tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
-		tspGraph.calculateFinalTourDistance();
-		nextDistance = tspGraph.getTourDistance();
-
-		if(nextDistance < lastDistance){
-			vector<vertexStruct*> copy = copyFinalTour(*tspGraph.getTour());	
-			lastDistance = nextDistance;	 
-		}	
+		}
 	}
 
-
-	for(int i = 0; i < (int)(tspGraph.getTour())->size(); ++i){
-		cout << "tour " << i << "= " << (tspGraph.getTour())->at(i)->vertexName << "\t";
-	}	
-
-	vector <vertexStruct*>* finalTour = tspGraph.getTour();
+	vector <vertexStruct*>* finalTour = NULL;
+	int tourDistance = 0;
+	if(lastDistance < nextDistance){		
+		finalTour = &copy;
+		tourDistance = lastDistance;
+		tspGraph.updateTour(tourDistance, *finalTour);
+	}else{
+		finalTour = tspGraph.getTour();
+		tourDistance = nextDistance;
+		tspGraph.updateTour(tourDistance, *finalTour);
+	}
 
 	cout << "final tour size = " << finalTour->size() << endl;
 
@@ -105,30 +88,23 @@ int main (int argc, const char * argv[1])
 	cout << "Tour distance = " << tspGraph.getTourDistance() << endl;
 
 	//tspGraph.writeTourFile(argv[1]);
-
-	
-	tspGraph.calculateFinalTourDistance();
-	int tourDistance = tspGraph.getTourDistance();
+		 
 
 	int counter = 0;
 
-	while(tspGraph.performHeuristicTwoOpt()){
-		//tspGraph.performHeuristicThreeOpt();
-		tspGraph.performHeuristicTwoOpt();
-		cout << counter++ << "\t";
-	}
+	if(tspGraph.getSize() < 10000){
+		while(tspGraph.performHeuristicTwoOpt()){
+			//tspGraph.performHeuristicThreeOpt();
+			tspGraph.performHeuristicTwoOpt();		
+		}
 	
-	if(tspGraph.getTour()->size() < 1000){
-		counter = 0;
-		while(tspGraph.performHeuristicThreeOpt()){				
-			cout << counter++ << "\t";
+		if(tspGraph.getTour()->size() < 500){
+			counter = 0;
+			while(tspGraph.performHeuristicThreeOpt()){				
+				//continue
+			}
 		}
 	}
-
-	
-	
-
-	cout << "After 2-opt" << endl;
 	
 
 	for(int i = 0; i < (int)(tspGraph.getTour())->size(); ++i){
@@ -150,4 +126,5 @@ vector<vertexStruct*> copyFinalTour(vector<vertexStruct*> tour){
 	for(int i = 0; i < tour.size(); ++i){
 		copy.push_back(tour.at(i));
 	}
+	return copy;
 }

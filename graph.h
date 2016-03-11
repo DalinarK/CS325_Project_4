@@ -101,7 +101,11 @@ public:
 	//used in 2-opt and 3-opt to only test neighbours close to pointB
 	bool equalsCloseBNeighbour(int vertexIndex, vertexStruct *pointB);
 
-
+	void updateTour(int size, vector <vertexStruct*> finalT){
+	
+		totalDistanceTraveled = size;
+		finalTour = finalT;
+	}
 
 };
 
