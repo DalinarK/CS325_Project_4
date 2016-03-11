@@ -71,7 +71,7 @@ public:
 	std::map<vertexStruct*,vector<vertexStruct*>> getMinSpanningTree(vertexStruct *start);
 	
 	//return a vertex at the index
-	vertexStruct* getVertex(int index);
+	vertexStruct* getVertex(int index);	
 
 	//generate a tour of the graph using preorder traversal of the minspanning tree
 	void makeNaiveTour(int startVertex);
@@ -100,6 +100,12 @@ public:
 
 	//used in 2-opt and 3-opt to only test neighbours close to pointB
 	bool equalsCloseBNeighbour(int vertexIndex, vertexStruct *pointB);
+
+	void updateTour(int size, vector <vertexStruct*> finalT){
+	
+		totalDistanceTraveled = size;
+		finalTour = finalT;
+	}
 
 };
 
