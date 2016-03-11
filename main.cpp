@@ -64,13 +64,13 @@ int main (int argc, const char * argv[1])
 	// tspGraph.calculateFinalTourDistance();
 	// int tourDistance = tspGraph.getTourDistance();
 
-	// int counter = 0;
+	int counter = 0;
 
-	// while(tspGraph.performHeuristicTwoOpt()){
-	// 	//tspGraph.performHeuristicThreeOpt();
-	// 	tspGraph.performHeuristicTwoOpt();
-	// 	cout << counter++ << "\t";
-	// }
+	while(tspGraph.performHeuristicTwoOpt()){
+		//tspGraph.performHeuristicThreeOpt();
+		tspGraph.performHeuristicTwoOpt();
+		cout << counter++ << "\t";
+	}
 	
 	// if(tspGraph.getTour()->size() < 1000){
 	// 	counter = 0;

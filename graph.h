@@ -120,6 +120,8 @@ public:
 
 	// Calculates the euler tour
 	void calculateEulerTour(int index);
+
+	vector <vertexStruct*> getEulerTour(){return finalTour;}
 };
 
 
