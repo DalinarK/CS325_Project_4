@@ -15,6 +15,8 @@ vector<vertexStruct*> copyFinalTour(vector<vertexStruct*> tour);
 
 int main (int argc, const char * argv[1])
 {
+	std::clock_t start;
+    double duration;
 	srand(time(NULL));
 
 	printf("In main\n");
@@ -32,9 +34,7 @@ int main (int argc, const char * argv[1])
 	tspGraph.createGraph(argv[1]);
 	tspGraph.calculateDistances();   
 	
-	if(tspGraph.getSize() < 800){
-		tspGraph.sortDistances();
-	}
+
 	
 	int lastDistance = 0, nextDistance = 0;
 
@@ -42,6 +42,7 @@ int main (int argc, const char * argv[1])
 
 	if (argc == 3)
 	{
+		tspGraph.sortDistances();
 		tspGraph.createEdgelist();
 		tspGraph.createOddDegreeSubGraph();
 		tspGraph.createMinMatching();
@@ -51,6 +52,9 @@ int main (int argc, const char * argv[1])
 	}
 	else
 	{
+		if(tspGraph.getSize() < 800){
+		tspGraph.sortDistances();
+		}	
 		tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
 		tspGraph.calculateFinalTourDistance();
 		lastDistance = tspGraph.getTourDistance();
@@ -129,6 +133,10 @@ int main (int argc, const char * argv[1])
 	cout << "\nTour distance = " << tspGraph.getTourDistance() << endl;
 
 	tspGraph.writeTourFile(argv[1]);
+
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+
+    std::cout<<"printf: "<< duration <<'\n';
 
 	return 0;
 }
