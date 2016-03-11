@@ -133,6 +133,165 @@ void graph::calculateDistances()
 
 }
 
+void graph::createOddDegreeSubGraph()
+{
+	minSpanningTree = getMinSpanningTree(getVertex(0));
+
+	// cout << "Initial MST " << endl;
+	// for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
+	// 	cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
+	// 	for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
+	// 		cout << "edge " << i << " = " << map_iter->second[i]->vertexName <<endl;
+	// 	}
+	// }
+
+	for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
+		if ( map_iter->second.size()%2 != 0){
+			oddSubGraph.push_back(map_iter->first);
+		}
+	}
+
+}
+
+void graph::createMinMatching()
+{
+	bool containsVertex;
+	// Initialize oddsubgraph and set all visted locations to false
+	// create an edgelist.
+	// Make map with an edgeList and a vertex struct key
+	for (unsigned int i = 0; i < oddSubGraph.size(); i++)
+	{
+		oddSubGraph[i]->visted = false;
+		vector<vertexStruct*> edgeList;
+		minimumWeight.insert(make_pair(oddSubGraph[i], edgeList));
+	}
+
+	// Loop through every vertex in odd subgraph
+	// if a vertex has not been visited
+	//  We go through that vertexes edgelist and find the closest neighber that is in the subgraph
+	// and push it to the minimum weight edgelist.
+	for (unsigned int i = 0; i < oddSubGraph.size(); i++)
+	{
+		if (!oddSubGraph[i]->visted)
+		{ 
+			// Iterate through vertex neighbor list.
+			for(unsigned int x = 0; x < oddSubGraph[i]->neighborDistance.size(); x++)
+			{
+				// make sure that the neighbor exists in the oddsubgraph
+				for (unsigned int j = 0; j < oddSubGraph.size(); j++)
+				{
+					if (oddSubGraph[j] == oddSubGraph[i]->neighborDistance[x]->neighborAddress)
+					{
+						containsVertex = true;
+						break;
+					}
+				}
+
+
+				if (containsVertex == true)
+				{
+					minimumWeight[oddSubGraph[i]].push_back(oddSubGraph[i]->neighborDistance.at(0)->neighborAddress);
+					minimumWeight[oddSubGraph[i]->neighborDistance.at(0)->neighborAddress].push_back(oddSubGraph[i]);
+					oddSubGraph[i]->visted = true;
+					oddSubGraph[i]->neighborDistance.at(0)->neighborAddress->visted = true;
+					break;
+				}
+				
+			}
+			
+		}
+	}
+	// Take our minimum weight edges and push them into minimum weight spanning tree
+}
+
+void graph::combineMSTandMinMatch()
+{
+	// goal is combine the oddsubgraph with with remainingVertices
+
+	// get minimumWeight
+	for(auto map_iter = minimumWeight.cbegin() ; map_iter != minimumWeight.cend() ; ++map_iter ){
+		// cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
+		for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
+			minSpanningTree[map_iter->first].push_back(map_iter->second[i]);
+			// cout << "edge " << i << " = " << map_iter->second[i]->vertexName <<endl;
+		}
+	}
+
+		// for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter ){
+		// cout << "\nEdge list for: " << map_iter->first->vertexName << endl;
+		// for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
+		// 	// minSpanningTree[minimumWeight[i]].push_back(map_iter->second[i]);
+		// 	cout << "edge " << i << " = " << map_iter->second[i]->vertexName <<endl;
+		// }
+	// }
+	// cout << endl;
+}
+
+void graph::calculateEulerTour(int index)
+{
+		//make sure vertex graph is empty
+	finalTour.clear();	
+
+
+	
+	vertexStruct *temp, *cur;
+	temp = cur = vertexGraph.at(index);
+	
+	//start at one to include the start vertex as umarked
+	int unmarkedVertices = minSpanningTree.size();
+
+	cur->visted = false;
+
+	vector<vertexStruct*> vertexStack;
+	for(unsigned int i = 0; i < oddSubGraph.size(); ++i){		
+		oddSubGraph[i]->visted = false;
+	}
+
+	// //mark all vertices unvisited
+	for(auto map_iter = minSpanningTree.cbegin() ; map_iter != minSpanningTree.cend() ; ++map_iter )
+	{
+		for( std::size_t i = 0 ; i < map_iter->second.size() ; ++i ){
+			map_iter->second.at(i)->visted = false;
+		}
+	}
+
+	// //add the start vertex to the vertex graph
+	// //mark cur as visited then push cur's edge list onto stack
+	finalTour.push_back(cur);
+	cur->visted = true;
+	--unmarkedVertices;
+
+
+	for( std::size_t i = 0 ; i < minSpanningTree[cur].size() ; ++i ){
+		vertexStack.push_back(minSpanningTree[cur].at(i));
+	}
+
+
+
+	while(!vertexStack.empty()){
+		//get first item in stack and then remove it
+		temp = vertexStack.back();
+		// cout << "visted " << temp->vertexName << endl;
+		vertexStack.pop_back();
+
+		//if temp has not been visited push it into the solution tour
+		//mark it as visited and then push all of its unmarked edges
+		//onto the stack		
+		if(!temp->visted){
+			finalTour.push_back(temp);
+			
+			temp->visted = true;
+			--unmarkedVertices;
+
+			//now push all temps unmarked vertice onto stack
+			for( std::size_t i = 0 ; i < minSpanningTree[temp].size() ; ++i ){
+			vertexStack.push_back(minSpanningTree[temp].at(i));
+			}
+
+		}
+	}
+}
+
 
 //will round to the nearest integer
 int graph::round(double d)
@@ -504,7 +663,8 @@ bool graph::performHeuristicThreeOpt(){
 **https://web.tuke.sk/fei-cit/butka/hop/htsp.pdf
 **selecting an edge (c1, c2) and searching
 **for another edge (pA, pB), completing a move only if
-**dist(pA, pB) + dist(pC, pD) > dist(pA, pC) + dist(pB, pD).**we can prune our search if dist(pA, pB) > dist(pB, pC) does not hold
+**dist(pA, pB) + dist(pC, pD) > dist(pA, pC) + dist(pB, pD).
+**we can prune our search if dist(pA, pB) > dist(pB, pC) does not hold
 **********************************************************************************************/
 bool graph::performHeuristicTwoOpt( ){	
 			

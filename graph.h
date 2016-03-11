@@ -40,7 +40,15 @@ class graph
 private:
 	vector <vertexStruct*> vertexGraph;
 	vector <vertexStruct*> finalTour;
-	long int  totalDistanceTraveled;	
+	long int  totalDistanceTraveled;
+
+	// related to christofides implementation
+	// this is the subgraph of that only contains vertices odd degree
+	vector <vertexStruct*> oddSubGraph;
+	//This is the subgraph of the minimum weight matching tree
+	std::map<vertexStruct*,vector<vertexStruct*>> minimumWeight;
+
+	std::map<vertexStruct*,vector<vertexStruct*>> minSpanningTree ;
 
 public:
 	void test();
@@ -101,6 +109,17 @@ public:
 	//used in 2-opt and 3-opt to only test neighbours close to pointB
 	bool equalsCloseBNeighbour(int vertexIndex, vertexStruct *pointB);
 
+	// Creates the subraph of that only contains vertices odd degree
+	void createOddDegreeSubGraph();
+
+	// Creates a minimum-weight perfect matching subgraph of OddSubGraph
+	void createMinMatching();
+
+	// Combines the min-weight perfect matching graph with the MST 
+	void combineMSTandMinMatch();
+
+	// Calculates the euler tour
+	void calculateEulerTour(int index);
 };
 
 
