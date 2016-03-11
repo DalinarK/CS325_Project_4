@@ -504,7 +504,8 @@ bool graph::performHeuristicThreeOpt(){
 **https://web.tuke.sk/fei-cit/butka/hop/htsp.pdf
 **selecting an edge (c1, c2) and searching
 **for another edge (pA, pB), completing a move only if
-**dist(pA, pB) + dist(pC, pD) > dist(pA, pC) + dist(pB, pD).**we can prune our search if dist(pA, pB) > dist(pB, pC) does not hold
+**dist(pA, pB) + dist(pC, pD) > dist(pA, pC) + dist(pB, pD).
+**we can prune our search if dist(pA, pB) > dist(pB, pC) does not hold
 **********************************************************************************************/
 bool graph::performHeuristicTwoOpt( ){	
 			

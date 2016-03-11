@@ -15,6 +15,9 @@ vector<vertexStruct*> copyFinalTour(vector<vertexStruct*> tour);
 
 int main (int argc, const char * argv[1])
 {
+	clock_t t1, t2;
+	t1 = clock();
+
 	srand(time(NULL));
 
 	printf("In main\n");
@@ -45,8 +48,11 @@ int main (int argc, const char * argv[1])
 	vector<vertexStruct*> copy = copyFinalTour(*tspGraph.getTour());
 
 	if(tspGraph.getSize() < 300){
-		for(int i = 0; i < 1000; ++i){				
-			tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
+
+		for(int i = 0; i < 1000; ++i){	
+			int num = rand() % tspGraph.getVertexGraphSize();
+			num = num == 0 ? num : num/2;
+			tspGraph.makeNaiveTour(num);  
 			tspGraph.calculateFinalTourDistance();
 			nextDistance = tspGraph.getTourDistance();		
 			
@@ -114,6 +120,11 @@ int main (int argc, const char * argv[1])
 	cout << "\nTour distance = " << tspGraph.getTourDistance() << endl;
 
 	tspGraph.writeTourFile(argv[1]);
+
+		t2 = clock();
+	float diff = ((float)t2 - (float)t1) / 1000000.0F;
+
+	cout << "time to completion is " << diff << endl;
 
 	return 0;
 }
