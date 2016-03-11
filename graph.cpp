@@ -317,16 +317,17 @@ void graph::createOddDegreeSubGraph()
 		}
 	}
 	int g = 0;
+
 	// Sort the distances between all the edges in the subgraph
-	// for (unsigned int g = 0; g < oddSubGraph.size(); g++)
-	// {
-	//	cout << "Vertex:" << oddSubGraph[g]->vertexName << " is now sorted. Size is " << endl;
-	// 	sort(oddSubGraph[g]->neighborDistance.begin(), oddSubGraph[g]->neighborDistance.end(), sortByDistance);
+	for (unsigned int g = 0; g < oddSubGraph.size(); g++)
+	{
+		cout << "Vertex:" << oddSubGraph[g]->vertexName << " is now sorted. Size is " << endl;
+		sort(oddSubGraph[g]->neighborDistance.begin(), oddSubGraph[g]->neighborDistance.end(), sortByDistance);
 		
-	//	for (unsigned int i = 0; i < oddSubGraph[g]->neighborDistance.size(); i++){
-	//		cout << "Neighbor name: " << oddSubGraph[g]->neighborDistance[i]->neighborName << " distance: " << oddSubGraph[g]->neighborDistance[i]->distance << endl;
-	//	}	
-	// } 
+		for (unsigned int i = 0; i < oddSubGraph[g]->neighborDistance.size(); i++){
+			// cout << "Neighbor name: " << oddSubGraph[g]->neighborDistance[i]->neighborName << " distance: " << oddSubGraph[g]->neighborDistance[i]->distance << endl;
+		}	
+	} 
 
 	// int graphElement = 2;
 	// // cout << "coord for: " << vertexGraph[graphElement]->vertexName << " " << vertexGraph[graphElement]->xCoord << ", " << vertexGraph[graphElement]->yCoord << endl;
@@ -421,6 +422,21 @@ void graph::combineMSTandMinMatch()
 		}
 	}
 
+	for (unsigned int k = 0; k < MST.size(); k++)
+	{
+		for (unsigned int i = 0; i < MST.size(); i++)
+		{
+			for (unsigned int g = 0; g < MST[i]->neighborDistance.size(); g++)
+			{
+				if (MST[k]->vertexName == MST[i]->neighborDistance[g]->neighborName)
+				{
+					MST[i]->neighborDistance[g]->neighborAddress = MST[k];
+					MST[i]->visted = false;
+				}
+			}
+		}
+	}
+
 	/*for (unsigned int i = 0; i < MST.size(); i++)
 	{
 		cout << "Vertex " << MST[i]->vertexName << endl;
@@ -448,8 +464,8 @@ void graph::calculateEulerTour(int startVertex)
 	vector<vertexStruct*> vertexStack;
 
 	// //mark all vertices unvisited
-	for(unsigned int i = 0; i < vertexGraph.size(); ++i){		
-		vertexGraph[i]->visted = false;
+	for(unsigned int i = 0; i < oddSubGraph.size(); ++i){		
+		oddSubGraph[i]->visted = false;
 	}
 
 	// //add the start vertex to the vertex graph

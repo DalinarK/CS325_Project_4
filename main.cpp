@@ -48,6 +48,21 @@ int main (int argc, const char * argv[1])
 		tspGraph.createMinMatching();
 		tspGraph.combineMSTandMinMatch();
 		tspGraph.calculateEulerTour(0);
+
+		if(tspGraph.getSize() < 10000){
+			while(tspGraph.performHeuristicTwoOpt()){
+				//tspGraph.performHeuristicThreeOpt();
+				tspGraph.performHeuristicTwoOpt();		
+			}
+		
+			if(tspGraph.getTour()->size() < 500){
+				while(tspGraph.performHeuristicThreeOpt()){				
+					//continue
+				}
+			}
+		}
+	
+
 		tspGraph.calculateFinalTourDistance();
 	}
 	else
