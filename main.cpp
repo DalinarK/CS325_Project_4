@@ -23,7 +23,7 @@ int main (int argc, const char * argv[1])
 	/* The first argument (argc) is the number of elements in the array so we should have two elements the program name and file name 
 	Credit: http://www.site.uottawa.ca/~lucia/courses/2131-05/labs/Lab3/CommandLineArguments.html
 	*/
-    if(argc != 2)
+    if(argc < 2)
     {
         std::cout << "Please enter an input filename." << std::endl << std::endl;
         exit(1);
@@ -38,73 +38,88 @@ int main (int argc, const char * argv[1])
 	
 	int lastDistance = 0, nextDistance = 0;
 
-	tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
-	tspGraph.calculateFinalTourDistance();
-	lastDistance = tspGraph.getTourDistance();
-	
-	vector<vertexStruct*> copy = copyFinalTour(*tspGraph.getTour());
+	bool useChristofides = true;
 
-	if(tspGraph.getSize() < 300){
-		for(int i = 0; i < 1000; ++i){				
-			tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
-			tspGraph.calculateFinalTourDistance();
-			nextDistance = tspGraph.getTourDistance();		
+	if (argc == 3)
+	{
+		tspGraph.createEdgelist();
+		tspGraph.createOddDegreeSubGraph();
+		tspGraph.createMinMatching();
+		tspGraph.combineMSTandMinMatch();
+		tspGraph.calculateEulerTour(0);
+		tspGraph.calculateFinalTourDistance();
+	}
+	else
+	{
+		tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
+		tspGraph.calculateFinalTourDistance();
+		lastDistance = tspGraph.getTourDistance();
+		
+		vector<vertexStruct*> copy = copyFinalTour(*tspGraph.getTour());
+
+		if(tspGraph.getSize() < 300){
+			for(int i = 0; i < 1000; ++i){				
+				tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
+				tspGraph.calculateFinalTourDistance();
+				nextDistance = tspGraph.getTourDistance();		
+				
+				if(nextDistance < lastDistance){
+					copy = copyFinalTour(*tspGraph.getTour());	
+					lastDistance = nextDistance;	 
+				}		
+			}
+		}else if(tspGraph.getSize() < 10000){
+			for(int i = 0; i < 100; ++i){				
+				tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
+				tspGraph.calculateFinalTourDistance();
+				nextDistance = tspGraph.getTourDistance();		
+				
+				if(nextDistance < lastDistance){
+					copy = copyFinalTour(*tspGraph.getTour());	
+					lastDistance = nextDistance;	 
+				}
 			
-			if(nextDistance < lastDistance){
-				copy = copyFinalTour(*tspGraph.getTour());	
-				lastDistance = nextDistance;	 
-			}		
+			}
 		}
-	}else if(tspGraph.getSize() < 10000){
-		for(int i = 0; i < 100; ++i){				
-			tspGraph.makeNaiveTour(rand() % tspGraph.getVertexGraphSize());
-			tspGraph.calculateFinalTourDistance();
-			nextDistance = tspGraph.getTourDistance();		
-			
-			if(nextDistance < lastDistance){
-				copy = copyFinalTour(*tspGraph.getTour());	
-				lastDistance = nextDistance;	 
+
+		vector <vertexStruct*>* finalTour = NULL;
+		int tourDistance = 0;
+		if(lastDistance < nextDistance){		
+			finalTour = &copy;
+			tourDistance = lastDistance;
+			tspGraph.updateTour(tourDistance, *finalTour);
+		}else{
+			finalTour = tspGraph.getTour();
+			tourDistance = nextDistance;
+			tspGraph.updateTour(tourDistance, *finalTour);
+		}
+
+		cout << "final tour size = " << finalTour->size() << endl;
+
+		cout << "Tour distance = " << tspGraph.getTourDistance() << endl;
+		cout << "Tour distance = " << tspGraph.getTourDistance() << endl;
+		cout << "Tour distance = " << tspGraph.getTourDistance() << endl;
+
+		//tspGraph.writeTourFile(argv[1]);
+			 
+
+		int counter = 0;
+
+		if(tspGraph.getSize() < 10000){
+			while(tspGraph.performHeuristicTwoOpt()){
+				//tspGraph.performHeuristicThreeOpt();
+				tspGraph.performHeuristicTwoOpt();		
 			}
 		
-		}
-	}
-
-	vector <vertexStruct*>* finalTour = NULL;
-	int tourDistance = 0;
-	if(lastDistance < nextDistance){		
-		finalTour = &copy;
-		tourDistance = lastDistance;
-		tspGraph.updateTour(tourDistance, *finalTour);
-	}else{
-		finalTour = tspGraph.getTour();
-		tourDistance = nextDistance;
-		tspGraph.updateTour(tourDistance, *finalTour);
-	}
-
-	cout << "final tour size = " << finalTour->size() << endl;
-
-	cout << "Tour distance = " << tspGraph.getTourDistance() << endl;
-	cout << "Tour distance = " << tspGraph.getTourDistance() << endl;
-	cout << "Tour distance = " << tspGraph.getTourDistance() << endl;
-
-	//tspGraph.writeTourFile(argv[1]);
-		 
-
-	int counter = 0;
-
-	if(tspGraph.getSize() < 10000){
-		while(tspGraph.performHeuristicTwoOpt()){
-			//tspGraph.performHeuristicThreeOpt();
-			tspGraph.performHeuristicTwoOpt();		
-		}
-	
-		if(tspGraph.getTour()->size() < 500){
-			counter = 0;
-			while(tspGraph.performHeuristicThreeOpt()){				
-				//continue
+			if(tspGraph.getTour()->size() < 500){
+				counter = 0;
+				while(tspGraph.performHeuristicThreeOpt()){				
+					//continue
+				}
 			}
 		}
 	}
+	
 	
 
 	for(int i = 0; i < (int)(tspGraph.getTour())->size(); ++i){
