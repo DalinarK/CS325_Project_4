@@ -40,7 +40,17 @@ class graph
 private:
 	vector <vertexStruct*> vertexGraph;
 	vector <vertexStruct*> finalTour;
+	vector <vertexStruct*> MST;
+
+	// this is the subgraph of that only contains vertices odd degree
+	vector <vertexStruct*> oddSubGraph;
+	//This is the subgraph of the minimum weight matching tree
+	vector <vertexStruct*> minimumWeight;
+
+	// this is the combined subgraph and MST;
+	vector <vertexStruct*> eulerTour;
 	long int  totalDistanceTraveled;	
+
 
 public:
 	void test();
@@ -106,6 +116,21 @@ public:
 		totalDistanceTraveled = size;
 		finalTour = finalT;
 	}
+
+	// converts the minSpanning tree created by getMinSpanningTree into a vector <vectorStruct*>
+	void createEdgelist();
+
+	// Creates the subraph of that only contains vertices odd degree
+	void createOddDegreeSubGraph();
+
+	// Creates a minimum-weight perfect matching subgraph of OddSubGraph
+	void createMinMatching();
+
+	// Combines the min-weight perfect matching graph with the MST 
+	void combineMSTandMinMatch();
+	
+	// Calculates the euler tour
+	void calculateEulerTour(int startVertex);
 
 };
 
