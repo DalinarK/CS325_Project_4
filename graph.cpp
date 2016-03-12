@@ -437,23 +437,21 @@ void graph::combineMSTandMinMatch()
 		}
 	}
 
-	/*for (unsigned int i = 0; i < MST.size(); i++)
+	for (unsigned int i = 0; i < MST.size(); i++)
 	{
 		cout << "Vertex " << MST[i]->vertexName << endl;
 		for (unsigned int g = 0; g < MST[i]->neighborDistance.size(); g++)
 		{
 			cout << MST[i]->neighborDistance[g]->neighborName << endl;
-			// cout << MST[i]->neighborDistance[g]->neighborAddress->vertexName << endl;
 		}
-	}*/
+	}
 }
 
 void graph::calculateEulerTour(int startVertex)
 {
-		//make sure vertex graph is empty
-	finalTour.clear();	
+	vector <vertexStruct*> vertexStack;	
 
-	vertexStruct *temp, *cur;
+	vertexStruct *temp, *cur, *current, *next;
 	temp = cur = MST[startVertex];
 	
 	//start at one to include the start vertex as umarked
@@ -461,46 +459,169 @@ void graph::calculateEulerTour(int startVertex)
 
 	cur->visted = false;
 
-	vector<vertexStruct*> vertexStack;
-
-	// //mark all vertices unvisited
-	for(unsigned int i = 0; i < oddSubGraph.size(); ++i){		
-		oddSubGraph[i]->visted = false;
-	}
+	// // //mark all vertices unvisited
+	// for(unsigned int i = 0; i < oddSubGraph.size(); ++i){		
+	// 	oddSubGraph[i]->visted = false;
+	// }
 
 	// //add the start vertex to the vertex graph
 	// //mark cur as visited then push cur's edge list onto stack
-	finalTour.push_back(cur);
-	cur->visted = true;
-	--unmarkedVertices;
-	for(unsigned int i = 0; i < cur->neighborDistance.size(); ++i){
-		// cout << "pushing " << cur->neighborDistance->neighborName << endl;
-		vertexStack.push_back(cur->neighborDistance.at(i)->neighborAddress);		
+	vertexStack.push_back(cur);
+	current = vertexStack.back();
+
+
+
+	// create the initial tour
+	while(current->neighborDistance.size() != 0)
+	{
+		// mark as visited
+		cout << current->vertexName << " has been added to final" << endl;
+		current->visted = true;
+		// get neighbor
+		next = vertexStack.back()->neighborDistance.back()->neighborAddress;
+		// remove neighbor from list
+		vertexStack.back()->neighborDistance.pop_back();
+		// remove previous neighbor from list
+		for (unsigned int i = 0; i < next->neighborDistance.size(); i ++)
+		{
+			
+			if (next->neighborDistance[i]->neighborName == current->vertexName)
+			{
+				cout << "found " << current->vertexName << ". deleting now" << endl;
+				cout << "neighbor " << next->vertexName << " size is " << next->neighborDistance.size() << endl;
+				next->neighborDistance.erase(next->neighborDistance.begin()+ i);
+				cout << " after " << next->neighborDistance.size() << endl;
+				break;
+			}
+			
+		}
+		// Add the neighbor to teh final tour
+		vertexStack.push_back(next);
+		current = next;
 	}
 
-	while(!vertexStack.empty()){
-		//get first item in stack and then remove it
-		temp = vertexStack.back();
-		vertexStack.pop_back();
+	cout << "intermeddiate tour currently is " << endl;
+	for (unsigned int i = 0; i < vertexStack.size(); i++)
+	{
+		vertexStack[i]->visted = false;
+		cout << vertexStack[i]->vertexName << " \t";
+	}
+	cout << endl;
 
-		//if temp has not been visited push it into the solution tour
-		//mark it as visited and then push all of its unmarked edges
-		//onto the stack		
-		if(!temp->visted){
-			finalTour.push_back(temp);
-			
-			temp->visted = true;
-			--unmarkedVertices;
+	vertexStack.pop_back();
 
-			//now push all temps unmarked vertice onto stack
-			for(unsigned int i = 0; i < temp->neighborDistance.size(); ++i){
-				if(!temp->neighborDistance.at(i)->neighborAddress->visted){
-					vertexStack.push_back(temp->neighborDistance.at(i)->neighborAddress);
+	for (unsigned int i = 0; i < vertexStack.size(); i++)
+	{
+	
+		if (vertexStack[i]->visted == false)
+		{
+			finalTour.push_back(vertexStack[i]);
+			vertexStack[i]->visted = true;
+		}
+		
+	}
+
+
+	cout << "final tour currently is " << endl;
+	for (unsigned int i = 0; i < finalTour.size(); i++)
+	{
+		cout << finalTour[i]->vertexName << " \t";
+	}
+	cout << endl;
+
+	for (unsigned int x = 0; x < MST.size(); x++)
+	{
+		if (MST[x]->visted == false)
+		{
+			for (unsigned int i =0; i < finalTour.size(); i++)
+			{
+				if (MST[x]->vertexName == finalTour[i]->vertexName)
+				{
+					if (MST[x]->visted != finalTour[i]->visted)
+					{
+						cout << "there was not a match!" << endl;
+					}
 				}
+
 			}
 		}
 	}
-	finalTour.pop_back();
+
+// exit(0);
+
+	cout << "size difference between final tour and MST " << MST.size() << " vs " << finalTour.size() << endl;
+	for ( unsigned int x = 0; x < 30; x++){
+		cout << MST.size() << " vs " << finalTour.size() << endl;
+		// go through the vertexes and see if there are any neighbors left. If so create a tour and
+		// add that tour to the final tour
+		for (unsigned int i = 0; i < finalTour.size(); i++)
+		{
+			// cout << finalTour[i]->vertexName << " has " << finalTour[i]->neighborDistance.size() << " neighbors "<< endl;
+			if (finalTour[i]->neighborDistance.size() > 0)
+			{
+
+				next = finalTour[i]->neighborDistance.back()->neighborAddress;
+				// Remove neighbor from this list
+				if (finalTour[i]->neighborDistance.back()->neighborAddress->visted == false){
+					
+					// cout << finalTour[i]->vertexName << " now has " << finalTour[i]->neighborDistance.size() << " neighbors "<< endl;
+					cout << next->vertexName << " to added to final after " << finalTour[i]->vertexName << endl;
+					next->visted = true;
+					cout << "set to " << next->visted << endl;
+					// insert into the graph
+					std::vector<vertexStruct*>::iterator iter;
+					iter = finalTour.begin() + i + 1;
+					
+
+					// remove finalTour[i] from the eighbor's from neighborDistance list
+					for (unsigned int j = 0; j < next->neighborDistance.size(); j ++)
+					{
+						
+						if (next->neighborDistance[j]->neighborName == next->vertexName)
+						{
+							cout << "neighbor" << next->vertexName << "has these neighbors" << endl;
+							for(int l = 0; l < next->neighborDistance.size(); l ++)
+							{
+								cout << "neighbors for " << next->neighborDistance[l]->neighborName << endl;
+							}
+							// cout << "found " << current->vertexName << ". deleting now" << endl;
+							next->neighborDistance.erase(next->neighborDistance.begin()+ j);
+							// cout << " after " << next->neighborDistance.size() << endl;
+							
+
+							for(int l = 0; l < next->neighborDistance.size(); l ++)
+							{
+								cout << "after neighbors for " << next->neighborDistance[l]->neighborName<< endl;
+							}
+
+							break;
+						}
+					}
+					finalTour.insert(iter, next);
+					finalTour[i]->neighborDistance.pop_back();
+				}
+	
+			}
+		}
+
+		for (unsigned int i = 0; i < finalTour.size(); i++)
+		{
+			// cout << finalTour[i]->vertexName << " \t";
+
+			if (finalTour[i]->neighborDistance.size() > 0)
+			{
+				cout << finalTour[i]->vertexName << " neighbors " << endl;
+				for (unsigned int j = 0; j < finalTour[i]->neighborDistance.size(); j ++)
+				{
+					cout << finalTour[i]->neighborDistance[j]->neighborName << " visit status " << finalTour[i]->neighborDistance[j]->neighborAddress->visted << endl;
+				}
+			}
+		}
+
+cout << "size difference between final tour and MST " << MST.size() << " vs " << finalTour.size() << endl;
+
+	}
+	exit(0);
 }
 
 
